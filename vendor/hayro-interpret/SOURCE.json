@@ -362,7 +362,7 @@
       "path": "src/interpret/mod.rs",
       "source_sha256": "2b002323055bc19aa497e92c81ad8e06dc60ee03686cad89366df4ac7c7a06b2",
       "source_git_blob": "fe08fc284ba7c914d1414b68a5a346674a6f910f",
-      "sha256": "ecea0b427e490b97ea844f82fd45fc689fa7043244176fac600c972ea7e078d7"
+      "sha256": "0a34de61fe037388d2305ddb1c1a379f6203494e6361c51e7993a4a8d232a7f8"
     },
     {
       "path": "src/interpret/path.rs",
@@ -707,6 +707,13 @@
       "authored": "2026-10-31T19:53:17+01:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/4c815786c699f3ce745d2dc0a5cb0681fe0d2d76",
       "scope": "Keep only the depth-independent ICC profile result in the cache; evaluate alternate fallback at the current nesting depth. Preserve the shared depth limit8, cancellation, decode and work limits, and plate/ink paths."
+    },
+    {
+      "commit": "32ca91a31f1ee222d48c377e9ae24db6482c724e",
+      "author": "Guillem Hermida",
+      "authored": "2026-10-16T19:00:02+02:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/32ca91a31f1ee222d48c377e9ae24db6482c724e",
+      "scope": "Carry the original NoRotate annotation projection and its Widget/Stamp exclusions. Preserve the shared finite appearance guard, annotation overrides and plate/ink paths."
     }
   ]
 }
