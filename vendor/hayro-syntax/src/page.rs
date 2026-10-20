@@ -130,7 +130,7 @@ impl<'a> PageTreeFrame<'a> {
         ctx.media_box = dict.get::<Rect>(MEDIA_BOX).or(ctx.media_box);
         ctx.crop_box = dict.get::<Rect>(CROP_BOX).or(ctx.crop_box);
         ctx.rotate = dict.get::<i32>(ROTATE).or(ctx.rotate);
-        let resources = Resources::from_scope(dict.get::<Dict<'a>>(RESOURCES), resources);
+        let resources = Resources::for_page(dict.contains_key(RESOURCES).then(|| dict.get::<Dict<'a>>(RESOURCES).unwrap_or_default()), resources);
 
         Some(Self { kids: dict.get::<Array<'a>>(KIDS)?.raw_iter(), ctx, resources })
     }
@@ -481,8 +481,8 @@ impl<'a> Page<'a> {
             .map_or(1.0, |u| u.min(MAX_USER_UNIT) as f32);
 
         let ctx = resources.ctx.clone();
-        let resources = Resources::from_scope(
-            dict.get::<Dict<'_>>(RESOURCES),
+        let resources = Resources::for_page(
+            dict.contains_key(RESOURCES).then(|| dict.get::<Dict<'_>>(RESOURCES).unwrap_or_default()),
             resources,
         );
 
@@ -727,6 +727,8 @@ impl<'a> Page<'a> {
 pub struct Resources<'a> {
     parent: Option<Box<Self>>,
     ctx: ReaderContext<'a>,
+    // Named properties of the page that owns a resource-less legacy form.
+    page_properties: Dict<'a>,
     /// The raw dictionary of external graphics states.
     pub ext_g_states: Dict<'a>,
     /// The raw dictionary of fonts.
@@ -751,9 +753,31 @@ impl<'a> Resources<'a> {
     /// so indirect resources keep the document's cross-references and decode limits.
     pub fn from_scope(resources: Option<Dict<'a>>, parent: Self) -> Self {
         match resources {
-            Some(resources) => Self::new(resources, None, &parent.ctx),
+            Some(resources) => {
+                let mut scoped = Self::new(resources, None, &parent.ctx);
+                scoped.page_properties = parent.page_properties;
+                scoped
+            }
             None => parent,
         }
+    }
+
+    // Page-tree inheritance stops at a present dictionary, including malformed entries.
+    fn for_page(resources: Option<Dict<'a>>, parent: Self) -> Self {
+        let mut result = Self::from_scope(resources, parent);
+        result.page_properties = result.properties.clone();
+        result
+    }
+
+    /// Form properties come from its own dictionary or, when absent, the owning page.
+    /// Other resources retain the shared owner's complete-scope boundary.
+    pub fn for_form(resources: Option<Dict<'a>>, parent: Self) -> Self {
+        let properties = resources.as_ref().map_or_else(
+            || parent.page_properties.clone(),
+            |dict| dict.get::<Dict<'_>>(PROPERTIES).unwrap_or_default());
+        let mut result = Self::from_scope(resources, parent);
+        result.properties = properties;
+        result
     }
 
     /// Create a new `Resources` object from a dictionary with a parent.
@@ -773,6 +797,7 @@ impl<'a> Resources<'a> {
         let shadings = resources.get::<Dict<'_>>(SHADING).unwrap_or_default();
         let properties = resources.get::<Dict<'_>>(PROPERTIES).unwrap_or_default();
 
+        let page_properties = parent.as_ref().map_or_else(|| properties.clone(), |parent| parent.page_properties.clone());
         let parent = parent.map(Box::new);
 
         Self {
@@ -781,6 +806,7 @@ impl<'a> Resources<'a> {
             fonts,
             color_spaces,
             properties,
+            page_properties,
             x_objects,
             patterns,
             shadings,

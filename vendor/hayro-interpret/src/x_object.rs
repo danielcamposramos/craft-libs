@@ -78,7 +78,7 @@ impl<'a> FormXObject<'a> {
 
         // PdfCraft patch: see `context::MAX_PAGE_CONTENT`.
         let decoded = crate::context::decode_content(stream)?;
-        let resources = dict.get::<Dict<'_>>(RESOURCES);
+        let resources = dict.contains_key(RESOURCES).then(|| dict.get::<Dict<'_>>(RESOURCES).unwrap_or_default());
 
         let matrix = Affine::new(
             dict.get::<[f64; 6]>(MATRIX)
@@ -186,7 +186,7 @@ pub(crate) fn draw_form_xobject<'a, 'b>(
         });
         interpret(
             TypedIter::new(x_object.decoded.as_ref()),
-            &Resources::from_scope(x_object.resources.clone(), resources.clone()),
+            &Resources::for_form(x_object.resources.clone(), resources.clone()),
             context,
             device,
         );
@@ -233,7 +233,7 @@ pub(crate) fn draw_form_xobject<'a, 'b>(
 
     interpret(
         iter,
-        &Resources::from_scope(x_object.resources.clone(), resources.clone()),
+        &Resources::for_form(x_object.resources.clone(), resources.clone()),
         context,
         device,
     );

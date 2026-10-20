@@ -434,7 +434,7 @@
       "path": "src/x_object.rs",
       "source_sha256": "e1c51e96a335c32c122011b2d05c5020c36a33c2c73342ba173c28a3e2fe0219",
       "source_git_blob": "21b134ce8cd9604399cd0776febf923d69c02673",
-      "sha256": "e064aea251b2e98902aaaff6883c6f751a8e948223a933a3ba910b119264440f"
+      "sha256": "5fb8f9d2645e946894fb85750b72fa8ba427a2f893d60cef5fc442d80d81438d"
     }
   ],
   "compatibility_reference": {
@@ -552,5 +552,14 @@
       "shared raster diagnostic flags",
       "budget refusal in the shared ink image path"
     ]
-  }
+  },
+  "carried_patches": [
+    {
+      "commit": "3b3787078e27d59e7cd2ba306073a8684a2fa36a",
+      "author": "Ahmad Mujahid",
+      "authored": "2026-10-20T15:39:35+04:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/3b3787078e27d59e7cd2ba306073a8684a2fa36a",
+      "scope": "Adapt page-origin Properties to the common bounded iterative page tree and complete dictionary scope boundaries. Keep absence distinct from malformed presence. The nested OCG pixel control fails before and both controls pass after, with existing contracts and upstream-compatibility tests green."
+    }
+  ]
 }
