@@ -182,7 +182,7 @@
       "path": "src/color.rs",
       "source_sha256": "799ce29bb5e59c8fc94db202873e48c2047dd35962e6f26efd215156c47158c1",
       "source_git_blob": "56bb04f24c04ba33ab6bf99c02a24735670959ad",
-      "sha256": "9ccd1292326e0eb053a05b0760a4b1d4c3dbc73487cd1a21062185ea686f5de1"
+      "sha256": "67dd72b8b0f19f8cbcbafaf7b9adce91acfd154ebc4d102323dbd3a03d252a35"
     },
     {
       "path": "src/context.rs",
@@ -200,7 +200,7 @@
       "path": "src/device.rs",
       "source_sha256": "6f0c1203d1e60724cdd11e9a230249247a70f578c4a7ccb9bf39a23411b32db6",
       "source_git_blob": "36c64a23fd23f6c4abad941077cf93296a67841f",
-      "sha256": "4465153ace47c6893958f187a37579dd87139e04505749483aea139f5f2bac99"
+      "sha256": "f4d41f05af296e3eb08f634b60e7e67a5e5f2b02b95a9d88fe263fd23f25c4cb"
     },
     {
       "path": "src/encode.rs",
@@ -386,7 +386,7 @@
       "path": "src/lib.rs",
       "source_sha256": "ea3fa23b74f99b5382798f90b7e9f0e3edca354ee26ea92fe26a91ee5c0195c9",
       "source_git_blob": "24c3be295783d7a53ac6bc39d93e539883480cd4",
-      "sha256": "ea3fa23b74f99b5382798f90b7e9f0e3edca354ee26ea92fe26a91ee5c0195c9"
+      "sha256": "1634b872120deff59927c7c0a1f38b5195c260c65864fe3fddb67b9808518dc6"
     },
     {
       "path": "src/log.rs",
@@ -434,7 +434,14 @@
       "path": "src/x_object.rs",
       "source_sha256": "e1c51e96a335c32c122011b2d05c5020c36a33c2c73342ba173c28a3e2fe0219",
       "source_git_blob": "21b134ce8cd9604399cd0776febf923d69c02673",
-      "sha256": "5fb8f9d2645e946894fb85750b72fa8ba427a2f893d60cef5fc442d80d81438d"
+      "sha256": "9ff088bd9b1a4598a7fd8567e3572138818f632ee4e6e77c809058c0ba069a3d"
+    },
+    {
+      "path": "src/cmyk_group.rs",
+      "source_revision": "ba09e1aefcc28ce42206dc3ad70a24975bfbfb24",
+      "source_sha256": "81de55659ee2ea1269c9feed694c521fd905c82a80be6e49cda3f69d8db5e4a1",
+      "source_git_blob": "1135171c9f52de095f56220a8e218edbecd451e9",
+      "sha256": "81de55659ee2ea1269c9feed694c521fd905c82a80be6e49cda3f69d8db5e4a1"
     }
   ],
   "compatibility_reference": {
@@ -560,6 +567,13 @@
       "authored": "2026-10-20T15:39:35+04:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/3b3787078e27d59e7cd2ba306073a8684a2fa36a",
       "scope": "Adapt page-origin Properties to the common bounded iterative page tree and complete dictionary scope boundaries. Keep absence distinct from malformed presence. The nested OCG pixel control fails before and both controls pass after, with existing contracts and upstream-compatibility tests green."
+    },
+    {
+      "commit": "ba09e1aefcc28ce42206dc3ad70a24975bfbfb24",
+      "author": "jpeskov",
+      "authored": "2026-10-21T08:34:21+05:30",
+      "origin": "https://github.com/storytold/pdfcraft/commit/ba09e1aefcc28ce42206dc3ad70a24975bfbfb24",
+      "scope": "Carry the original isolated-CMYK group owner and renderer. Preserve common plate/ink inspection and isolated-device hooks; reuse its existing checked CMYK conversion instead of adding a duplicate. Original Difference-color control fails before and passes after, with plate and raster controls and strict Clippy green."
     }
   ]
 }
