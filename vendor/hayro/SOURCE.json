@@ -68,7 +68,7 @@
       "path": "src/renderer.rs",
       "source_sha256": "f7ff7bd088ceb43823ede33151138384af331cf71403f7d23f7b2937212efc3b",
       "source_git_blob": "6aa53716ad2d0203a8058b2f7271515b4fc1db22",
-      "sha256": "2fd411cc3b137859a2c7bd3d20015aa485b831d5f6e016e9a681ca2a13435c44"
+      "sha256": "a5c33ff17e4e81b448fa34211990f3eb42aeda69049a74ee2b631cb4691e2e85"
     }
   ],
   "carried_patches": [
@@ -119,6 +119,13 @@
       "authored": "2026-11-10T18:11:33+01:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/e03d5a1c298dd34dc758a4aa63d581bf5184a0c8",
       "scope": "Carry original row-banded isolated-CMYK rendering with its 2^24-pixel default; test the same 400-pixel-wide group whole and in seven-row bands, matching within one byte. Public setter missing is the compile-time red. Plate/tiling/CMYK controls and strict Clippy pass. No private backend pin."
+    },
+    {
+      "commit": "f4fe2d9210e8abd64f2a20734b46a8453052aff1",
+      "author": "jpeskov",
+      "authored": "2026-10-21T13:35:09+05:30",
+      "origin": "https://github.com/storytold/pdfcraft/commit/f4fe2d9210e8abd64f2a20734b46a8453052aff1",
+      "scope": "Carry reviewed wide-tile and nested-space CMYK group fixes; retain shared plate/ink bypass and bounded group state. Original multi-scale/nested-space pixel control, plate suite and strict Clippy green."
     }
   ]
 }

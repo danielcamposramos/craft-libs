@@ -200,7 +200,7 @@
       "path": "src/device.rs",
       "source_sha256": "6f0c1203d1e60724cdd11e9a230249247a70f578c4a7ccb9bf39a23411b32db6",
       "source_git_blob": "36c64a23fd23f6c4abad941077cf93296a67841f",
-      "sha256": "f4d41f05af296e3eb08f634b60e7e67a5e5f2b02b95a9d88fe263fd23f25c4cb"
+      "sha256": "cb1fa03987197137168cb8c351e4799d13910e56f22fb6f22f97d7873009094e"
     },
     {
       "path": "src/encode.rs",
@@ -434,14 +434,14 @@
       "path": "src/x_object.rs",
       "source_sha256": "e1c51e96a335c32c122011b2d05c5020c36a33c2c73342ba173c28a3e2fe0219",
       "source_git_blob": "21b134ce8cd9604399cd0776febf923d69c02673",
-      "sha256": "aeb7ea18a5262c1db5a5dfaf442846474b586ed9e7c71f983a43c69fa4533a3b"
+      "sha256": "d2aa1c514fcc87799beb13ff91a02ea55d0a17f1871c2e82e58039adc1cf3005"
     },
     {
       "path": "src/cmyk_group.rs",
       "source_revision": "ba09e1aefcc28ce42206dc3ad70a24975bfbfb24",
       "source_sha256": "81de55659ee2ea1269c9feed694c521fd905c82a80be6e49cda3f69d8db5e4a1",
       "source_git_blob": "1135171c9f52de095f56220a8e218edbecd451e9",
-      "sha256": "81de55659ee2ea1269c9feed694c521fd905c82a80be6e49cda3f69d8db5e4a1"
+      "sha256": "54d3c0214a4177d0b34f46031864bd2b1e2b71514a0d7ceffa0a1a56874c734d"
     }
   ],
   "compatibility_reference": {
@@ -679,6 +679,13 @@
       "authored": "2026-11-10T04:43:13+01:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/e2464e14402f7a443de80e88975e428cc1dd45d7",
       "scope": "Port per-stream JBIG2 refusal metadata; retain shared image/stream/dimension/cancellation bounds and mark their refusals. Reuse a single refusal watcher in RGB, plates and raw inks so a refused opacity mask never uncovers its image. The ordinary-stream cap remains separate from known-image bounds; five synthetic controls and strict Clippy plus standalone backends pass."
+    },
+    {
+      "commit": "f4fe2d9210e8abd64f2a20734b46a8453052aff1",
+      "author": "jpeskov",
+      "authored": "2026-10-21T13:35:09+05:30",
+      "origin": "https://github.com/storytold/pdfcraft/commit/f4fe2d9210e8abd64f2a20734b46a8453052aff1",
+      "scope": "Carry reviewed wide-tile and nested-space CMYK group fixes; retain shared plate/ink bypass and bounded group state. Original multi-scale/nested-space pixel control, plate suite and strict Clippy green."
     }
   ]
 }
