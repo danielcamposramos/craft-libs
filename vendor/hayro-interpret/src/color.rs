@@ -1272,8 +1272,6 @@ impl Separation {
         let name = iter.next::<Name<'_>>()?;
         let alternate_space = ColorSpace::new_nested(iter.next::<Object<'_>>()?, cache, depth + 1)?;
         let tint_transform = iter.next::<Object<'_>>().and_then(|f| Function::new(&f));
-        // Either I did something wrong, or no other viewers properly handles
-        // `All`, so let's just ignore it as well.
         let is_none_separation = name.as_str() == "None";
         let colorant = Colorant::from_name(name.deref());
 
@@ -1288,6 +1286,17 @@ impl Separation {
 
 impl ToRgb for Separation {
     fn convert_f32(&self, input: &[f32], output: &mut [u8], _: bool) -> Option<()> {
+        if matches!(self.colorant, Colorant::All) {
+            // PdfCraft patch (66): §8.6.6.4: the tint applies to every colourant, and on an
+            // additive device it is complemented first, so tint t is the gray 1 − t on each of
+            // R, G and B whatever the alternate space and tint transform say.
+            for (tint, rgb) in input.iter().zip(output.chunks_exact_mut(3)) {
+                // `clamp` keeps NaN, and `f32_to_u8`'s cast saturates it to 0.
+                let gray = f32_to_u8(1.0 - tint.clamp(0.0, 1.0));
+                rgb.copy_from_slice(&[gray, gray, gray]);
+            }
+            return Some(());
+        }
         count_tint_transform_runs(input.len());
         // PdfCraft patch (55): see `eval_tint_transform`.
         let evaluated = input

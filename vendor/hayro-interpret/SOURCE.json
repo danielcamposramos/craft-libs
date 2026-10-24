@@ -182,7 +182,7 @@
       "path": "src/color.rs",
       "source_sha256": "799ce29bb5e59c8fc94db202873e48c2047dd35962e6f26efd215156c47158c1",
       "source_git_blob": "56bb04f24c04ba33ab6bf99c02a24735670959ad",
-      "sha256": "5255392fe679d02cb6da94dee6c0745a17694ab9bb6381c44fbd99be3c2020a2"
+      "sha256": "d54df2b87feeed7c9853c295572296f675f03142c8f0c8ba910d291ffa3fa822"
     },
     {
       "path": "src/context.rs",
@@ -1043,6 +1043,13 @@
       "authored": "2026-11-07T19:01:05+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/cd9b6b8a0f1a66fd87ea686574b320c58f6353c7",
       "scope": "Restrict SymbolMT matching to actual style suffixes and preserve explicit Differences and embedded font programs; all six selected receiving controls pass."
+    },
+    {
+      "commit": "0dd871f772dad6360302fca127e5a4fbf1f5a3cf",
+      "author": "mtlcl410",
+      "authored": "2026-10-24T22:36:24+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/0dd871f772dad6360302fca127e5a4fbf1f5a3cf",
+      "scope": "Complement Separation All tints for RGB using the existing common Colorant::All identity; preserve plate and ink paths; seven receiving controls pass."
     }
   ]
 }
