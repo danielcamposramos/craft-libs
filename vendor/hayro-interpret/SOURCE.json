@@ -380,7 +380,7 @@
       "path": "src/interpret/text.rs",
       "source_sha256": "35eafa80147aea635bdef127c33ace20e1695e11e87c7bfe1e035c886806ff30",
       "source_git_blob": "ddec0400ea7a639c14769ac9ee7e137d000b3efd",
-      "sha256": "ef5c39c97b54d08837763ca597f70d27f2dc2865cec11fb411400509d9fffe8c"
+      "sha256": "90b79f12d074e9681600cea95d8e54a5f80d1d26c50b414f8561878b4b55cbf8"
     },
     {
       "path": "src/lib.rs",
@@ -966,6 +966,13 @@
       "authored": "2026-11-11T15:53:02+01:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/223c1f02d48a342b72c50df5688e11782fe2a286",
       "scope": "Original viewer review: a cleared icon override draws nothing rather than restoring the original face. Carry only the shared engine source hunk."
+    },
+    {
+      "commit": "6718f1f34ed1308d3c7e9fc79bc2c23f08b3ba39",
+      "author": "mtlcl410",
+      "authored": "2026-10-24T22:34:36+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/6718f1f34ed1308d3c7e9fc79bc2c23f08b3ba39",
+      "scope": "ISO 32000-2 9.3.6: Type3 modes3/7 render nothing and add no clip; retain shared text-pass splitting and independent limits."
     }
   ]
 }
