@@ -950,6 +950,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "craft-stereo-window"
+version = "0.1.0"
+dependencies = [
+ "log",
+ "smithay-client-toolkit",
+ "thiserror 2.0.21",
+ "wayland-client",
+ "wayland-protocols",
+ "wayland-scanner",
+ "x11rb",
+]
+
+[[package]]
 name = "craft-ui"
 version = "0.1.0"
 dependencies = [
