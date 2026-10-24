@@ -212,7 +212,7 @@
       "path": "src/font/blob.rs",
       "source_sha256": "30a9dadf498829ee03eb1ddc6deaeb09a06ee42415f288d46f4a67640582c575",
       "source_git_blob": "6eabc26b9bc30bdc51f0b5fdd5e4b556d7583ec5",
-      "sha256": "808eb6da90ca9a92d4b6712c499f1865d225daa97c3b0d97ff7413a99391398e"
+      "sha256": "2e5fddba8bc36fee697230c804617ecef758b269da647d3f125ba1da3bdeb8c6"
     },
     {
       "path": "src/font/cid.rs",
@@ -302,7 +302,7 @@
       "path": "src/font/standard_font.rs",
       "source_sha256": "af3c51592c086671cb127745d4351d1380ef1212aee325099f1e933607995d7d",
       "source_git_blob": "139454a0b21eb992e9e52bf73c85e965c0f86cda",
-      "sha256": "c6965275bff3642602e9124c364a4a8cb5bf43c75ea1904632eae3114d057d22"
+      "sha256": "1cf477816feb47987d889b4b4f575b098f186c396fde416995ec9e60cc2ecc03"
     },
     {
       "path": "src/font/true_type.rs",
@@ -1008,6 +1008,13 @@
       "authored": "2026-10-24T13:31:31+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/f2e222ebc5098abb3d7cc49209697d103471ffbd",
       "scope": "Read a CID fallback request style from its descendant font descriptor while preserving the shared parser and font limits. Both styled and missing-descriptor controls pass, alongside both CID CFF controls."
+    },
+    {
+      "commit": "74c0880822893684376ba226581eeb94b6b9f820",
+      "author": "mtlcl410",
+      "authored": "2026-10-24T21:31:45+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/74c0880822893684376ba226581eeb94b6b9f820",
+      "scope": "Read CFF Euro glyph advances for standard-font width fitting; receiving Euro, Symbol, Dingbat and CID controls pass 9/9."
     }
   ]
 }
