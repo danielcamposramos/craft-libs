@@ -69,6 +69,14 @@ Renamed:
 The element IDs `element_ids::COLOUR` and `COLOUR_SPACE` and the field
 `isobmff::VpcConfig::colour_primaries` keep the spellings of the Matroska and VP9 specifications.
 
+Stereo container fields also retain FilmCraft's stereo branch behavior: `VideoParams::stereo_mode`
+round-trips the [Spherical Video V2 `st3d` FullBox](https://github.com/google/spatial-media/blob/8ddbd944c709291422b5a79bcb10539ce8145c22/docs/spherical-video-v2-rfc.md#stereoscopic-3d-video-box-st3d)
+(revision 2020-01-15) immediately after the codec configuration;
+`TrackSpec::stereo_mode` and `display_size` write Matroska `StereoMode`, `DisplayWidth` and
+`DisplayHeight`. RFC 9559 §18.10 defines that display size for one stereo plane, so
+`VideoInfo::plane_size` removes packing before `pixel_aspect` compares the sample and display sizes.
+These fields carry metadata; they do not resize pictures or implement codecs.
+
 Output that differs on valid input:
 
 - Matroska lacing applies only to tracks with a `DefaultDuration`, and a lace ends at a timestamp
