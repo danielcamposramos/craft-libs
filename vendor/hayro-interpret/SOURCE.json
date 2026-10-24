@@ -302,7 +302,7 @@
       "path": "src/font/standard_font.rs",
       "source_sha256": "af3c51592c086671cb127745d4351d1380ef1212aee325099f1e933607995d7d",
       "source_git_blob": "139454a0b21eb992e9e52bf73c85e965c0f86cda",
-      "sha256": "1cf477816feb47987d889b4b4f575b098f186c396fde416995ec9e60cc2ecc03"
+      "sha256": "6d641dbf8f20291a1e3f0c22d7d0d83c0faa054477787420b7d2b19f45c37487"
     },
     {
       "path": "src/font/true_type.rs",
@@ -1015,6 +1015,13 @@
       "authored": "2026-10-24T21:31:45+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/74c0880822893684376ba226581eeb94b6b9f820",
       "scope": "Read CFF Euro glyph advances for standard-font width fitting; receiving Euro, Symbol, Dingbat and CID controls pass 9/9."
+    },
+    {
+      "commit": "4287340c04a15ebb4b955d3fdc01d501af9db168",
+      "author": "mtlcl410",
+      "authored": "2026-10-24T12:30:50+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/4287340c04a15ebb4b955d3fdc01d501af9db168",
+      "scope": "Preserve substitute glyph shapes at wider declared advances; selected receiving width controls pass."
     }
   ]
 }
