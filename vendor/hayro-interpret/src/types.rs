@@ -349,13 +349,15 @@ pub(crate) fn dash_array(values: impl Iterator<Item = f32>) -> SmallVec<[f32; 4]
     // kurbo apparently cannot properly deal with offsets that are exactly 0.
     let dashes: SmallVec<[f32; 4]> = values
         .take(MAX_DASH_ENTRIES + 1)
-        .map(|n| if n == 0.0 { 0.01 } else { n })
         .collect();
     if dashes.len() > MAX_DASH_ENTRIES {
         warn!("dash array is too long; stroking solid");
         return smallvec![];
     }
-    dashes
+    if dashes.iter().any(|d| !d.is_finite() || *d < 0.0) || dashes.iter().all(|d| *d == 0.0) {
+        return smallvec![];
+    }
+    dashes.into_iter().map(|d| if d == 0.0 { 0.01 } else { d }).collect()
 }
 
 impl Default for StrokeProps {

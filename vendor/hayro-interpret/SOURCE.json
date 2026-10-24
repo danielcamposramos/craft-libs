@@ -194,7 +194,7 @@
       "path": "src/convert.rs",
       "source_sha256": "a361962285ef6153b4c10f75c8c7e31a2267b12481f85e5ff520915e79a6f0ba",
       "source_git_blob": "e768911415945256824d9759b4aa0490e0c80377",
-      "sha256": "a361962285ef6153b4c10f75c8c7e31a2267b12481f85e5ff520915e79a6f0ba"
+      "sha256": "ccd66c5e954a5c96da82cca05e53fc9015d8b3f35501473e6060d096976261fc"
     },
     {
       "path": "src/device.rs",
@@ -362,19 +362,19 @@
       "path": "src/interpret/mod.rs",
       "source_sha256": "2b002323055bc19aa497e92c81ad8e06dc60ee03686cad89366df4ac7c7a06b2",
       "source_git_blob": "fe08fc284ba7c914d1414b68a5a346674a6f910f",
-      "sha256": "16d227e03d7b27ff4c550e9c7aa464a4233f178eb92e224ad0b4812eea4ce744"
+      "sha256": "c724f95dd23a2c5ce7aa499fffaa0f76d221e7d1a54a7883afabb7f0d017802c"
     },
     {
       "path": "src/interpret/path.rs",
       "source_sha256": "a5defbc4b883b262662f7e7474a00ec1f97dbef8c03b8669859f624f5d02344b",
       "source_git_blob": "838ea099f11d918d6e333e32503368be864689f8",
-      "sha256": "e576a12809078f4b3cec4ec1b133868d2c354460e31f9144422c75652c5875a3"
+      "sha256": "c082b404ae68b00784d00def7902dc9e7b6c24e973105ab857ae28c5f61fa5af"
     },
     {
       "path": "src/interpret/state.rs",
       "source_sha256": "dce778291b13f6df83c8c13aee22f60edd033ec9f7d89309ef148d46d3ba9814",
       "source_git_blob": "95b773fb5cc434ab8db362d00e4e5180a8b740c9",
-      "sha256": "ccdbc6a6bf5b4799599f8e8e340c50b1c752b22665d4b81557b45676f5940778"
+      "sha256": "0a3159c67c6179f2126c9ef6d9ca49db3e5b16b3f2813390a6eaeff4cca4f608"
     },
     {
       "path": "src/interpret/text.rs",
@@ -422,7 +422,7 @@
       "path": "src/types.rs",
       "source_sha256": "0e66569b8a7dc243b0a384cf1d3615ca62bf660b5324236f2594609bdfddfd46",
       "source_git_blob": "64d2b849bdd3fdcd4ebfd76845edcef77b625fbd",
-      "sha256": "669fb4a9427193a962b7cda70656b688795ea691f67ae52333124807ba88006c"
+      "sha256": "bc6916e6b0c3a580e5e8eaf6d47511f48485afa46be4a772d0546b9a7ace843d"
     },
     {
       "path": "src/util.rs",
@@ -1050,6 +1050,13 @@
       "authored": "2026-10-24T22:36:24+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/0dd871f772dad6360302fca127e5a4fbf1f5a3cf",
       "scope": "Complement Separation All tints for RGB using the existing common Colorant::All identity; preserve plate and ink paths; seven receiving controls pass."
+    },
+    {
+      "commit": "e5051ca139fc71e422587994e825b6f59bcf20ee",
+      "author": "mtlcl410",
+      "authored": "2026-10-24T16:49:37+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/e5051ca139fc71e422587994e825b6f59bcf20ee",
+      "scope": "Normalize stroke geometry and invalid widths/dashes, retaining the common bounded dash helper and overprint state; all eight selected receiving controls pass; segment-after-close review follows separately."
     }
   ]
 }
