@@ -453,3 +453,7 @@ The following ports add the APIs newer receivers use without replacing those sha
 | PdfCraft source commit | Author | Shared scope |
 |---|---|---|
 | [d0da7938f](https://github.com/storytold/pdfcraft/commit/d0da7938f236bb4d19c09903e0db493d55d1abd1) | mtlcl410 | `OutlineGlyph::vertical_glyph_width` and its Type0 horizontal-width lookup; app Find logic is not part of this port |
+
+View auto-state is ported from [mtlcl410’s e5ce0afd](https://github.com/storytold/pdfcraft/commit/e5ce0afd022494d783f8370a4b4e38bf309e8526), authored 2026-10-24.
+The bounded usage walk runs before viewer overrides; printing can retain configured visibility.
+The shared plate settings and visibility-expression limits remain.
