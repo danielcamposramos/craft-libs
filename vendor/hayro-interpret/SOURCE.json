@@ -218,7 +218,7 @@
       "path": "src/font/cid.rs",
       "source_sha256": "c1dbe7fe5b7f7092d97b84063008df54aebf87db4ba1fdb3a179fab9fe6674b8",
       "source_git_blob": "b99dcbc116ca1169df3a229eafd05ee5b9204626",
-      "sha256": "f68a44a1c1df19fe5b245084dd3597d3f086bd9149ffc1663ad1f2594e1987b8"
+      "sha256": "dcf2a48bc3841d26d337883fe71a40f9bb53b31bb7e00774c1d38db734bf5e1c"
     },
     {
       "path": "src/font/generated/glyph_names.rs",
@@ -290,7 +290,7 @@
       "path": "src/font/mod.rs",
       "source_sha256": "7e6411927d91205ca76c6b59f9d737cd1104d066f8cfcc0a87f481016ef30313",
       "source_git_blob": "7c8c8d086d59139df791cdb6952506473ec4b5a7",
-      "sha256": "e09045272b556fdb7981de010f6bdc6563fb14fb253ad751af633c8cb3983e42"
+      "sha256": "20e1c02adb0e8f873209fd31c9da19fb62fabbcc926e282794c95395231477e1"
     },
     {
       "path": "src/font/outline.rs",
@@ -1001,6 +1001,13 @@
       "authored": "2026-11-07T18:55:11+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/22d211fa4af60ac4998765f4cf6eb9bdd34d1555",
       "scope": "Retain the original CFF review: move the already validated owned subfonts into the yoke instead of parsing them twice; both original CID CFF receiving controls pass."
+    },
+    {
+      "commit": "f2e222ebc5098abb3d7cc49209697d103471ffbd",
+      "author": "mtlcl410",
+      "authored": "2026-10-24T13:31:31+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/f2e222ebc5098abb3d7cc49209697d103471ffbd",
+      "scope": "Read a CID fallback request style from its descendant font descriptor while preserving the shared parser and font limits. Both styled and missing-descriptor controls pass, alongside both CID CFF controls."
     }
   ]
 }
