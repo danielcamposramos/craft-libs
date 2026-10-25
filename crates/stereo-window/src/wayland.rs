@@ -30,7 +30,7 @@ use wayland_client::{Connection, Dispatch, QueueHandle};
 use wayland_protocols::wp::viewporter::client::wp_viewport::{self, WpViewport};
 use wayland_protocols::wp::viewporter::client::wp_viewporter::WpViewporter;
 
-use crate::{Change, Command, Declaration, Error, Picture, Shared, convert_row, fit, plan};
+use crate::{Change, Command, Declaration, Error, Picture, Shared, convert_row, fit_picture, plan};
 
 #[allow(clippy::all, unused_imports, dead_code, missing_docs)]
 mod stereo_protocol {
@@ -235,7 +235,7 @@ impl State {
         // cropped to its left half), else the picture.
         let eye_w = pic.eye_width();
         let source_w = if decided.left_eye_only { eye_w } else { pic.width };
-        let (dw, dh) = fit(eye_w, pic.height, self.size);
+        let (dw, dh) = fit_picture(&pic, self.size);
         self.viewport.set_source(0.0, 0.0, source_w as f64, pic.height as f64);
         self.viewport.set_destination(i32::try_from(dw).unwrap_or(i32::MAX), i32::try_from(dh).unwrap_or(i32::MAX));
         let surface = self.window.wl_surface();

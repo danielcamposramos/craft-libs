@@ -62,6 +62,7 @@ pub struct Picture {
     pub rgba: Arc<[u8]>,
     /// The picture holds two views.
     pub stereo: bool,
+    pixel_aspect: (u32, u32),
 }
 
 impl Picture {
@@ -71,7 +72,22 @@ impl Picture {
         if width == 0 || height == 0 || len != Some(rgba.len()) || (stereo && width > 1 && !width.is_multiple_of(2)) {
             return Err(Error::BadPicture);
         }
-        Ok(Self { width, height, rgba, stereo })
+        Ok(Self { width, height, rgba, stereo, pixel_aspect: (1, 1) })
+    }
+
+    /// Sets the width/height ratio of a source pixel. Only the logical placement changes;
+    /// the native pixel buffer is retained. Half-width samples use 2:1, half-height 1:2.
+    pub fn with_pixel_aspect_ratio(mut self, numerator: u32, denominator: u32) -> Result<Self, Error> {
+        if numerator == 0 || denominator == 0 {
+            return Err(Error::BadPicture);
+        }
+        self.pixel_aspect = (numerator, denominator);
+        Ok(self)
+    }
+
+    /// The intended width/height ratio of a source pixel (square by default).
+    pub fn pixel_aspect_ratio(&self) -> (u32, u32) {
+        self.pixel_aspect
     }
 
     /// The width of what the window shows at one eye's place: half of a stereo picture.
@@ -141,7 +157,25 @@ impl Declaration {
 /// its shape. Without a bound (the window has no size yet) a large picture is scaled down to fit
 /// 1280 x 720 and a small one keeps its size; with one it fills the bound.
 pub(crate) fn fit(w: usize, h: usize, bound: Option<(u32, u32)>) -> (u32, u32) {
-    let (w, h) = (w.max(1) as f64, h.max(1) as f64);
+    fit_extent(w.max(1) as f64, h.max(1) as f64, bound)
+}
+
+/// Fits intended display geometry; the caller retains the native sample buffer.
+pub(crate) fn fit_picture(p: &Picture, bound: Option<(u32, u32)>) -> (u32, u32) {
+    let (n, d) = p.pixel_aspect_ratio();
+    if n == d {
+        return fit(p.eye_width(), p.height, bound);
+    }
+    let (mut w, mut h) = (p.eye_width() as f64, p.height as f64);
+    if n >= d {
+        w *= f64::from(n) / f64::from(d);
+    } else {
+        h *= f64::from(d) / f64::from(n);
+    }
+    fit_extent(w, h, bound)
+}
+
+fn fit_extent(w: f64, h: f64, bound: Option<(u32, u32)>) -> (u32, u32) {
     let scale = match bound {
         Some((bw, bh)) => (f64::from(bw.max(1)) / w).min(f64::from(bh.max(1)) / h),
         None => (1280.0 / w).min(720.0 / h).min(1.0),
@@ -336,6 +370,17 @@ mod tests {
     fn a_declared_pair_cannot_have_unequal_eye_widths() {
         assert!(matches!(Picture::new(3, 1, vec![0; 12].into(), true), Err(Error::BadPicture)));
         assert!(Picture::new(3, 1, vec![0; 12].into(), false).is_ok());
+    }
+
+    #[test]
+    fn display_aspect_metadata_retains_the_native_buffer() {
+        let rgba: Arc<[u8]> = vec![17; 200 * 100 * 4].into();
+        let p = Picture::new(200, 100, rgba.clone(), true).unwrap().with_pixel_aspect_ratio(2, 1).unwrap();
+        assert_eq!((p.width, p.height, p.pixel_aspect_ratio()), (200, 100, (2, 1)));
+        assert!(Arc::ptr_eq(&rgba, &p.rgba));
+        for (n, d) in [(0, 1), (1, 0), (0, 0)] {
+            assert!(matches!(p.clone().with_pixel_aspect_ratio(n, d), Err(Error::BadPicture)));
+        }
     }
 
     #[test]
