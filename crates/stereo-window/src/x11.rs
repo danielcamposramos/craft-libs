@@ -22,7 +22,7 @@ use x11rb::protocol::xproto::{
 use x11rb::rust_connection::RustConnection;
 use x11rb::wrapper::ConnectionExt as _;
 
-use crate::{Change, Command, Declaration, Error, Picture, SIDE_BY_SIDE_FULL, Shared, convert_row, fit, plan};
+use crate::{Change, Command, Declaration, Error, Picture, SIDE_BY_SIDE_FULL, Shared, convert_row, fit_picture, plan};
 
 /// Connects, creates the window and starts its thread.
 pub(crate) fn open(title: &str, app_id: &str, shared: Arc<Shared>) -> Result<(mpsc::Sender<Command>, JoinHandle<()>), Error> {
@@ -174,7 +174,10 @@ fn run(title: &str, app_id: &str, shared: &Arc<Shared>, commands: &mpsc::Receive
         }
         match commands.recv_timeout(Duration::from_millis(15)) {
             Ok(Command::Show(p)) => {
-                resize_needed = mapped && picture.as_ref().is_none_or(|old| (old.width, old.height, old.stereo) != (p.width, p.height, p.stereo));
+                resize_needed = mapped
+                    && picture.as_ref().is_none_or(|old| {
+                        (old.width, old.height, old.stereo, old.pixel_aspect_ratio()) != (p.width, p.height, p.stereo, p.pixel_aspect_ratio())
+                    });
                 picture = Some(p);
                 redraw = true;
             }
@@ -182,7 +185,7 @@ fn run(title: &str, app_id: &str, shared: &Arc<Shared>, commands: &mpsc::Receive
             Err(RecvTimeoutError::Timeout) => {}
         }
         if redraw && let Some(p) = &picture {
-            let decided = plan(p.is_pair(), display.support >= 2);
+            let decided = plan(p.is_pair(), can_declare(p, display.support));
             match declaration.update(decided.declare) {
                 Some(Change::Declare) => {
                     proposal = None;
@@ -240,13 +243,15 @@ fn run(title: &str, app_id: &str, shared: &Arc<Shared>, commands: &mpsc::Receive
 
 /// A declared pair asks for its native eye raster (both eyes on support version 2).
 /// The ordinary desktop fallback retains its fitted window size.
+fn can_declare(p: &Picture, support: u32) -> bool {
+    support >= 2 && (support >= 6 || p.pixel_aspect_ratio().0 == p.pixel_aspect_ratio().1)
+}
+
 fn window_size(p: &Picture, support: u32) -> (u32, u32) {
-    let (w, h) = if p.is_pair() && support >= 2 {
-        (u32::try_from(p.eye_width()).unwrap_or(u32::MAX), u32::try_from(p.height).unwrap_or(u32::MAX))
-    } else {
-        fit(p.eye_width(), p.height, None)
-    };
-    if p.is_pair() && (2..3).contains(&support) { (w.saturating_mul(2), h) } else { (w, h) }
+    let declared = p.is_pair() && can_declare(p, support);
+    let (w, h) =
+        if declared { (u32::try_from(p.eye_width()).unwrap_or(u32::MAX), u32::try_from(p.height).unwrap_or(u32::MAX)) } else { fit_picture(p, None) };
+    if declared && (2..3).contains(&support) { (w.saturating_mul(2), h) } else { (w, h) }
 }
 
 fn initial_size(display: &Display, p: &Picture) -> (u32, u32) {
@@ -426,14 +431,15 @@ struct Placement {
 
 impl Placement {
     fn size(&mut self, p: &Picture, proposal: Option<(u32, u32)>) -> (u32, u32) {
-        let aspect = p.eye_width() as f64 / p.height as f64;
+        let (n, d) = p.pixel_aspect_ratio();
+        let aspect = p.eye_width() as f64 * f64::from(n) / (p.height as f64 * f64::from(d));
         if proposal.is_none()
             && self.aspect == Some(aspect)
             && let Some(size) = self.destination
         {
             return size;
         }
-        let size = fit(p.eye_width(), p.height, proposal.or(self.destination));
+        let size = fit_picture(p, proposal.or(self.destination));
         self.destination = Some(size);
         self.aspect = Some(aspect);
         size
@@ -473,6 +479,40 @@ mod tests {
         let square = Picture::new(1080, 540, vec![0; 1080 * 540 * 4].into(), true).unwrap();
         assert_eq!(place.size(&square, None), (422, 422));
     }
+    #[test]
+    fn non_square_samples_change_the_place_and_keep_the_raster() {
+        for (par, expected) in [((2, 1), (200, 100)), ((1, 2), (100, 200))] {
+            let p = Picture::new(200, 100, vec![0; 200 * 100 * 4].into(), true).unwrap().with_pixel_aspect_ratio(par.0, par.1).unwrap();
+            let mut place = Placement::default();
+            assert_eq!(place.size(&p, None), expected, "pixel aspect {par:?}");
+            assert_eq!(window_size(&p, 7), (100, 100));
+            assert_eq!(native_pixels(&p, false).unwrap().len(), 200 * 100 * 4);
+        }
+    }
+
+    #[test]
+    fn non_square_eyes_require_independent_display_placement() {
+        let p = Picture::new(200, 100, vec![0; 200 * 100 * 4].into(), true).unwrap().with_pixel_aspect_ratio(2, 1).unwrap();
+        for support in 0..6 {
+            assert!(!can_declare(&p, support));
+            assert_eq!(window_size(&p, support), (200, 100));
+        }
+        assert!(can_declare(&p, 6));
+        assert!(can_declare(&p, 7));
+    }
+
+    #[test]
+    fn a_resize_preserves_the_intended_eye_aspect() {
+        let p = Picture::new(200, 100, vec![0; 200 * 100 * 4].into(), true).unwrap().with_pixel_aspect_ratio(2, 1).unwrap();
+        let mut place = Placement::default();
+        assert_eq!(place.size(&p, Some((900, 600))), (900, 450));
+        for _ in 0..20 {
+            assert_eq!(place.size(&p, None), (900, 450));
+        }
+        let tall = p.with_pixel_aspect_ratio(1, 2).unwrap();
+        assert_eq!(place.size(&tall, None), (225, 450));
+    }
+
     #[test]
     fn only_a_complete_current_protocol_proposal_can_be_acknowledged() {
         assert_eq!(placement_proposal(7, &[1, 1600, 900]), Some((1, 1600, 900)));

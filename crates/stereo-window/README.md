@@ -31,3 +31,9 @@ request. The crate's own code is MIT OR Apache-2.0.
 Everything runs on the window's own thread and display connection, with the Wayland client
 libraries (`smithay-client-toolkit`, `wayland-client`, MIT) and `x11rb` (MIT OR Apache-2.0), no
 `unsafe`.
+
+`Picture::with_pixel_aspect_ratio` carries the intended width/height of a source sample.
+It changes the Wayland viewport destination and X11 one-view place, never the uploaded buffer.
+For example, two 960×1080 half-width views remain a 1920×1080 pair with 2:1 samples.
+On X11, non-square samples require support version 6's independent ONE_VIEW_SIZE; older servers show the ordinary left-eye preview instead.
+Square-sample pairs retain the existing version 2/3 compatibility path.
