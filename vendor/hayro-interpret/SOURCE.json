@@ -188,7 +188,7 @@
       "path": "src/context.rs",
       "source_sha256": "dc2be553958ee3f5e5e644a77a0301723bae9ca027a352c13b9caaf549cc0e56",
       "source_git_blob": "d6772baa15ebb95d3ba2d1f54ce5c250ad1e8137",
-      "sha256": "6e4d5d7b4091dfe444cc95a16e943d3043a0a3506c8ca56fa8b72e16e6c3538a"
+      "sha256": "c9b4aaf86300c77f7d70f160fe6776c7ca89be7cf42ce54a9c4ed04feff25467"
     },
     {
       "path": "src/convert.rs",
@@ -362,7 +362,7 @@
       "path": "src/interpret/mod.rs",
       "source_sha256": "2b002323055bc19aa497e92c81ad8e06dc60ee03686cad89366df4ac7c7a06b2",
       "source_git_blob": "fe08fc284ba7c914d1414b68a5a346674a6f910f",
-      "sha256": "0a34de61fe037388d2305ddb1c1a379f6203494e6361c51e7993a4a8d232a7f8"
+      "sha256": "a924c2a203486c88fac19e6508b6f6dee390c4bb9f72bfcac0270a8cee8fceef"
     },
     {
       "path": "src/interpret/path.rs",
@@ -728,6 +728,13 @@
       "authored": "2026-11-01T12:15:57+01:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/4303d49eea68a2dc56db60d3bc6428316b1e23d2",
       "scope": "Follow reference aliases through the original bounded32-hop loop. Preserve shared repaired-generation matching, memoized object-stream offsets, load gate, decode limits and cancellation. Parse index dictionaries without reading a stream Length again."
+    },
+    {
+      "commit": "bac061e4731f6541a96f505e5d814664c9f066a2",
+      "author": "KenM76",
+      "authored": "2026-10-26T11:34:17-04:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/bac061e4731f6541a96f505e5d814664c9f066a2",
+      "scope": "Keep each nested content stream above its own saved-state floor. Preserve skipped-save and byte bounds, current CMYK/plate state and outer stream restoration; do not restore the obsolete luminosity flag."
     }
   ]
 }
