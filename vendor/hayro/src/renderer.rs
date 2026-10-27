@@ -852,6 +852,9 @@ pub(crate) struct Renderer {
     /// (nothing is layered while erasing).
     erasing: bool,
     erase_groups: usize,
+    /// PdfCraft patch (26): the knockout groups drawn in blend-mode passes
+    /// (`Device::begin_knockout_pass`), innermost last.
+    knockout_passes: Vec<KnockoutPass>,
     pub(crate) inside_pattern: bool,
     /// Soft masks drawn during this render. PdfCraft note: it belongs to one `Renderer` (one
     /// render, every nested renderer starting empty) and so to one `preview` setting: a mask
@@ -962,6 +965,32 @@ impl Renderer {
         self.knockout.last().copied().unwrap_or(false)
     }
 
+    /// PdfCraft patch (26): the blend-mode pass of the innermost group, when that group is a
+    /// knockout group drawn in passes, so the element now drawn is one of its own elements.
+    fn knockout_pass(&mut self) -> Option<&mut KnockoutPass> {
+        let depth = self.knockout.len();
+        if !self.in_knockout() {
+            return None;
+        }
+        self.knockout_passes.last_mut().filter(|pass| pass.depth == depth)
+    }
+
+    /// PdfCraft patch (26): whether an element of blend mode `mode` belongs to another pass than
+    /// the current one, so here it clears what is under its shape instead of painting. Records
+    /// the mode for its own pass.
+    fn knockout_pass_skips(&mut self, mode: BlendMode) -> bool {
+        let Some(pass) = self.knockout_pass() else {
+            return false;
+        };
+        if mode == pass.mode {
+            return false;
+        }
+        if !pass.other_modes.contains(&mode) {
+            pass.other_modes.push(mode);
+        }
+        true
+    }
+
     pub(crate) fn new(
         width: u16,
         height: u16,
@@ -976,6 +1005,7 @@ impl Renderer {
             in_annotations: false,
             knockout: Vec::new(),
             erasing: false,
+            knockout_passes: Vec::new(),
             erase_groups: 0,
             inside_pattern: false,
             soft_mask_cache: HashMap::default(),
@@ -1082,6 +1112,7 @@ impl Renderer {
                 in_annotations: false,
                 knockout: Vec::new(),
                 erasing: false,
+                knockout_passes: Vec::new(),
                 erase_groups: 0,
                 inside_pattern: false,
                 soft_mask_cache: HashMap::default(),
@@ -1628,6 +1659,7 @@ impl Renderer {
             in_annotations: false,
             knockout: Vec::new(),
             erasing: false,
+            knockout_passes: Vec::new(),
             erase_groups: 0,
             cur_mask: None,
             inside_pattern: true,
@@ -1710,6 +1742,7 @@ impl Renderer {
             },
             knockout: Vec::new(),
             erasing: false,
+            knockout_passes: Vec::new(),
             erase_groups: 0,
         };
         // The pass draws inside a layer of its own. On the bare canvas, vello_cpu fills a tile
@@ -1794,9 +1827,12 @@ impl Renderer {
 
     #[must_use]
     fn set_paint(&mut self, paint: &Paint<'_>, path: &BezPath, is_stroke: bool) -> PaintSetup {
-        // Knockout patch (pdfcraft #2974): in a knockout erase pass every paint clears what is
-        // under its shape (a transparent fill with `Compose::Copy`, weighted by coverage).
-        if self.erasing {
+        // PdfCraft patch (22): in a knockout erase pass every paint clears what is under its
+        // shape (a transparent fill with `Compose::Copy`, weighted by coverage).
+        let element_mode = self.knockout_pass().map(|pass| pass.element_mode);
+        let other_pass =
+            !self.erasing && element_mode.is_some_and(|mode| self.knockout_pass_skips(mode));
+        if self.erasing || other_pass {
             self.ctx.set_blend_mode(knockout_blend_mode());
             self.ctx.set_paint(AlphaColor::<Srgb>::new([0.0, 0.0, 0.0, 0.0]));
             // A shading's `/BBox` clips what it paints, so it clips what it clears too.
@@ -2478,6 +2514,13 @@ impl<'a> Device<'a> for Renderer {
             self.erase_groups += 1;
             return;
         }
+        // PdfCraft patch (26): an image or group of another pass than the current one composites
+        // nothing; what it covers was cleared before it (`knockout_image`, the erase pass).
+        let opacity = if self.knockout_pass_skips(blend_mode) {
+            0.0
+        } else {
+            opacity
+        };
         let settings = *self.ctx.render_settings();
         let force_images_may_have_transparency = mask.is_some()
             || blend_mode != BlendMode::Normal
@@ -2554,6 +2597,32 @@ impl<'a> Device<'a> for Renderer {
         self.erasing = false;
         self.erase_groups = 0;
         self.ctx.set_blend_mode(knockout_blend_mode());
+    }
+
+    fn begin_knockout_pass(&mut self, mode: BlendMode) {
+        if self.in_knockout() && !self.erasing {
+            self.knockout_passes.push(KnockoutPass {
+                depth: self.knockout.len(),
+                mode,
+                element_mode: BlendMode::Normal,
+                other_modes: Vec::new(),
+            });
+        }
+    }
+
+    fn end_knockout_pass(&mut self) -> Vec<BlendMode> {
+        // In an erase pass `begin_knockout_pass` started nothing; the pass at this depth belongs
+        // to the knockout group being erased into, and stays.
+        if self.erasing {
+            return Vec::new();
+        }
+        let depth = self.knockout.len();
+        match self.knockout_passes.last() {
+            Some(pass) if pass.depth == depth => {
+                self.knockout_passes.pop().map(|pass| pass.other_modes).unwrap_or_default()
+            }
+            _ => Vec::new(),
+        }
     }
 
     fn in_knockout_group(&mut self) -> bool {
@@ -2697,8 +2766,14 @@ impl<'a> Device<'a> for Renderer {
     }
 
     fn set_blend_mode(&mut self, blend_mode: BlendMode) {
-        // Knockout patch (pdfcraft #2974): inside a knockout group every element replaces what it
-        // covers.
+        // PdfCraft patch (26): the blend mode of the element about to paint, for its pass (an
+        // erase pass paints nothing, and its content's modes are not the element's).
+        if !self.erasing
+            && let Some(pass) = self.knockout_pass()
+        {
+            pass.element_mode = blend_mode;
+        }
+        // PdfCraft patch (22): inside a knockout group every element replaces what it covers.
         let mode = if self.in_knockout() {
             knockout_blend_mode()
         } else {
@@ -2791,6 +2866,7 @@ fn soft_mask_renderer(settings: &RenderSettings, width: u16, height: u16, previe
         in_annotations: false,
         knockout: Vec::new(),
         erasing: false,
+        knockout_passes: Vec::new(),
         erase_groups: 0,
         inside_pattern: false,
         cur_mask: None,
@@ -2932,8 +3008,19 @@ fn convert_fill_rule(fill_rule: FillRule) -> Fill {
     }
 }
 
-/// Knockout patch (pdfcraft #2974): how an element of a knockout group is drawn (see
-/// `set_knockout`).
+/// PdfCraft patch (26): one blend-mode pass over a knockout group (`Device::begin_knockout_pass`).
+struct KnockoutPass {
+    /// `knockout.len()` with the group pushed: its own elements are drawn at this depth.
+    depth: usize,
+    /// The blend mode whose elements paint in this pass.
+    mode: BlendMode,
+    /// The blend mode of the element painting now (`set_blend_mode`).
+    element_mode: BlendMode,
+    /// The other blend modes this pass's elements used, each once (at most one per mode).
+    other_modes: Vec<BlendMode>,
+}
+
+/// PdfCraft patch (22): how an element of a knockout group is drawn (see `set_knockout`).
 fn knockout_blend_mode() -> peniko::BlendMode {
     peniko::BlendMode::new(Mix::Normal, Compose::Copy)
 }

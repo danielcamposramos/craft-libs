@@ -127,6 +127,19 @@ pub trait Device<'a> {
     /// other than `DeviceCMYK` is about to be drawn. A device drawing an enclosing group in CMYK
     /// can no longer draw that group right, since this one blends in its own space.
     fn group_blends_outside_device_cmyk(&mut self) {}
+    /// PdfCraft patch (67): the knockout group just pushed (`set_knockout`) is drawn once per
+    /// blend mode its elements use, each pass into a layer of its own composited with that
+    /// mode. In this pass only elements whose blend mode is `mode` paint; every other element
+    /// clears what is under its shape, as it would replace it. Each pixel then holds the last
+    /// element covering it in exactly one pass, which composites it with the group's backdrop
+    /// in that element's own blend mode (#4886).
+    fn begin_knockout_pass(&mut self, _mode: BlendMode) {}
+    /// PdfCraft patch (67): ends the pass `begin_knockout_pass` started, before the layer is
+    /// popped. Returns the other blend modes the pass's elements used, each once. A device
+    /// that doesn't track them returns none, and the group is drawn in one Normal pass.
+    fn end_knockout_pass(&mut self) -> Vec<BlendMode> {
+        Vec::new()
+    }
 }
 
 /// A device that discards all drawing operations.

@@ -200,7 +200,7 @@
       "path": "src/device.rs",
       "source_sha256": "6f0c1203d1e60724cdd11e9a230249247a70f578c4a7ccb9bf39a23411b32db6",
       "source_git_blob": "36c64a23fd23f6c4abad941077cf93296a67841f",
-      "sha256": "cb1fa03987197137168cb8c351e4799d13910e56f22fb6f22f97d7873009094e"
+      "sha256": "680a542c317139bc60127d1c748d43c035c0831ba772c8532957db26c555f0af"
     },
     {
       "path": "src/encode.rs",
@@ -398,7 +398,7 @@
       "path": "src/ocg.rs",
       "source_sha256": "439455f65b8ad6ed9b0306536c2f75fa5f3fdda42ed4ca351ec3d340c38dc330",
       "source_git_blob": "c59b70df4be6a83485360dacd76bead9f80c7f94",
-      "sha256": "bb40ea1609d4252ef976aa4734a3d755363216cd15c8f1adab87b5aa769ef849"
+      "sha256": "904094ae9935774c3fa8c11acbe42e01e6fcd139a9aecef28cc178af270fb3a6"
     },
     {
       "path": "src/pattern.rs",
@@ -434,7 +434,7 @@
       "path": "src/x_object.rs",
       "source_sha256": "e1c51e96a335c32c122011b2d05c5020c36a33c2c73342ba173c28a3e2fe0219",
       "source_git_blob": "21b134ce8cd9604399cd0776febf923d69c02673",
-      "sha256": "ee1fed499ec609288f3401b66e17703862cc8d5d91a28958362ca4dd272adf78"
+      "sha256": "416a85599761c57271982ce3c2d417b924152688f69aa843461a36bc1d207f27"
     },
     {
       "path": "src/cmyk_group.rs",
@@ -1064,6 +1064,13 @@
       "authored": "2026-11-02T08:00:22+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/ba16b9b5b875164eba1eabc16549039dcf75e87d",
       "scope": "Start a new subpath after close; all eight stroke controls pass. Correction to preceding port message: its selection excluded this review and ran seven, not eight, controls."
+    },
+    {
+      "commit": "ad33ab626e7381792e1040a6df920c9b29ae1e5d",
+      "author": "KenM76",
+      "authored": "2026-10-26T20:09:27-04:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/ad33ab626e7381792e1040a6df920c9b29ae1e5d",
+      "scope": "Composite non-isolated knockout elements with the page backdrop; six original receiving controls pass. Preserve bounded nested renderer construction, CMYK groups, plate/ink behavior and active-form guards. Later masked-image and mesh reviews follow separately."
     }
   ]
 }

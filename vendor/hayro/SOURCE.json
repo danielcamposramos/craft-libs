@@ -68,7 +68,7 @@
       "path": "src/renderer.rs",
       "source_sha256": "f7ff7bd088ceb43823ede33151138384af331cf71403f7d23f7b2937212efc3b",
       "source_git_blob": "6aa53716ad2d0203a8058b2f7271515b4fc1db22",
-      "sha256": "69d107b6178cf2dced03d72645b0bdd34c378b7aec8e6860272feb3730fa9d6b"
+      "sha256": "784656e0e05de2cc1865a47b34b0579e208943f81dd573f3283d612e0d0aa0cc"
     }
   ],
   "carried_patches": [
@@ -175,6 +175,13 @@
       "authored": "2026-10-30T05:07:44+02:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/c5065554a1946e4ca8895048d70095f68a4ecec5",
       "scope": "Carry the original sampling review after its mask-interpolation prerequisite: bounded row intermediates and sharp near-1:1 scans. Shared decoder, image, coverage, cancellation and ink bounds stay intact."
+    },
+    {
+      "commit": "ad33ab626e7381792e1040a6df920c9b29ae1e5d",
+      "author": "KenM76",
+      "authored": "2026-10-26T20:09:27-04:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/ad33ab626e7381792e1040a6df920c9b29ae1e5d",
+      "scope": "Composite non-isolated knockout elements with the page backdrop; six original receiving controls pass. Preserve bounded nested renderer construction, CMYK groups, plate/ink behavior and active-form guards. Later masked-image and mesh reviews follow separately."
     }
   ]
 }
