@@ -1825,6 +1825,25 @@ impl Renderer {
         }
     }
 
+    /// The device-space area a shading painted on `path` covers: the path's bounding box, with
+    /// the stroke width around it for a stroke, on the canvas.
+    fn shading_bbox(&self, path: &BezPath, is_stroke: bool) -> Rect {
+        let path_transform = self.ctx.transform();
+        let mut bbox = (*path_transform * path.clone()).bounding_box();
+        if is_stroke {
+            // Try to account for stroke in bbox.
+            let (a1, a2) = x_y_advances(path_transform);
+            let factor = a1.length().max(a2.length()) * self.ctx.stroke().width;
+            bbox = bbox.inflate(factor, factor);
+        }
+        bbox.intersect(Rect::new(
+            0.0,
+            0.0,
+            self.ctx.width() as f64,
+            self.ctx.height() as f64,
+        ))
+    }
+
     #[must_use]
     fn set_paint(&mut self, paint: &Paint<'_>, path: &BezPath, is_stroke: bool) -> PaintSetup {
         // PdfCraft patch (22): in a knockout erase pass every paint clears what is under its
@@ -1833,16 +1852,25 @@ impl Renderer {
         let other_pass =
             !self.erasing && element_mode.is_some_and(|mode| self.knockout_pass_skips(mode));
         if self.erasing || other_pass {
-            self.ctx.set_blend_mode(knockout_blend_mode());
-            self.ctx.set_paint(AlphaColor::<Srgb>::new([0.0, 0.0, 0.0, 0.0]));
-            // A shading's `/BBox` clips what it paints, so it clips what it clears too.
-            return PaintSetup::Clip(match paint {
+            // A shading's `/BBox` clips what it paints, so it clips what it clears too, and a
+            // mesh that paints nothing (below) clears nothing.
+            let clip = match paint {
                 Paint::Pattern(p) => match p.as_ref() {
-                    Pattern::Shading(s) => s.shading.clip_path.clone(),
+                    Pattern::Shading(s) => {
+                        let bbox = self.shading_bbox(path, is_stroke);
+                        let encoded = s.encode_within(Some(bbox.inflate(1.0, 1.0)));
+                        if mesh_area(bbox, &encoded).is_none() {
+                            return PaintSetup::Nothing;
+                        }
+                        s.shading.clip_path.clone()
+                    }
                     _ => None,
                 },
                 _ => None,
-            });
+            };
+            self.ctx.set_blend_mode(knockout_blend_mode());
+            self.ctx.set_paint(AlphaColor::<Srgb>::new([0.0, 0.0, 0.0, 0.0]));
+            return PaintSetup::Clip(clip);
         }
         let mut paint_transform = Affine::IDENTITY;
         let mut clip_path = None;
@@ -1877,45 +1905,24 @@ impl Renderer {
                 match *p {
                     Pattern::Shading(s) => {
                         clip_path = s.shading.clip_path.clone();
-                        let mut bbox = (*path_transform * path.clone()).bounding_box();
-
-                        if is_stroke {
-                            // Try to account for stroke in bbox.
-                            let (a1, a2) = x_y_advances(path_transform);
-                            let factor = a1.length().max(a2.length()) * self.ctx.stroke().width;
-                            bbox = bbox.inflate(factor, factor);
-                        }
-
-                        bbox = bbox.intersect(Rect::new(
-                            0.0,
-                            0.0,
-                            self.ctx.width() as f64,
-                            self.ctx.height() as f64,
-                        ));
+                        let mut bbox = self.shading_bbox(path, is_stroke);
 
                         // PdfCraft patch: mesh shadings are sampled only inside `bbox` (and a
                         // pixel around it: texels at a fractional edge look one pixel further).
                         let encoded = s.encode_within(Some(bbox.inflate(1.0, 1.0)));
 
-                        // PdfCraft patch (#3296): a mesh paints only where its triangles are.
-                        // The texture covers the triangles alone (and a pixel around them,
-                        // which stays transparent and is what `Extend::Pad` repeats), not the
-                        // whole path (the canvas, for `sh`): sampled pixel by pixel, 310
-                        // one-triangle meshes on a plan cost 310 full tiles per tile, and the
-                        // watchdog gave the page up. A mesh with no triangle on the canvas
-                        // paints nothing at all.
-                        if let Some(extent) = encoded.extent {
-                            // An empty extent (no triangle in the area) is `Rect::ZERO`, which
-                            // sits at the canvas origin: test it before intersecting, or a
-                            // 1 × 1 transparent texture would still be painted over the whole
-                            // path (310 of them cost 230 ms per tile).
-                            if extent.width() <= 0.0 || extent.height() <= 0.0 {
+                        // PdfCraft patch (19): a mesh paints only where its triangles are. The
+                        // texture below used to cover the whole path (the canvas, for `sh`)
+                        // and was sampled pixel by pixel: 310 one-triangle meshes on a plan
+                        // cost 310 full tiles per tile, and the watchdog gave the page up. It
+                        // now covers the triangles alone (a pixel around them, which stays
+                        // transparent and is what `Extend::Pad` repeats), and a mesh with no
+                        // triangle on the canvas paints nothing at all.
+                        if encoded.extent.is_some() {
+                            let Some(area) = mesh_area(bbox, &encoded) else {
                                 return PaintSetup::Nothing;
-                            }
-                            bbox = bbox.intersect(extent.inflate(1.0, 1.0));
-                            if bbox.width() <= 0.0 || bbox.height() <= 0.0 {
-                                return PaintSetup::Nothing;
-                            }
+                            };
+                            bbox = area;
                             extend = peniko::Extend::Pad;
                         }
 
@@ -2514,12 +2521,14 @@ impl<'a> Device<'a> for Renderer {
             self.erase_groups += 1;
             return;
         }
-        // PdfCraft patch (26): an image or group of another pass than the current one composites
-        // nothing; what it covers was cleared before it (`knockout_image`, the erase pass).
-        let opacity = if self.knockout_pass_skips(blend_mode) {
-            0.0
+        // PdfCraft patch (26): an image or group of another pass than the current one clears
+        // what is under its shape instead of painting: its layer, drawn at full opacity with no
+        // soft mask, composites with `Compose::DestOut`. That clears the coverage of a masked
+        // image's or a stencil's mask too, which `knockout_image` leaves alone.
+        let (opacity, mask, layer_blend) = if self.knockout_pass_skips(blend_mode) {
+            (1.0, None, peniko::BlendMode::new(Mix::Normal, Compose::DestOut))
         } else {
-            opacity
+            (opacity, mask, convert_blend_mode(blend_mode))
         };
         let settings = *self.ctx.render_settings();
         let force_images_may_have_transparency = mask.is_some()
@@ -2531,7 +2540,7 @@ impl<'a> Device<'a> for Renderer {
                 .unwrap_or(false);
         self.ctx.push_layer(
             None,
-            Some(convert_blend_mode(blend_mode)),
+            Some(layer_blend),
             Some(opacity),
             // TODO: Deduplicate
             mask.map(|m| {
@@ -3023,6 +3032,22 @@ struct KnockoutPass {
 /// PdfCraft patch (22): how an element of a knockout group is drawn (see `set_knockout`).
 fn knockout_blend_mode() -> peniko::BlendMode {
     peniko::BlendMode::new(Mix::Normal, Compose::Copy)
+}
+
+/// PdfCraft patch (19): the part of `bbox` a shading encoded within it paints. A mesh paints
+/// only around its triangles, and nothing (`None`) when none is in `bbox`; its empty extent is
+/// `Rect::ZERO`, at the canvas origin, so it is tested before intersecting, or a 1 × 1
+/// transparent texture would still be painted over the whole path (310 of them cost 230 ms per
+/// tile). Any other shading paints all of `bbox`.
+fn mesh_area(bbox: Rect, encoded: &EncodedShadingPattern) -> Option<Rect> {
+    let Some(extent) = encoded.extent else {
+        return Some(bbox);
+    };
+    if extent.width() <= 0.0 || extent.height() <= 0.0 {
+        return None;
+    }
+    let area = bbox.intersect(extent.inflate(1.0, 1.0));
+    (area.width() > 0.0 && area.height() > 0.0).then_some(area)
 }
 
 fn convert_blend_mode(blend_mode: BlendMode) -> peniko::BlendMode {

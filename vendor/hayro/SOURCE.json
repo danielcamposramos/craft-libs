@@ -68,7 +68,7 @@
       "path": "src/renderer.rs",
       "source_sha256": "f7ff7bd088ceb43823ede33151138384af331cf71403f7d23f7b2937212efc3b",
       "source_git_blob": "6aa53716ad2d0203a8058b2f7271515b4fc1db22",
-      "sha256": "784656e0e05de2cc1865a47b34b0579e208943f81dd573f3283d612e0d0aa0cc"
+      "sha256": "271ad44b083ed5e4a24e35de367fcb1f4f30e5628ce886a10f97b7a678c7b328"
     }
   ],
   "carried_patches": [
@@ -182,6 +182,13 @@
       "authored": "2026-10-26T20:09:27-04:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/ad33ab626e7381792e1040a6df920c9b29ae1e5d",
       "scope": "Composite non-isolated knockout elements with the page backdrop; six original receiving controls pass. Preserve bounded nested renderer construction, CMYK groups, plate/ink behavior and active-form guards. Later masked-image and mesh reviews follow separately."
+    },
+    {
+      "commit": "5abf32ed2f067e02f0889f439d2bd58dee64a02d",
+      "author": "KenM76",
+      "authored": "2026-10-27T12:03:33-04:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/5abf32ed2f067e02f0889f439d2bd58dee64a02d",
+      "scope": "Clear masked-image and stencil coverage in other blend-mode passes, and clear nothing for an empty mesh; nine selected receiving controls pass; small-mesh shape review follows separately."
     }
   ]
 }
