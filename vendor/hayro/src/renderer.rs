@@ -1852,26 +1852,54 @@ impl Renderer {
         let other_pass =
             !self.erasing && element_mode.is_some_and(|mode| self.knockout_pass_skips(mode));
         if self.erasing || other_pass {
-            // A shading's `/BBox` clips what it paints, so it clips what it clears too, and a
-            // mesh that paints nothing (below) clears nothing.
-            let clip = match paint {
-                Paint::Pattern(p) => match p.as_ref() {
-                    Pattern::Shading(s) => {
-                        let bbox = self.shading_bbox(path, is_stroke);
-                        let encoded = s.encode_within(Some(bbox.inflate(1.0, 1.0)));
-                        if mesh_area(bbox, &encoded).is_none() {
-                            return PaintSetup::Nothing;
-                        }
-                        s.shading.clip_path.clone()
-                    }
-                    _ => None,
-                },
-                _ => None,
-            };
+            if is_shading(paint) {
+                self.knockout_shading(paint, path, is_stroke, false);
+                return PaintSetup::Nothing;
+            }
             self.ctx.set_blend_mode(knockout_blend_mode());
             self.ctx.set_paint(AlphaColor::<Srgb>::new([0.0, 0.0, 0.0, 0.0]));
-            return PaintSetup::Clip(clip);
+            return PaintSetup::Clip(None);
         }
+        if self.in_knockout() && is_shading(paint) {
+            self.knockout_shading(paint, path, is_stroke, true);
+            return PaintSetup::Nothing;
+        }
+        self.paint_setup(paint, path, is_stroke)
+    }
+
+    /// PdfCraft patch (26): a shading in a knockout group replaces what is under it where it
+    /// paints, which a mesh's triangles or the shading's `/BBox` may make less than the path,
+    /// so it can't be copied over the path like other paints. The shading at full opacity,
+    /// composited with `Compose::DestOut`, clears its shape; then, when `paint_it`, the shading
+    /// is painted over the cleared area. A shading that paints nothing clears nothing. The
+    /// caller paints nothing more.
+    fn knockout_shading(&mut self, paint: &Paint<'_>, path: &BezPath, is_stroke: bool, paint_it: bool) {
+        let PaintSetup::Clip(clip) = self.paint_setup(&shape_of(paint), path, is_stroke) else { return };
+        if let Some(clip) = clip.as_ref() {
+            self.push_clip_path_inner(clip, FillRule::NonZero);
+        }
+        self.ctx.set_blend_mode(peniko::BlendMode::new(Mix::Normal, Compose::DestOut));
+        self.draw_shape(path, is_stroke);
+        if paint_it && let PaintSetup::Clip(_) = self.paint_setup(paint, path, is_stroke) {
+            self.ctx.set_blend_mode(peniko::BlendMode::new(Mix::Normal, Compose::SrcOver));
+            self.draw_shape(path, is_stroke);
+        }
+        if clip.is_some() {
+            self.ctx.pop_clip_path();
+        }
+        self.ctx.set_blend_mode(knockout_blend_mode());
+    }
+
+    fn draw_shape(&mut self, path: &BezPath, is_stroke: bool) {
+        if is_stroke {
+            self.ctx.stroke_path(path);
+        } else {
+            self.ctx.fill_path(path);
+        }
+    }
+
+    /// The paint `paint` draws on `path` with, set on the context (see [`PaintSetup`]).
+    fn paint_setup(&mut self, paint: &Paint<'_>, path: &BezPath, is_stroke: bool) -> PaintSetup {
         let mut paint_transform = Affine::IDENTITY;
         let mut clip_path = None;
         // PdfCraft patch (#3296): `Extend::Repeat` tiles the texture over the path; a mesh
@@ -3027,6 +3055,26 @@ struct KnockoutPass {
     element_mode: BlendMode,
     /// The other blend modes this pass's elements used, each once (at most one per mode).
     other_modes: Vec<BlendMode>,
+}
+
+/// PdfCraft patch (26): `paint` at full opacity, for the shape it covers.
+fn shape_of<'a>(paint: &Paint<'a>) -> Paint<'a> {
+    match paint {
+        Paint::Pattern(p) => match p.as_ref() {
+            Pattern::Shading(s) => {
+                let mut s = s.clone();
+                s.opacity = 1.0;
+                Paint::Pattern(Box::new(Pattern::Shading(s)))
+            }
+            Pattern::Tiling(_) => paint.clone(),
+        },
+        Paint::Color(_) => paint.clone(),
+    }
+}
+
+/// PdfCraft patch (26): whether `paint` is a shading.
+fn is_shading(paint: &Paint<'_>) -> bool {
+    matches!(paint, Paint::Pattern(p) if matches!(p.as_ref(), Pattern::Shading(_)))
 }
 
 /// PdfCraft patch (22): how an element of a knockout group is drawn (see `set_knockout`).

@@ -68,7 +68,7 @@
       "path": "src/renderer.rs",
       "source_sha256": "f7ff7bd088ceb43823ede33151138384af331cf71403f7d23f7b2937212efc3b",
       "source_git_blob": "6aa53716ad2d0203a8058b2f7271515b4fc1db22",
-      "sha256": "271ad44b083ed5e4a24e35de367fcb1f4f30e5628ce886a10f97b7a678c7b328"
+      "sha256": "2e0f93130bc65bde627569a2f64898ad40d51af5fababa2d9dac8861cbbb2223"
     }
   ],
   "carried_patches": [
@@ -189,6 +189,13 @@
       "authored": "2026-10-27T12:03:33-04:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/5abf32ed2f067e02f0889f439d2bd58dee64a02d",
       "scope": "Clear masked-image and stencil coverage in other blend-mode passes, and clear nothing for an empty mesh; nine selected receiving controls pass; small-mesh shape review follows separately."
+    },
+    {
+      "commit": "6a76d280168ebad42198de184d03ac11bf31f647",
+      "author": "KenM76",
+      "authored": "2026-10-27T13:22:02-04:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/6a76d280168ebad42198de184d03ac11bf31f647",
+      "scope": "Knockout shadings replace only their actual coverage at full shape opacity; all ten receiving knockout backdrop controls pass."
     }
   ]
 }
