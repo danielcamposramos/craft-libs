@@ -212,7 +212,7 @@
       "path": "src/font/blob.rs",
       "source_sha256": "30a9dadf498829ee03eb1ddc6deaeb09a06ee42415f288d46f4a67640582c575",
       "source_git_blob": "6eabc26b9bc30bdc51f0b5fdd5e4b556d7583ec5",
-      "sha256": "2e5fddba8bc36fee697230c804617ecef758b269da647d3f125ba1da3bdeb8c6"
+      "sha256": "0dcb50aa7d5d64e5397ee8d181467836778053455da3cfa2a6eb4d8c9423859d"
     },
     {
       "path": "src/font/cid.rs",
@@ -314,7 +314,7 @@
       "path": "src/font/type1.rs",
       "source_sha256": "431b1fe86ca51bd993e81084a64c3e8ed8b90a67385a30eb4ffedfdd98c6f96b",
       "source_git_blob": "02f76bfb8095041e3d54df014190047de46be4c5",
-      "sha256": "5a55e467fd47ddac87252c6f87d7fae484a9393fe07586e4c46467d9d0528687"
+      "sha256": "9d1de3b40399f98581a8db482098768c8fca4294b326d42655aa2393d127dc77"
     },
     {
       "path": "src/font/type3.rs",
@@ -1022,6 +1022,13 @@
       "authored": "2026-10-24T12:30:50+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/4287340c04a15ebb4b955d3fdc01d501af9db168",
       "scope": "Preserve substitute glyph shapes at wider declared advances; selected receiving width controls pass."
+    },
+    {
+      "commit": "aad8a3841cba715c0cbc258010a2de4faf3c8c90",
+      "author": "KenM76",
+      "authored": "2026-10-28T11:37:10-04:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/aad8a3841cba715c0cbc258010a2de4faf3c8c90",
+      "scope": "Read embedded OpenType CFF simple fonts, retaining missing-table fallback and shared decoded-stream limits; receiving controls pass."
     }
   ]
 }
