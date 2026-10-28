@@ -68,7 +68,7 @@
       "path": "src/content/mod.rs",
       "source_sha256": "b0f36badb2688c90691c27a4e5dcdfec7639858081553242744dd7bc39ffc0d0",
       "source_git_blob": "8e47324d0b0bd90ed15efe5ff1e9de0cb46e75d9",
-      "sha256": "b35e3255bdf520f5c5cb1901d65f30eeba7bfee3efa4c5777d91ad72069a3b52"
+      "sha256": "40c30dc461c5760ed0e1aea6a32e8f641b42aafeb1b77c148f77c4dffda95748"
     },
     {
       "path": "src/content/ops.rs",
@@ -537,6 +537,13 @@
       "authored": "2026-11-05T23:23:29+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/8e2888aad1f17a6c621799811ab9de2849a814d2",
       "scope": "Retain the original EFOpen review restrictions: only an empty password may use the keyless viewer, honor each encrypting filter AuthEvent, and leave ordinary strings and streams clear only when their filters allow it. Shared limits remain unchanged."
+    },
+    {
+      "commit": "30ed249a280686903a0c7b541578de1f228cba5d",
+      "author": "Hamza",
+      "authored": "2026-10-28T19:32:00+05:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/30ed249a280686903a0c7b541578de1f228cba5d",
+      "scope": "Original malformed content-token recovery and strict EI judging pass, existing shared bounds retained"
     }
   ]
 }
