@@ -1998,7 +1998,8 @@ impl<'a> Device<'a> for Renderer {
     /// result goes into the layer the interpreter pushed for the group, which composites it
     /// with the group's opacity, soft mask and blend mode as before. Declined (and so drawn as
     /// before) under reading colours, inside a pass (a nested group then blends in the pass's
-    /// own CMYK), and for contents a pass has no tints for.
+    /// own CMYK), while erasing for a knockout group (the contents must clear, not paint), and
+    /// for contents a pass has no tints for.
     /// PdfCraft patch (21): a nested group blending in another space can't be drawn in a pass.
     fn group_blends_outside_device_cmyk(&mut self) {
         if self.ink.pass.is_some() {
@@ -2007,7 +2008,7 @@ impl<'a> Device<'a> for Renderer {
     }
 
     fn draw_isolated_cmyk_group(&mut self, group: &hayro_interpret::CmykGroup<'a, '_>) -> bool {
-        if self.color_replacement.is_some() || self.ink.pass.is_some() {
+        if self.color_replacement.is_some() || self.ink.pass.is_some() || self.erasing {
             return false;
         }
         let canvas = Rect::new(0.0, 0.0, f64::from(self.ctx.width()), f64::from(self.ctx.height()));
