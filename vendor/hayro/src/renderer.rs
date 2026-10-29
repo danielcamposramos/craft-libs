@@ -2050,6 +2050,8 @@ impl<'a> Device<'a> for Renderer {
         // must not apply to the finished pixels a second time.
         self.set_soft_mask(None);
         self.set_blend_mode(BlendMode::Normal);
+        // A pattern painted earlier leaves its paint transform on the context.
+        self.ctx.set_paint_transform(Affine::IDENTITY);
         self.draw_pixmap(Arc::new(result), ImageQuality::Low, Affine::translate((x0, y0)));
         true
     }
