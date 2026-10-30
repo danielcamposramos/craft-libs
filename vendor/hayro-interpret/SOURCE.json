@@ -368,7 +368,7 @@
       "path": "src/interpret/path.rs",
       "source_sha256": "a5defbc4b883b262662f7e7474a00ec1f97dbef8c03b8669859f624f5d02344b",
       "source_git_blob": "838ea099f11d918d6e333e32503368be864689f8",
-      "sha256": "0e4d2dc0a2d5a2c5cdc0d1d9358fcf3b0854e8d24d002ce1830a1b4def786bc8"
+      "sha256": "e576a12809078f4b3cec4ec1b133868d2c354460e31f9144422c75652c5875a3"
     },
     {
       "path": "src/interpret/state.rs",
@@ -742,6 +742,27 @@
       "authored": "2026-11-07T17:09:18+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/8da439e3203a8a510bb6d9b24ff32b4ecd4a4e16",
       "scope": "Preserve the receiving renderer fallback from a missing font Subtype to its declared BaseFont. Keep descriptor, decoding, font-resource and work bounds."
+    },
+    {
+      "commit": "7bcd89c816f536c6aca4c409e2f9dacd5ea3f63c",
+      "author": "mtlcl410",
+      "authored": "2026-10-24T19:18:02+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/7bcd89c816f536c6aca4c409e2f9dacd5ea3f63c",
+      "scope": "Original zero-area fill and clip behavior; common independent limits retained"
+    },
+    {
+      "commit": "68cad98ab4f952313b0fff73e719c64cbb10dcab",
+      "author": "mtlcl410",
+      "authored": "2026-10-24T19:48:07+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/68cad98ab4f952313b0fff73e719c64cbb10dcab",
+      "scope": "Original zero-area review; retain finite allocation and shared path guards"
+    },
+    {
+      "commit": "325b11a2399eae4c6c6b2e271ac3e53f880e6d3f",
+      "author": "mtlcl410",
+      "authored": "2026-10-30T22:28:46+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/325b11a2399eae4c6c6b2e271ac3e53f880e6d3f",
+      "scope": "Original zero-area review, shared owner scope"
     }
   ]
 }
