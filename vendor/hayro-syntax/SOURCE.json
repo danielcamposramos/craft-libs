@@ -170,7 +170,7 @@
       "path": "src/filter/lzw_flate.rs",
       "source_sha256": "db51a57effe90ad9db2d314e16081ce90e3ef99e5a5f46fcc4bdbdacfd13a528",
       "source_git_blob": "f1ab1aae73e4c84ec0993a6eb96594018ca7cc91",
-      "sha256": "460055f809889a36cd91ce391290410b7520cb7e36c613e0e08a7a8f3540dfb7"
+      "sha256": "f4abc50c98351641f31f44bc4db7be6b6de19df8e304d61a7f00520ba7823395"
     },
     {
       "path": "src/filter/mod.rs",
@@ -572,6 +572,13 @@
       "authored": "2026-11-08T00:28:45+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/1bb42aaacf9970a15da3a4f19ccd3fbb51c3475c",
       "scope": "Original page-box review, retaining shared Letter default"
+    },
+    {
+      "commit": "f84290b294a6f40b11b90c683c4226f3d73aa346",
+      "author": "KenM76",
+      "authored": "2026-10-30T08:23:56-04:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/f84290b294a6f40b11b90c683c4226f3d73aa346",
+      "scope": "PNG byte-row reconstruction preserves partial final pixels; adapt new loops to existing per-open cancellation checks without relaxing predictor/decode bounds."
     }
   ]
 }
