@@ -68,7 +68,7 @@
       "path": "src/renderer.rs",
       "source_sha256": "f7ff7bd088ceb43823ede33151138384af331cf71403f7d23f7b2937212efc3b",
       "source_git_blob": "6aa53716ad2d0203a8058b2f7271515b4fc1db22",
-      "sha256": "ca3f572203352d7057df3ad5a28b1dd1b89874ae277a8983b101aa1c316c3d19"
+      "sha256": "69d107b6178cf2dced03d72645b0bdd34c378b7aec8e6860272feb3730fa9d6b"
     }
   ],
   "carried_patches": [
@@ -154,6 +154,27 @@
       "authored": "2026-11-02T04:07:29+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/b36bdaeac6f53f26ce03187e91e6230c71eaece2",
       "scope": "Carry whole-pixel placement of minified mirrored and quarter-turned PDF images. Keep the common image, coverage, cancellation and plate/ink limits; no media eye grid is resized by this PDF raster rule."
+    },
+    {
+      "commit": "ff227b770ca6e436ee0853a2585739a8be9eb1e9",
+      "author": "kronbii",
+      "authored": "2026-10-29T13:15:30+02:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/ff227b770ca6e436ee0853a2585739a8be9eb1e9",
+      "scope": "Carry area averaging for minified scans and the receiving backend smoothing rule for enlarged scans. Preserve shared image, coverage, allocation, cancellation and plate/ink controls; source media eye grids are unchanged."
+    },
+    {
+      "commit": "5ed2f4ba4f34d5eff689727d468186bc18b53350",
+      "author": "kronbii",
+      "authored": "2026-10-30T01:50:48+02:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/5ed2f4ba4f34d5eff689727d468186bc18b53350",
+      "scope": "Keep an explicitly interpolated soft mask smooth on the minified image grid, with the original bilinear samples and edge clamping; retain shared input and intermediate bounds."
+    },
+    {
+      "commit": "c5065554a1946e4ca8895048d70095f68a4ecec5",
+      "author": "kronbii",
+      "authored": "2026-10-30T05:07:44+02:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/c5065554a1946e4ca8895048d70095f68a4ecec5",
+      "scope": "Carry the original sampling review after its mask-interpolation prerequisite: bounded row intermediates and sharp near-1:1 scans. Shared decoder, image, coverage, cancellation and ink bounds stay intact."
     }
   ]
 }
