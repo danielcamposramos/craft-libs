@@ -182,7 +182,7 @@
       "path": "src/color.rs",
       "source_sha256": "799ce29bb5e59c8fc94db202873e48c2047dd35962e6f26efd215156c47158c1",
       "source_git_blob": "56bb04f24c04ba33ab6bf99c02a24735670959ad",
-      "sha256": "fa7006ea829c72c012ef2ec4ca00783f99e2734d887d4e783671ceac13163116"
+      "sha256": "6b6dd3501f6cf2e4cf0741a6d22d83e322b0187236712df0f8e9c036dd12cbda"
     },
     {
       "path": "src/context.rs",
@@ -700,6 +700,13 @@
       "authored": "2026-11-12T11:57:26-05:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/72c607fc47a60fb44828be5db0f931a9800a1549",
       "scope": "Carry the receiving renderer profile inverse and finite RGB checks. Match the original no-tint control to RGB images; ICCBased CMYK keeps its own profile. Shared plate controls remain green. The distinct earlier paint-transform prerequisite follows separately."
+    },
+    {
+      "commit": "4c815786c699f3ce745d2dc0a5cb0681fe0d2d76",
+      "author": "Grzegorz Martens",
+      "authored": "2026-10-31T19:53:17+01:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/4c815786c699f3ce745d2dc0a5cb0681fe0d2d76",
+      "scope": "Keep only the depth-independent ICC profile result in the cache; evaluate alternate fallback at the current nesting depth. Preserve the shared depth limit8, cancellation, decode and work limits, and plate/ink paths."
     }
   ]
 }
