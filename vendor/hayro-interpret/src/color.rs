@@ -268,7 +268,8 @@ impl ColorSpaceType {
                     return Some(Self::DeviceN(DeviceN::new(&color_array, cache, depth)?));
                 }
                 PATTERN => {
-                    let _ = iter.next::<Name<'_>>();
+                    // PdfCraft patch (72): the family is already read. Reading a name here too took
+                    // the underlying space when it was a name or a reference.
                     let cs = iter
                         .next::<Object<'_>>()
                         .and_then(|o| ColorSpace::new_nested(o, cache, depth + 1))

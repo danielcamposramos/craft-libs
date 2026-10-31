@@ -212,7 +212,7 @@
       "path": "src/object/array.rs",
       "source_sha256": "6fbddf05724848db2389068a0504cff6b0783e35baa58e64bf2a31d48a1042ea",
       "source_git_blob": "d39230f7dbf114dd202a16b21f7a6bb70be5ead3",
-      "sha256": "8d5704b638f5198ec74604a3fd88a32dee553b6dc2a7010e746ef5e459759ed6"
+      "sha256": "ba771b1ccebc6faf4fd762af717dfbd3ed2c365dfc44c51757089933654f1fd6"
     },
     {
       "path": "src/object/bool.rs",
@@ -242,7 +242,7 @@
       "path": "src/object/mod.rs",
       "source_sha256": "6188f89366cdb1bcfc0742c778dd5997447ad79015b9994fcaa9437cb006e615",
       "source_git_blob": "d692db8b385600474db3dbda9ee7c0da01713c04",
-      "sha256": "6188f89366cdb1bcfc0742c778dd5997447ad79015b9994fcaa9437cb006e615"
+      "sha256": "667a77bdc9bd0b36ea52f5f4361cf1d352bde1f7babb08be8430b18eea725642"
     },
     {
       "path": "src/object/name.rs",
@@ -290,7 +290,7 @@
       "path": "src/object/tuple.rs",
       "source_sha256": "eeaf3f14a962fc98a109d1a74d7e70e069816d909e5e55766361658ef7b26aea",
       "source_git_blob": "4a7190e91653c9fb47539dfec0edd631a99a3618",
-      "sha256": "eeaf3f14a962fc98a109d1a74d7e70e069816d909e5e55766361658ef7b26aea"
+      "sha256": "6d75aa5cf53456a6666006ecf14b1726f3b7d713ea03efbfebb151fdc7a549a8"
     },
     {
       "path": "src/page.rs",
@@ -502,6 +502,13 @@
       "authored": "2026-11-07T17:17:26+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/cdb94e66117fc1d49a16c3ed729f652816504723",
       "scope": "Keep the current receiving application default for missing and degenerate MediaBox; original Letter control through shared render, page budget and strict Clippy green. A zero-area declared clip stays empty; the original blue-pixel check applies only to a missing box."
+    },
+    {
+      "commit": "fa7acd315690311b6cae752298a94822c9e2490d",
+      "author": "Grzegorz Martens",
+      "authored": "2026-10-31T08:58:25+01:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/fa7acd315690311b6cae752298a94822c9e2490d",
+      "scope": "Keep references in Pattern underlying spaces and grouped array items through the original flexible iterator implementation. Retain the shared depth8, typed-reader work limits and cancellation."
     }
   ]
 }
