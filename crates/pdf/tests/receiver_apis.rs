@@ -64,3 +64,17 @@ fn a_type3_without_widths_advances_by_its_procedure_and_reports_the_malformed_fo
     assert!(warnings.iter().any(|w| w == "Type3WidthsMissing"));
     assert!(!image.diagnostics.is_empty());
 }
+
+#[test]
+fn a_short_cmyk_indexed_table_draws_missing_entries_black_and_reports_it() {
+    let (image, warnings) = render(
+        "/XObject << /Im 5 0 R >>",
+        "q 20 0 0 20 0 0 cm /Im Do Q 0 1 0 rg 30 0 10 20 re f",
+        "5 0 obj << /Type /XObject /Subtype /Image /Width 2 /Height 1 /ColorSpace [/Indexed /DeviceCMYK 7 <00000000>] /BitsPerComponent 8 /Filter /ASCIIHexDecode /Length 5 >> stream\n0001>\nendstream endobj",
+    );
+    assert_eq!(pixel(&image, 5, 5), [255; 4], "present zero-ink entry remains white");
+    assert_eq!(pixel(&image, 15, 5), [0, 0, 0, 255], "missing entry is black after base conversion");
+    assert_eq!(pixel(&image, 35, 5), [0, 255, 0, 255]);
+    assert!(warnings.iter().any(|w| w == "MalformedIndexedImage"));
+    assert!(!image.diagnostics.is_empty());
+}

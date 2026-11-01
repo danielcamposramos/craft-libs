@@ -182,13 +182,13 @@
       "path": "src/color.rs",
       "source_sha256": "799ce29bb5e59c8fc94db202873e48c2047dd35962e6f26efd215156c47158c1",
       "source_git_blob": "56bb04f24c04ba33ab6bf99c02a24735670959ad",
-      "sha256": "6797439ed6114b8a391fe8019504fb9035f853c8151e815df89a7a2f23610c97"
+      "sha256": "6c3e8e1ddcb6eff33e72919030200dfa6c140480831288fd403e6a49e59a43e6"
     },
     {
       "path": "src/context.rs",
       "source_sha256": "dc2be553958ee3f5e5e644a77a0301723bae9ca027a352c13b9caaf549cc0e56",
       "source_git_blob": "d6772baa15ebb95d3ba2d1f54ce5c250ad1e8137",
-      "sha256": "b40d3112884607c901f6a925272f7fdcf8d198a67ff8ca6c1b6265a952a2bc87"
+      "sha256": "e5f6de39387f337a9f5e73482212308b64d12bd97a3bc8aa7bc93173785525fa"
     },
     {
       "path": "src/convert.rs",
@@ -362,7 +362,7 @@
       "path": "src/interpret/mod.rs",
       "source_sha256": "2b002323055bc19aa497e92c81ad8e06dc60ee03686cad89366df4ac7c7a06b2",
       "source_git_blob": "fe08fc284ba7c914d1414b68a5a346674a6f910f",
-      "sha256": "e83e8d61372394e476cd72ec61d5b03e6d4a95e6fdb19b9e01f967f76acbd04b"
+      "sha256": "4cf02a773ad3d2c4caa61a5e8c05ad7b736ef62fa3977f6e1e9840cb74e65f5d"
     },
     {
       "path": "src/interpret/path.rs",
@@ -434,7 +434,7 @@
       "path": "src/x_object.rs",
       "source_sha256": "e1c51e96a335c32c122011b2d05c5020c36a33c2c73342ba173c28a3e2fe0219",
       "source_git_blob": "21b134ce8cd9604399cd0776febf923d69c02673",
-      "sha256": "20f20d298512d93194f49c008d958fde29d73fd826e9bb6ef576f848946db1c4"
+      "sha256": "bee7d428d686115686cf8cea79b2052112e25bd7e7ea234762b37f7e7c010464"
     },
     {
       "path": "src/cmyk_group.rs",
@@ -588,6 +588,13 @@
       "authored": "2026-11-02T02:02:45+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/3275f853c3a941872d3d3738aa5dc15be4139654",
       "scope": "Port Indexed recovery and resource lookup caching while retaining the shared 32-level color-space recursion bound and controlled stream decoding. A real short-table color control fails before and passes after; both original cache-count controls and strict Clippy pass. The following upstream c709dd99 refines missing-entry/base-space behavior."
+    },
+    {
+      "commit": "c709dd99eca0f4e3ce49bf6c7c3f74233c2eb808",
+      "author": "mtlcl410",
+      "authored": "2026-11-02T07:32:46+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/c709dd99eca0f4e3ce49bf6c7c3f74233c2eb808",
+      "scope": "Retain present Indexed entries and make missing entries black after conversion; omit tableless images with a diagnostic. Preserve the common 32-level nesting and decode limits. The small CMYK missing-entry runtime control fails white before and passes black after, alongside cache/plate/scope controls and strict Clippy. Catalog wording is qualified separately."
     }
   ]
 }
