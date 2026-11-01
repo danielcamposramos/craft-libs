@@ -39,13 +39,13 @@ fn an_unreadable_tint_uses_the_alternate_initial_colour_and_reports_it() {
 }
 
 #[test]
-fn a_short_indexed_lookup_is_omitted_with_a_diagnostic_and_later_art_still_draws() {
+fn a_short_indexed_lookup_keeps_present_colours_with_a_diagnostic_and_later_art_still_draws() {
     let (image, warnings) = render(
         "/XObject << /Im 5 0 R >>",
         "q 20 0 0 20 0 0 cm /Im Do Q 0 1 0 rg 30 0 10 20 re f",
         "5 0 obj << /Type /XObject /Subtype /Image /Width 2 /Height 1 /ColorSpace [/Indexed /DeviceRGB 7 <FF000000FF00>] /BitsPerComponent 8 /Filter /ASCIIHexDecode /Length 5 >> stream\n0001>\nendstream endobj",
     );
-    assert_eq!(pixel(&image, 5, 5), [255; 4]);
+    assert_eq!(pixel(&image, 5, 5), [255, 0, 0, 255]);
     assert_eq!(pixel(&image, 35, 5), [0, 255, 0, 255]);
     assert!(warnings.iter().any(|w| w == "MalformedIndexedImage"));
     assert!(!image.diagnostics.is_empty());
