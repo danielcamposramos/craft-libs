@@ -128,7 +128,7 @@
       "path": "src/data.rs",
       "source_sha256": "c8dc5a157358e024d73e405333ecac01e94ba6880488d5a10b952bd3fc47fd41",
       "source_git_blob": "9d5e2030f8d6dab7167cd2c5d8da36a7e5688c34",
-      "sha256": "83c4417cfe9b301ef0fce8dc2f6a7f694d025e1fd82a68db6acded31155d3bee"
+      "sha256": "7992971e2f63a6530fe79e61c7d7c974965f56ba9f03da5adf9e6bd7cb56f4a7"
     },
     {
       "path": "src/filter/ascii_85.rs",
@@ -272,7 +272,7 @@
       "path": "src/object/ref.rs",
       "source_sha256": "b5ff0720a3946ef6e77922c8f56e4a0cacd7bbdb13280b9583740b5fd8a7c8fd",
       "source_git_blob": "71951f4d82b1e281c67bde79d1179766f4fd515f",
-      "sha256": "b5ff0720a3946ef6e77922c8f56e4a0cacd7bbdb13280b9583740b5fd8a7c8fd"
+      "sha256": "eebd7565edbfdb5c78fd5039120d2dd890b49cd8ce9c3be00d69f0436d8282c4"
     },
     {
       "path": "src/object/stream.rs",
@@ -338,7 +338,7 @@
       "path": "src/xref.rs",
       "source_sha256": "51ffeeb7d4ac035bae2cd5ba9288c180088ae06cdcefe2b29dfeda560a793aa0",
       "source_git_blob": "20e33a410489d42e438a3f2b87d70c7bb8d66eae",
-      "sha256": "f6b85e3a1ef71d9f46b4a6c0dd4e8676a8e415697eb93d7dd3b077879b194cfc"
+      "sha256": "ced93747423118331a56b61a9628c2abf91e1dc181b36156d428317274a38616"
     },
     {
       "path": "src/decode_limits_tests.rs",
@@ -509,6 +509,13 @@
       "authored": "2026-10-31T08:58:25+01:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/fa7acd315690311b6cae752298a94822c9e2490d",
       "scope": "Keep references in Pattern underlying spaces and grouped array items through the original flexible iterator implementation. Retain the shared depth8, typed-reader work limits and cancellation."
+    },
+    {
+      "commit": "4303d49eea68a2dc56db60d3bc6428316b1e23d2",
+      "author": "Grzegorz Martens",
+      "authored": "2026-11-01T12:15:57+01:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/4303d49eea68a2dc56db60d3bc6428316b1e23d2",
+      "scope": "Follow reference aliases through the original bounded32-hop loop. Preserve shared repaired-generation matching, memoized object-stream offsets, load gate, decode limits and cancellation. Parse index dictionaries without reading a stream Length again."
     }
   ]
 }

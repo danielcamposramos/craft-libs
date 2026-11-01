@@ -218,7 +218,7 @@
       "path": "src/font/cid.rs",
       "source_sha256": "c1dbe7fe5b7f7092d97b84063008df54aebf87db4ba1fdb3a179fab9fe6674b8",
       "source_git_blob": "b99dcbc116ca1169df3a229eafd05ee5b9204626",
-      "sha256": "43e80f913e262ca9f13e5aa228559d1a4ffb69dbe3aace07d194c0a9fcb83332"
+      "sha256": "0d876325e59c12cd03bd50ee517b32ce4bb3273e9a4cc74ba06c13737112488d"
     },
     {
       "path": "src/font/generated/glyph_names.rs",
@@ -721,6 +721,13 @@
       "authored": "2026-10-31T08:58:25+01:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/fa7acd315690311b6cae752298a94822c9e2490d",
       "scope": "Keep references in Pattern underlying spaces and grouped array items through the original flexible iterator implementation. Retain the shared depth8, typed-reader work limits and cancellation."
+    },
+    {
+      "commit": "4303d49eea68a2dc56db60d3bc6428316b1e23d2",
+      "author": "Grzegorz Martens",
+      "authored": "2026-11-01T12:15:57+01:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/4303d49eea68a2dc56db60d3bc6428316b1e23d2",
+      "scope": "Follow reference aliases through the original bounded32-hop loop. Preserve shared repaired-generation matching, memoized object-stream offsets, load gate, decode limits and cancellation. Parse index dictionaries without reading a stream Length again."
     }
   ]
 }
