@@ -68,7 +68,7 @@
       "path": "src/renderer.rs",
       "source_sha256": "f7ff7bd088ceb43823ede33151138384af331cf71403f7d23f7b2937212efc3b",
       "source_git_blob": "6aa53716ad2d0203a8058b2f7271515b4fc1db22",
-      "sha256": "d9eba55c9f0af48354155af4602f3a1cc483002c9317268d2a7e1238f43d2800"
+      "sha256": "ca3f572203352d7057df3ad5a28b1dd1b89874ae277a8983b101aa1c316c3d19"
     }
   ],
   "carried_patches": [
@@ -147,6 +147,13 @@
       "authored": "2026-10-28T20:40:16-04:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/367f7d5432a02fe83849cb68ccb83be5d663e4e3",
       "scope": "Keep the original pattern-state reset; actual pattern red now passes. All256black levels already passed on imported Vello and remain green, as do RGB, nested/knockout, plate controls and strict Clippy."
+    },
+    {
+      "commit": "b36bdaeac6f53f26ce03187e91e6230c71eaece2",
+      "author": "Michael Mu",
+      "authored": "2026-11-02T04:07:29+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/b36bdaeac6f53f26ce03187e91e6230c71eaece2",
+      "scope": "Carry whole-pixel placement of minified mirrored and quarter-turned PDF images. Keep the common image, coverage, cancellation and plate/ink limits; no media eye grid is resized by this PDF raster rule."
     }
   ]
 }
