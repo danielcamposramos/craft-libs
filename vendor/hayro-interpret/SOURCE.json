@@ -362,13 +362,13 @@
       "path": "src/interpret/mod.rs",
       "source_sha256": "2b002323055bc19aa497e92c81ad8e06dc60ee03686cad89366df4ac7c7a06b2",
       "source_git_blob": "fe08fc284ba7c914d1414b68a5a346674a6f910f",
-      "sha256": "c724f95dd23a2c5ce7aa499fffaa0f76d221e7d1a54a7883afabb7f0d017802c"
+      "sha256": "ebc90f593a6ad05bc303c0f636f3562fc8a331b8013b2cf9d894b344998df09f"
     },
     {
       "path": "src/interpret/path.rs",
       "source_sha256": "a5defbc4b883b262662f7e7474a00ec1f97dbef8c03b8669859f624f5d02344b",
       "source_git_blob": "838ea099f11d918d6e333e32503368be864689f8",
-      "sha256": "c082b404ae68b00784d00def7902dc9e7b6c24e973105ab857ae28c5f61fa5af"
+      "sha256": "c442f6ffe9d0bceaf5cff6e76a500a336def8568ef49e8b55aa4006cef2fc11c"
     },
     {
       "path": "src/interpret/state.rs",
@@ -1057,6 +1057,13 @@
       "authored": "2026-10-24T16:49:37+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/e5051ca139fc71e422587994e825b6f59bcf20ee",
       "scope": "Normalize stroke geometry and invalid widths/dashes, retaining the common bounded dash helper and overprint state; all eight selected receiving controls pass; segment-after-close review follows separately."
+    },
+    {
+      "commit": "ba16b9b5b875164eba1eabc16549039dcf75e87d",
+      "author": "mtlcl410",
+      "authored": "2026-11-02T08:00:22+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/ba16b9b5b875164eba1eabc16549039dcf75e87d",
+      "scope": "Start a new subpath after close; all eight stroke controls pass. Correction to preceding port message: its selection excluded this review and ran seven, not eight, controls."
     }
   ]
 }
