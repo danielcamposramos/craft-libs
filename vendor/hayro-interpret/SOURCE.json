@@ -218,7 +218,7 @@
       "path": "src/font/cid.rs",
       "source_sha256": "c1dbe7fe5b7f7092d97b84063008df54aebf87db4ba1fdb3a179fab9fe6674b8",
       "source_git_blob": "b99dcbc116ca1169df3a229eafd05ee5b9204626",
-      "sha256": "0d876325e59c12cd03bd50ee517b32ce4bb3273e9a4cc74ba06c13737112488d"
+      "sha256": "4d98ef8aa2ad5e8679e3ee5d09253b1754947a484b6b2667e15d85e3cef8fb90"
     },
     {
       "path": "src/font/generated/glyph_names.rs",
@@ -763,6 +763,13 @@
       "authored": "2026-10-30T22:28:46+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/325b11a2399eae4c6c6b2e271ac3e53f880e6d3f",
       "scope": "Original zero-area review, shared owner scope"
+    },
+    {
+      "commit": "1849b38c5a99de76e1cb344d322a7c15039571f5",
+      "author": "Hasan N.",
+      "authored": "2026-11-03T19:20:16+05:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/1849b38c5a99de76e1cb344d322a7c15039571f5",
+      "scope": "Original substitute soft-hyphen fallback in CID font; shared owner only"
     }
   ]
 }
