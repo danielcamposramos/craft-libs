@@ -132,7 +132,8 @@ impl Filter {
                 warn!("image decoding is not supported (enable the `images` feature)");
                 Err(DecodeFailure::ImageDecode)
             }
-            _ => Err(DecodeFailure::StreamDecode),
+            // PdfCraft patch (30): `Stream::raw_data` decrypted the data with the filter this names.
+            Self::Crypt => Ok(FilterResult::from_data(data.to_vec())),
         };
 
         crate::cancel::check(control).ok_or(DecodeFailure::StreamDecode)?;

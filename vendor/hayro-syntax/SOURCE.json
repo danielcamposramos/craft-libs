@@ -98,7 +98,7 @@
       "path": "src/crypto/mod.rs",
       "source_sha256": "6fca01cee7e67f3aaf435101b7ea98fa4fe23f807eadeaec63ee1c2ece759189",
       "source_git_blob": "15371514c10dc993b335edfec19a3f989b497954",
-      "sha256": "9e0fc0edf48217b01acfcf7bcd3ebe0673f225f0c3857bf887efd0b0f31a74b2"
+      "sha256": "310dbf6ee8800c8aa6cd9ecdb6e643c6da40e50f8ac87dbd6c8f87f65956a2f2"
     },
     {
       "path": "src/crypto/rc4.rs",
@@ -176,7 +176,7 @@
       "path": "src/filter/mod.rs",
       "source_sha256": "0af7145ab16b15b7a60c4b57efecb9bd5fd0cfdc9bb5f9388abb695386e63e49",
       "source_git_blob": "06bda29487d62c25dc39c1ee109091cb17e3867f",
-      "sha256": "ceaabc890647efcc751416b8af012c04daa096916f4db2772a7617a47449cdde"
+      "sha256": "4e470f870ae3be9c6cb1aba217b4dcf4585111cb7f6d284a20418b2adecfc4af"
     },
     {
       "path": "src/filter/run_length.rs",
@@ -278,7 +278,7 @@
       "path": "src/object/stream.rs",
       "source_sha256": "f5229eb2f52c9918830027c93112e042a9e97d34b5fec72f97dcc7de8c5410ac",
       "source_git_blob": "a80f0730cba317ed3771cee61d6a7ab18de296d7",
-      "sha256": "ce9b81f31963cd0474aba253d7c9937f78cd3a1034b6811ccf4cbdf68c3769b6"
+      "sha256": "6b44de24f37ce20e4e4e7f90c58d9351c0176dca594cf6cdc22b86418125eac1"
     },
     {
       "path": "src/object/string.rs",
@@ -338,7 +338,7 @@
       "path": "src/xref.rs",
       "source_sha256": "51ffeeb7d4ac035bae2cd5ba9288c180088ae06cdcefe2b29dfeda560a793aa0",
       "source_git_blob": "20e33a410489d42e438a3f2b87d70c7bb8d66eae",
-      "sha256": "ced93747423118331a56b61a9628c2abf91e1dc181b36156d428317274a38616"
+      "sha256": "473be5d1a044a221bf828a08e77b9e5f0761423013768cf0c0d7b3e0cc41873a"
     },
     {
       "path": "src/decode_limits_tests.rs",
@@ -516,6 +516,13 @@
       "authored": "2026-11-01T12:15:57+01:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/4303d49eea68a2dc56db60d3bc6428316b1e23d2",
       "scope": "Follow reference aliases through the original bounded32-hop loop. Preserve shared repaired-generation matching, memoized object-stream offsets, load gate, decode limits and cancellation. Parse index dictionaries without reading a stream Length again."
+    },
+    {
+      "commit": "9203e4a6be69068d634d8ead7debb48b791ffc14",
+      "author": "Piohrun",
+      "authored": "2026-11-04T13:17:29+01:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/9203e4a6be69068d634d8ead7debb48b791ffc14",
+      "scope": "Carry named stream crypt filters and legal indirect filter parameters. Preserve shared raw/decoded limits, cancellation, bounded reference following and stream work checks; keep Identity independent of the CF table."
     }
   ]
 }
