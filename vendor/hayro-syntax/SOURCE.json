@@ -98,7 +98,7 @@
       "path": "src/crypto/mod.rs",
       "source_sha256": "6fca01cee7e67f3aaf435101b7ea98fa4fe23f807eadeaec63ee1c2ece759189",
       "source_git_blob": "15371514c10dc993b335edfec19a3f989b497954",
-      "sha256": "3f0b2bde46320fbbee1dab56d992604825faeb830fe2e7e6358d2f4da520acfd"
+      "sha256": "5975f341cdb2e7ce75864163d884ae9f3a8f942e1835372860e402b1b020cf64"
     },
     {
       "path": "src/crypto/rc4.rs",
@@ -530,6 +530,13 @@
       "authored": "2026-11-05T22:49:48+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/390b2012e4ceb5b8fa080dde7ec9ad4e08f837d9",
       "scope": "Carry the original embedded-files-only encryption viewer support, preserving standard handler authentication and all shared decoder/work limits. Subsequent original EFOpen review restrictions follow separately."
+    },
+    {
+      "commit": "8e2888aad1f17a6c621799811ab9de2849a814d2",
+      "author": "mtlcl410",
+      "authored": "2026-11-05T23:23:29+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/8e2888aad1f17a6c621799811ab9de2849a814d2",
+      "scope": "Retain the original EFOpen review restrictions: only an empty password may use the keyless viewer, honor each encrypting filter AuthEvent, and leave ordinary strings and streams clear only when their filters allow it. Shared limits remain unchanged."
     }
   ]
 }
