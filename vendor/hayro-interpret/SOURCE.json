@@ -218,7 +218,7 @@
       "path": "src/font/cid.rs",
       "source_sha256": "c1dbe7fe5b7f7092d97b84063008df54aebf87db4ba1fdb3a179fab9fe6674b8",
       "source_git_blob": "b99dcbc116ca1169df3a229eafd05ee5b9204626",
-      "sha256": "4d98ef8aa2ad5e8679e3ee5d09253b1754947a484b6b2667e15d85e3cef8fb90"
+      "sha256": "515999e02548567645c7a6ab290bd3859fc1faecfbee8ed9f6dfe13974a8edeb"
     },
     {
       "path": "src/font/generated/glyph_names.rs",
@@ -770,6 +770,20 @@
       "authored": "2026-11-03T19:20:16+05:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/1849b38c5a99de76e1cb344d322a7c15039571f5",
       "scope": "Original substitute soft-hyphen fallback in CID font; shared owner only"
+    },
+    {
+      "commit": "9aeab4b8a3510aa8ab5598f6c455388e8fb1ed47",
+      "author": "Sventurbo",
+      "authored": "2026-11-05T01:46:26+01:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/9aeab4b8a3510aa8ab5598f6c455388e8fb1ed47",
+      "scope": "Original non-embedded Arial Macintosh glyph order, shared CID owner"
+    },
+    {
+      "commit": "aeb7ff8391f6ebd5de8997ccb3e46afc46ce855e",
+      "author": "Sventurbo",
+      "authored": "2026-11-05T02:44:46+01:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/aeb7ff8391f6ebd5de8997ccb3e46afc46ce855e",
+      "scope": "Original case-insensitive MT review; bounded checked UTF-8 slices"
     }
   ]
 }
