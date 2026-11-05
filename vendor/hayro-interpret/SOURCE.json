@@ -404,7 +404,7 @@
       "path": "src/pattern.rs",
       "source_sha256": "17b49a465275c20e6645dea9443f2cb3a64c594925fd860e74b80b44d5344e37",
       "source_git_blob": "9295f51709f8915951d7b9afca9411651d65a1f8",
-      "sha256": "e57d4de60126eafa0da2113af12bbbde1aabd15554f1ee26f6551b8219f4ede5"
+      "sha256": "1ee9705afa285ddeb4c287e83e86906bdcc525a738b41d17164d1f751e2c01b6"
     },
     {
       "path": "src/shading.rs",
@@ -574,6 +574,13 @@
       "authored": "2026-10-21T08:34:21+05:30",
       "origin": "https://github.com/storytold/pdfcraft/commit/ba09e1aefcc28ce42206dc3ad70a24975bfbfb24",
       "scope": "Carry the original isolated-CMYK group owner and renderer. Preserve common plate/ink inspection and isolated-device hooks; reuse its existing checked CMYK conversion instead of adding a duplicate. Original Difference-color control fails before and passes after, with plate and raster controls and strict Clippy green."
+    },
+    {
+      "commit": "dc25392da8fb6331b4baee1b24ab1e9000566000",
+      "author": "mtlcl410",
+      "authored": "2026-11-05T21:09:36+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/dc25392da8fb6331b4baee1b24ab1e9000566000",
+      "scope": "Carry pattern-instance identity, per-render bounded cell caching and clipped stencil composition. Preserve the shared image/resampling allocation guards and knockout owner; no private knockout_passes field is introduced. Placement, CMYK, plate and existing raster controls and strict Clippy pass; cache-count controls follow the original offscreen-counter subject."
     }
   ]
 }
