@@ -92,7 +92,16 @@
       "path": "src/parse.rs",
       "source_sha256": "1999127f05b59bdd55e2a7349dafc0b2213238201da37f7c35cd698996f2dc6b",
       "source_git_blob": "a936209275ffca797912dec052dc03ddb0d2dce4",
-      "sha256": "1999127f05b59bdd55e2a7349dafc0b2213238201da37f7c35cd698996f2dc6b"
+      "sha256": "e8c48b062fa095a9ac62014ba9166d75fdf95476683d04091209cb8e64fed107"
+    }
+  ],
+  "carried_patches": [
+    {
+      "commit": "c282f6ba332adc25562b244743fc3498a9d4f6ec",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T06:04:54+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/c282f6ba332adc25562b244743fc3498a9d4f6ec",
+      "scope": "The original malformed-token regression fails before and passes after. Both source patches merge unchanged in implementation; preserve the common decoder bounds. Expanded standalone backend gate green."
     }
   ]
 }
