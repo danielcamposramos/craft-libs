@@ -96,6 +96,10 @@ fn a_soft_mask_far_larger_than_where_it_is_drawn_is_shrunk_once() {
 }
 
 fn soft_masks_handed(width: u32, height: u32, mask: &[u8], sizes: &[(u32, u32)]) -> (Vec<(u32, u32, Vec<u8>)>, usize) {
+    soft_masks_handed_keyed(width, height, mask, sizes, ("Width", "Height"))
+}
+
+fn soft_masks_handed_keyed(width: u32, height: u32, mask: &[u8], sizes: &[(u32, u32)], keys: (&str, &str)) -> (Vec<(u32, u32, Vec<u8>)>, usize) {
     use craft_pdf::interpret::font::Glyph;
     use craft_pdf::interpret::{
         BlendMode, ClipPath, Context, Device, GlyphDrawMode, Image, InterpreterCache, Paint, PathDrawMode, SoftMask, TransformExt, interpret_page,
@@ -135,7 +139,9 @@ fn soft_masks_handed(width: u32, height: u32, mask: &[u8], sizes: &[(u32, u32)])
     );
     let alpha = flate(mask);
     let mask_dict = format!(
-        "<< /Type /XObject /Subtype /Image /Width {width} /Height {height} /ColorSpace /DeviceGray /BitsPerComponent 8 /Filter /FlateDecode /Length {} >>",
+        "<< /Type /XObject /Subtype /Image /{} {width} /{} {height} /ColorSpace /DeviceGray /BitsPerComponent 8 /Filter /FlateDecode /Length {} >>",
+        keys.0,
+        keys.1,
         alpha.len()
     );
     let content = sizes.iter().map(|(w, h)| format!("q {w} 0 0 {h} 0 0 cm /A Do Q")).collect::<Vec<_>>().join(" ");
@@ -155,12 +161,17 @@ fn an_averaged_down_soft_mask_follows_its_samples_and_its_drawn_size() {
     let (handed, _) = soft_masks_handed(7, 1, &[0, 0, 0, 255, 0, 0, 0], &[(3, 1)]);
     assert_eq!(handed, vec![(4, 1, vec![0, 0, 127, 0])], "centres, not left edges");
     let (handed, _) = soft_masks_handed(100, 100, &[255; 100 * 10], &[(20, 20)]);
-    assert!(!handed.is_empty() && handed.iter().all(|(_, _, data)| data.iter().all(|&a| a == 255)), "no uncovered rows: {handed:?}");
+    assert_eq!(handed, vec![(32, 10, vec![255; 32 * 10])], "only decoded rows, all opaque");
     let sizes = |draws: &[(u32, u32)]| -> Vec<(u32, u32)> {
         soft_masks_handed(100, 100, &[255; 100 * 100], draws).0.iter().map(|(w, h, _)| (*w, *h)).collect()
     };
     assert_eq!(sizes(&[(20, 20), (200, 200)]), vec![(32, 32), (100, 100)], "each draw at its own size");
     assert_eq!(sizes(&[(20, 20), (21, 21)]), vec![(32, 32), (32, 32)], "draws a pixel apart share one");
+    // The same with the mask's dimensions under the abbreviated `/W` and `/H`, which an image is
+    // read with too.
+    let (handed, _) = soft_masks_handed_keyed(100, 100, &[255; 100 * 100], &[(20, 20), (200, 200)], ("W", "H"));
+    let abbreviated: Vec<(u32, u32)> = handed.iter().map(|(w, h, _)| (*w, *h)).collect();
+    assert_eq!(abbreviated, vec![(32, 32), (100, 100)], "each draw at its own size, under /W and /H");
     // Columns alternating 0 and 255, so every averaged-down sample is about half: within 8, as a
     // sample covering 19 or 20 columns, say, holds 9 or 10 opaque ones.
     let wide: Vec<u8> = (0..5000 * 2).map(|i| if i % 2 == 0 { 0 } else { 255 }).collect();
