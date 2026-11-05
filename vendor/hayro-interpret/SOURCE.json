@@ -176,7 +176,7 @@
       "path": "src/cache.rs",
       "source_sha256": "76b5dc066330666a50a32124856306b72c98e646346263bd8a269bc99e5a0d42",
       "source_git_blob": "e253a7b8c7dbfbfa2f7dc1f6c582559962060b94",
-      "sha256": "65969aeaea552ffdd5130983d5f64dfb44b331da7d80d08500a7cb1f3da19329"
+      "sha256": "d89bd723412ef364c72ba0972f04bd97393593bd9a79c9aeb72c7dfdfa9146a4"
     },
     {
       "path": "src/color.rs",
@@ -434,7 +434,7 @@
       "path": "src/x_object.rs",
       "source_sha256": "e1c51e96a335c32c122011b2d05c5020c36a33c2c73342ba173c28a3e2fe0219",
       "source_git_blob": "21b134ce8cd9604399cd0776febf923d69c02673",
-      "sha256": "cdf122a043901738b51337337c9cccc17afe4f005ee8940f4913665ef1a26ded"
+      "sha256": "9437204b4100cc3da926811ad79bc49772eb11b615d81efb3b630ea56e8d4b1d"
     },
     {
       "path": "src/cmyk_group.rs",
@@ -665,6 +665,13 @@
       "authored": "2026-11-09T09:05:11+07:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/b21ee3a7109118e873f259fed498ea50d7272d25",
       "scope": "Keep an unshrunk mask inside its parent image cache entry. Preserve mask averaging for oversized inputs. The original failed-soft-mask control counted3 computations before instead of2; after, the four failure-cache controls, two mask controls, budgets/API controls and strict Clippy pass. Original author and date retained."
+    },
+    {
+      "commit": "9f786e785",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T03:33:08+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/9f786e785",
+      "scope": "Original comment-number correction only: identify the soft-mask feature as patch82. Runtime implementation is unchanged from the preceding qualified owner; final whole gate follows."
     }
   ]
 }
