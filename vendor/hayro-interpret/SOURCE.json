@@ -176,7 +176,7 @@
       "path": "src/cache.rs",
       "source_sha256": "76b5dc066330666a50a32124856306b72c98e646346263bd8a269bc99e5a0d42",
       "source_git_blob": "e253a7b8c7dbfbfa2f7dc1f6c582559962060b94",
-      "sha256": "db49d5a70e55df0c48082201cb146b2a22a3685335f38378ed4ca87ca144b58e"
+      "sha256": "65969aeaea552ffdd5130983d5f64dfb44b331da7d80d08500a7cb1f3da19329"
     },
     {
       "path": "src/color.rs",
@@ -434,7 +434,7 @@
       "path": "src/x_object.rs",
       "source_sha256": "e1c51e96a335c32c122011b2d05c5020c36a33c2c73342ba173c28a3e2fe0219",
       "source_git_blob": "21b134ce8cd9604399cd0776febf923d69c02673",
-      "sha256": "08e18fd6b03e3e76657717c812257cd3a0fd6580b38a7c102656aa15c5395bd1"
+      "sha256": "54bcd4d9903c346813824c1edad7e1afd6a23b9e3d400b727f2945ad4a7795ee"
     },
     {
       "path": "src/cmyk_group.rs",
@@ -623,6 +623,13 @@
       "authored": "2026-11-07T15:22:28+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/558ffd7f8a65708e292a558625a907cce8dd3e30",
       "scope": "Carry failure-cache entries with replayed warnings and bounded128-byte failure accounting; retain all six shared warning variants with their original receiver bits. JPX and JBIG2 controls decoded six times before instead of twice; after, three actual controls, budgets/cancellation/API controls and strict Clippy pass. Mask shrink prerequisites and per-page JBIG2 diagnostics follow separately."
+    },
+    {
+      "commit": "be5a9209cc3b9a09440c75fcfdffca3f42076502",
+      "author": "mtlcl410",
+      "authored": "2026-11-05T20:31:08+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/be5a9209cc3b9a09440c75fcfdffca3f42076502",
+      "scope": "Port the original oversized soft-mask downsampling and size-keyed cache. Preserve common decoder bounds and route new cache calls through its replaying warning sink. The synthetic1000-square mask was handed over whole at all ten draws before; after it is20-square with one image+one mask decode. Ordinary mask, failed-decode, budget/API controls and strict Clippy pass. Later original review refinements follow."
     }
   ]
 }
