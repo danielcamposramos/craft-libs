@@ -212,7 +212,7 @@
       "path": "src/font/blob.rs",
       "source_sha256": "30a9dadf498829ee03eb1ddc6deaeb09a06ee42415f288d46f4a67640582c575",
       "source_git_blob": "6eabc26b9bc30bdc51f0b5fdd5e4b556d7583ec5",
-      "sha256": "8c39f3ef95c48054d4aacaeb17189193c075df42fc767eee596bc4dbf2453d5f"
+      "sha256": "e39513f8f51762f1993973ef189783496b1dd5b692d5ff797868f4d2c40789dd"
     },
     {
       "path": "src/font/cid.rs",
@@ -917,6 +917,20 @@
       "authored": "2026-11-08T00:25:38+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/ec9736001b1a8fbd11b700a2abfe8a6539f06402",
       "scope": "Original rustfmt form of the lazy UCS2 map and fallback."
+    },
+    {
+      "commit": "02f0eaa8f0c33884622108f963905b3b5d4be790",
+      "author": "mtlcl410",
+      "authored": "2026-11-05T23:00:04+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/02f0eaa8f0c33884622108f963905b3b5d4be790",
+      "scope": "Read invalid loca index formats as the same long format used by FreeType; bounded table fields and valid formats remain unchanged."
+    },
+    {
+      "commit": "abc348894c5ea114b920e31eb2f3d6bd6b5f8ddb",
+      "author": "mtlcl410",
+      "authored": "2026-11-05T23:25:23+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/abc348894c5ea114b920e31eb2f3d6bd6b5f8ddb",
+      "scope": "Original loca review preserves short tables with padding; accept long only when its last offset matches glyf length."
     }
   ]
 }
