@@ -68,7 +68,7 @@
       "path": "src/renderer.rs",
       "source_sha256": "f7ff7bd088ceb43823ede33151138384af331cf71403f7d23f7b2937212efc3b",
       "source_git_blob": "6aa53716ad2d0203a8058b2f7271515b4fc1db22",
-      "sha256": "aa9fbfc6d04b37514c222cc125a722c9e251c475243dad2272027affbe8bbfd2"
+      "sha256": "1490815c77bb4252687e021a668374017437f04544b0c93a32039df1c7f39a33"
     }
   ],
   "carried_patches": [
@@ -98,6 +98,13 @@
       "authored": "2026-11-05T21:09:36+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/dc25392da8fb6331b4baee1b24ab1e9000566000",
       "scope": "Carry pattern-instance identity, per-render bounded cell caching and clipped stencil composition. Preserve the shared image/resampling allocation guards and knockout owner; no private knockout_passes field is introduced. Placement, CMYK, plate and existing raster controls and strict Clippy pass; cache-count controls follow the original offscreen-counter subject."
+    },
+    {
+      "commit": "5f7363f8b",
+      "author": "mtlcl410",
+      "authored": "2026-11-05T21:35:14+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/5f7363f8b",
+      "scope": "The receiver counter patch requires this preceding one-cell cache owner and stencil/Type-3 separation. Preserve common image bounds and knockout state. Shared tiling, plate, CMYK and raster controls and strict Clippy pass."
     }
   ]
 }
