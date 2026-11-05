@@ -94,3 +94,68 @@ fn a_soft_mask_far_larger_than_where_it_is_drawn_is_shrunk_once() {
     let (alphas, _) = draws(100, 200);
     assert_eq!(alphas, vec![(100, 100); 10], "a mask smaller than its parent image keeps its own samples");
 }
+
+fn soft_masks_handed(width: u32, height: u32, mask: &[u8], sizes: &[(u32, u32)]) -> Vec<(u32, u32, Vec<u8>)> {
+    use craft_pdf::interpret::font::Glyph;
+    use craft_pdf::interpret::{
+        BlendMode, ClipPath, Context, Device, GlyphDrawMode, Image, InterpreterCache, Paint, PathDrawMode, SoftMask, TransformExt, interpret_page,
+    };
+    use craft_pdf::syntax::Pdf;
+    use kurbo::{Affine, BezPath, Rect};
+    use std::io::Write;
+
+    #[derive(Default)]
+    struct Draws(Vec<(u32, u32, Vec<u8>)>);
+    impl<'a> Device<'a> for Draws {
+        fn set_soft_mask(&mut self, _: Option<SoftMask<'a>>) {}
+        fn set_blend_mode(&mut self, _: BlendMode) {}
+        fn draw_path(&mut self, _: &BezPath, _: Affine, _: &Paint<'a>, _: &PathDrawMode) {}
+        fn push_clip_path(&mut self, _: &ClipPath) {}
+        fn push_transparency_group(&mut self, _: f32, _: Option<SoftMask<'a>>, _: BlendMode) {}
+        fn draw_glyph(&mut self, _: &Glyph<'a>, _: Affine, _: Affine, _: &Paint<'a>, _: &GlyphDrawMode) {}
+        fn draw_image(&mut self, image: Image<'a, '_>, transform: Affine) {
+            let [a, b, c, d, ..] = transform.as_coeffs();
+            let target = ((a.hypot(b) * f64::from(image.width())).ceil() as u32, (c.hypot(d) * f64::from(image.height())).ceil() as u32);
+            if let Image::Raster(r) = image {
+                r.with_rgba(|_, alpha| self.0.extend(alpha.map(|a| (a.width, a.height, a.data))), Some(target));
+            }
+        }
+        fn pop_clip_path(&mut self) {}
+        fn pop_transparency_group(&mut self) {}
+    }
+    let flate = |data: &[u8]| {
+        let mut z = flate2::write::ZlibEncoder::new(Vec::new(), flate2::Compression::fast());
+        z.write_all(data).unwrap();
+        z.finish().unwrap()
+    };
+    let rgb = flate(&[0u8; 2 * 3]);
+    let image = format!(
+        "<< /Type /XObject /Subtype /Image /Width 2 /Height 1 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /FlateDecode /SMask 6 0 R /Length {} >>",
+        rgb.len()
+    );
+    let alpha = flate(mask);
+    let mask_dict = format!(
+        "<< /Type /XObject /Subtype /Image /Width {width} /Height {height} /ColorSpace /DeviceGray /BitsPerComponent 8 /Filter /FlateDecode /Length {} >>",
+        alpha.len()
+    );
+    let content = sizes.iter().map(|(w, h)| format!("q {w} 0 0 {h} 0 0 cm /A Do Q")).collect::<Vec<_>>().join(" ");
+    let bytes = image_cache_pdf(&content, "<< /XObject << /A 5 0 R >> >>", &[(&image, &rgb), (&mask_dict, &alpha)]);
+    let parsed = Pdf::new(bytes).expect("parses");
+    let page = &parsed.pages()[0];
+    let cache = InterpreterCache::new();
+    let initial = page.initial_transform(true).to_kurbo();
+    let mut ctx = Context::new(initial, Rect::new(0.0, 0.0, 400.0, 400.0), &cache, page.xref(), InterpreterSettings::default());
+    let mut device = Draws::default();
+    interpret_page(page, &mut ctx, &mut device);
+    device.0
+}
+
+#[test]
+fn an_averaged_down_soft_mask_follows_its_samples_and_its_drawn_size() {
+    let handed = soft_masks_handed(7, 1, &[0, 0, 255, 255, 255, 255, 255], &[(3, 1)]);
+    assert_eq!(handed, vec![(3, 1, vec![0, 255, 255])], "centres, not left edges");
+    let handed = soft_masks_handed(100, 100, &[255; 100 * 10], &[(20, 20)]);
+    assert!(!handed.is_empty() && handed.iter().all(|(_, _, data)| data.iter().all(|&a| a == 255)), "no uncovered rows: {handed:?}");
+    let sizes: Vec<(u32, u32)> = soft_masks_handed(100, 100, &[255; 100 * 100], &[(20, 20), (200, 200)]).iter().map(|(w, h, _)| (*w, *h)).collect();
+    assert_eq!(sizes, vec![(20, 20), (100, 100)], "each draw at its own size");
+}
