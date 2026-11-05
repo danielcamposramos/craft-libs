@@ -61,13 +61,14 @@ fn a_soft_mask_far_larger_than_where_it_is_drawn_is_shrunk_once() {
         z.write_all(data).unwrap();
         z.finish().unwrap()
     };
-    let rgb = flate(&[0u8; 2 * 2 * 3]);
-    let image = format!(
-        "<< /Type /XObject /Subtype /Image /Width 2 /Height 2 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /FlateDecode /SMask 6 0 R /Length {} >>",
-        rgb.len()
-    );
     // `side` × `side` mask samples, drawn ten times at 20 × 20 points (device pixels at 72 dpi).
-    let draws = |side: u32| {
+    let draws = |side: u32, parent: u32| {
+        let rgb = flate(&vec![0u8; (parent * parent * 3) as usize]);
+        let image = format!(
+            "<< /Type /XObject /Subtype /Image /Width {parent} /Height {parent} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /FlateDecode /SMask 6 0 R /Length {} >>",
+            rgb.len()
+        );
+
         let alpha = flate(&(0..side * side).map(|i| (i % 256) as u8).collect::<Vec<_>>());
         let mask = format!(
             "<< /Type /XObject /Subtype /Image /Width {side} /Height {side} /ColorSpace /DeviceGray /BitsPerComponent 8 /Filter /FlateDecode /Length {} >>",
@@ -84,10 +85,12 @@ fn a_soft_mask_far_larger_than_where_it_is_drawn_is_shrunk_once() {
         interpret_page(page, &mut ctx, &mut device);
         (device.0, cache.decoded_image_decodes())
     };
-    let (alphas, decodes) = draws(1000);
+    let (alphas, decodes) = draws(1000, 2);
     assert_eq!(alphas, vec![(20, 20); 10], "averaged down to the size it is drawn at");
     // One decode for the image and one for its averaged-down mask, shared by all ten draws.
     assert_eq!(decodes, 2, "decoded once");
-    let (alphas, _) = draws(40);
+    let (alphas, _) = draws(40, 2);
     assert_eq!(alphas, vec![(40, 40); 10], "no more than twice the drawn size: kept as it is");
+    let (alphas, _) = draws(100, 200);
+    assert_eq!(alphas, vec![(100, 100); 10], "a mask smaller than its parent image keeps its own samples");
 }
