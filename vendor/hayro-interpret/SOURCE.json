@@ -434,7 +434,7 @@
       "path": "src/x_object.rs",
       "source_sha256": "e1c51e96a335c32c122011b2d05c5020c36a33c2c73342ba173c28a3e2fe0219",
       "source_git_blob": "21b134ce8cd9604399cd0776febf923d69c02673",
-      "sha256": "272b85b389a059092851eafe0d648e134e1b4d953096138f561fa5c17bc7a4bb"
+      "sha256": "33c38dd05966630d900768491d8d825060c193052c959d5eedb0c0fecb7832e0"
     },
     {
       "path": "src/cmyk_group.rs",
@@ -644,6 +644,13 @@
       "authored": "2026-11-05T21:09:16+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/58b18c803696d4512341b48696c4c49f2ef13ad8",
       "scope": "Keep sample-center averaging and clamp the reduced mask to decoded rows. Preserve the replaying failure-cache sink. The original seven-sample control returned85 instead of0 in its first bin before; both mask controls and budget/API/failure controls plus strict Clippy pass after."
+    },
+    {
+      "commit": "d6ad44deeba68b297f94aacc6777c624eca385d3",
+      "author": "mtlcl410",
+      "authored": "2026-11-05T21:21:34+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/d6ad44deeba68b297f94aacc6777c624eca385d3",
+      "scope": "Port the original power-of-two mask buckets and4096-side intermediate; preserve common replaying warning sinks in nested cache calls. Original multi-size/sample-center controls pass with3 keyed computations for repeated32-square masks and9 for the four-size intermediate case, plus ordinary parent masks, budgets/failure/API controls and strict Clippy. Cache counters count keyed computations, not only codec entry calls."
     }
   ]
 }

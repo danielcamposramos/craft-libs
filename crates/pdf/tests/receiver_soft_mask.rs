@@ -86,16 +86,16 @@ fn a_soft_mask_far_larger_than_where_it_is_drawn_is_shrunk_once() {
         (device.0, cache.decoded_image_decodes())
     };
     let (alphas, decodes) = draws(1000, 2);
-    assert_eq!(alphas, vec![(20, 20); 10], "averaged down to the size it is drawn at");
+    assert_eq!(alphas, vec![(32, 32); 10], "averaged down to the size it is drawn at");
     // One decode for the image and one for its averaged-down mask, shared by all ten draws.
-    assert_eq!(decodes, 2, "decoded once");
+    assert_eq!(decodes, 3, "image, intermediate mask and reduced mask are cached");
     let (alphas, _) = draws(40, 2);
     assert_eq!(alphas, vec![(40, 40); 10], "no more than twice the drawn size: kept as it is");
     let (alphas, _) = draws(100, 200);
     assert_eq!(alphas, vec![(100, 100); 10], "a mask smaller than its parent image keeps its own samples");
 }
 
-fn soft_masks_handed(width: u32, height: u32, mask: &[u8], sizes: &[(u32, u32)]) -> Vec<(u32, u32, Vec<u8>)> {
+fn soft_masks_handed(width: u32, height: u32, mask: &[u8], sizes: &[(u32, u32)]) -> (Vec<(u32, u32, Vec<u8>)>, usize) {
     use craft_pdf::interpret::font::Glyph;
     use craft_pdf::interpret::{
         BlendMode, ClipPath, Context, Device, GlyphDrawMode, Image, InterpreterCache, Paint, PathDrawMode, SoftMask, TransformExt, interpret_page,
@@ -147,15 +147,29 @@ fn soft_masks_handed(width: u32, height: u32, mask: &[u8], sizes: &[(u32, u32)])
     let mut ctx = Context::new(initial, Rect::new(0.0, 0.0, 400.0, 400.0), &cache, page.xref(), InterpreterSettings::default());
     let mut device = Draws::default();
     interpret_page(page, &mut ctx, &mut device);
-    device.0
+    (device.0, cache.decoded_image_decodes())
 }
 
 #[test]
 fn an_averaged_down_soft_mask_follows_its_samples_and_its_drawn_size() {
-    let handed = soft_masks_handed(7, 1, &[0, 0, 255, 255, 255, 255, 255], &[(3, 1)]);
-    assert_eq!(handed, vec![(3, 1, vec![0, 255, 255])], "centres, not left edges");
-    let handed = soft_masks_handed(100, 100, &[255; 100 * 10], &[(20, 20)]);
+    let (handed, _) = soft_masks_handed(7, 1, &[0, 0, 0, 255, 0, 0, 0], &[(3, 1)]);
+    assert_eq!(handed, vec![(4, 1, vec![0, 0, 127, 0])], "centres, not left edges");
+    let (handed, _) = soft_masks_handed(100, 100, &[255; 100 * 10], &[(20, 20)]);
     assert!(!handed.is_empty() && handed.iter().all(|(_, _, data)| data.iter().all(|&a| a == 255)), "no uncovered rows: {handed:?}");
-    let sizes: Vec<(u32, u32)> = soft_masks_handed(100, 100, &[255; 100 * 100], &[(20, 20), (200, 200)]).iter().map(|(w, h, _)| (*w, *h)).collect();
-    assert_eq!(sizes, vec![(20, 20), (100, 100)], "each draw at its own size");
+    let sizes = |draws: &[(u32, u32)]| -> Vec<(u32, u32)> {
+        soft_masks_handed(100, 100, &[255; 100 * 100], draws).0.iter().map(|(w, h, _)| (*w, *h)).collect()
+    };
+    assert_eq!(sizes(&[(20, 20), (200, 200)]), vec![(32, 32), (100, 100)], "each draw at its own size");
+    assert_eq!(sizes(&[(20, 20), (21, 21)]), vec![(32, 32), (32, 32)], "draws a pixel apart share one");
+    // Columns alternating 0 and 255, so every averaged-down sample is about half: within 8, as a
+    // sample covering 19 or 20 columns, say, holds 9 or 10 opaque ones.
+    let wide: Vec<u8> = (0..5000 * 2).map(|i| if i % 2 == 0 { 0 } else { 255 }).collect();
+    let (handed, decodes) = soft_masks_handed(5000, 2, &wide, &[(20, 1), (40, 1), (80, 1), (160, 1)]);
+    let sizes: Vec<(u32, u32)> = handed.iter().map(|(w, h, _)| (*w, *h)).collect();
+    assert_eq!(sizes, vec![(32, 1), (64, 1), (128, 1), (256, 1)]);
+    assert!(handed.iter().all(|(_, _, data)| data.iter().all(|&a| a.abs_diff(127) <= 8)), "{handed:?}");
+    // The image at each of the four sizes, the 4096-wide intermediate once, and the mask at each
+    // of the four sizes made from it. Without the intermediate there are 8, each mask size a full
+    // decode.
+    assert_eq!(decodes, 9, "the full mask decoded once");
 }
