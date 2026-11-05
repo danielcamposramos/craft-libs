@@ -98,7 +98,7 @@
       "path": "src/crypto/mod.rs",
       "source_sha256": "6fca01cee7e67f3aaf435101b7ea98fa4fe23f807eadeaec63ee1c2ece759189",
       "source_git_blob": "15371514c10dc993b335edfec19a3f989b497954",
-      "sha256": "310dbf6ee8800c8aa6cd9ecdb6e643c6da40e50f8ac87dbd6c8f87f65956a2f2"
+      "sha256": "3f0b2bde46320fbbee1dab56d992604825faeb830fe2e7e6358d2f4da520acfd"
     },
     {
       "path": "src/crypto/rc4.rs",
@@ -523,6 +523,13 @@
       "authored": "2026-11-04T13:17:29+01:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/9203e4a6be69068d634d8ead7debb48b791ffc14",
       "scope": "Carry named stream crypt filters and legal indirect filter parameters. Preserve shared raw/decoded limits, cancellation, bounded reference following and stream work checks; keep Identity independent of the CF table."
+    },
+    {
+      "commit": "390b2012e4ceb5b8fa080dde7ec9ad4e08f837d9",
+      "author": "mtlcl410",
+      "authored": "2026-11-05T22:49:48+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/390b2012e4ceb5b8fa080dde7ec9ad4e08f837d9",
+      "scope": "Carry the original embedded-files-only encryption viewer support, preserving standard handler authentication and all shared decoder/work limits. Subsequent original EFOpen review restrictions follow separately."
     }
   ]
 }
