@@ -62,13 +62,13 @@
       "path": "src/lib.rs",
       "source_sha256": "682db2a32fbf4d875c0e9dd7ac5dc875a6b09ade375efbce6f104de9197de078",
       "source_git_blob": "6333ed5808ae0cf9cf158e4730e973c1d7089bab",
-      "sha256": "0222204f08f8ee5c7a29802429d8a56f5548db70778f0e98c3136f069b9c2125"
+      "sha256": "706284bd70d00ce1b6388b89f879d07e1150896e7f85a56f4d3678c7c9f6c0d8"
     },
     {
       "path": "src/renderer.rs",
       "source_sha256": "f7ff7bd088ceb43823ede33151138384af331cf71403f7d23f7b2937212efc3b",
       "source_git_blob": "6aa53716ad2d0203a8058b2f7271515b4fc1db22",
-      "sha256": "1490815c77bb4252687e021a668374017437f04544b0c93a32039df1c7f39a33"
+      "sha256": "3d026169bd53f7ce43d75827bb5e482f062a2a2afa09b0dc91db3bac17029f08"
     }
   ],
   "carried_patches": [
@@ -105,6 +105,13 @@
       "authored": "2026-11-05T21:35:14+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/5f7363f8b",
       "scope": "The receiver counter patch requires this preceding one-cell cache owner and stencil/Type-3 separation. Preserve common image bounds and knockout state. Shared tiling, plate, CMYK and raster controls and strict Clippy pass."
+    },
+    {
+      "commit": "1d968fea8fe1dc0adbd1d93c2e4394d286a7972c",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T07:01:42+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/1d968fea8fe1dc0adbd1d93c2e4394d286a7972c",
+      "scope": "Expose original offscreen draw counters and port the original repeated/interleaved/uncoloured pattern controls to the shared entry point. Missing API is the compile-time red; three runtime controls and strict Clippy pass after. Keep the common CMYK luminosity-mask path."
     }
   ]
 }
