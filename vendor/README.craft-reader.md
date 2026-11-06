@@ -495,3 +495,9 @@ SOURCE.json records every original file’s public revision, Git blob and SHA-25
 The procedural probe PNG and raw RGBA carry their own attribution sidecars; their generating source and README remain present.
 Some upstream Vello CPU test assets are absent from the receiving snapshot; no complete upstream Vello test-suite claim is made.
 The separate registry Vello 0.2 ABI used by other shared crates remains a separate package version.
+
+The coverage guard is the vendor part of mtlcl410’s 0e75ad08c8e00fbf7fa89f0e5d78cd88aded3373 (2026-11-06).
+The four affected Vello files match that commit’s postimages exactly.
+The Hayro setting, propagation and ContentTruncated warning are carried while the common buffer/decoder bounds and plate background remain intact.
+The common raster constructor explicitly keeps the upstream None default; the architectural strip-index limit is still enforced.
+The original Vello CPU test font is supplied separately from its recorded Linebender VCS revision, with its Apache licence and attribution sidecar.

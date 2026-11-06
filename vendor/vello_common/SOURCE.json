@@ -232,7 +232,7 @@
       "path": "src/strip_generator.rs",
       "source_sha256": "6981239be273b562eb6fc8c4ca61fa175add15be0508afa0497b1a16c670b13d",
       "source_git_blob": "dcf9d4515a0265753ebbbd795ff549c805f0ec95",
-      "sha256": "6981239be273b562eb6fc8c4ca61fa175add15be0508afa0497b1a16c670b13d"
+      "sha256": "280582469f1025c91d31b69baa1d97e86a094588bbcbe9656b6647b0d8ea4ecf"
     },
     {
       "path": "src/tile.rs",
@@ -257,5 +257,14 @@
       "sha256": "8e514e195758d3fa7f33794f50a104def6d486af23309ea50ef473fcc59b96b9"
     }
   ],
-  "note": "Exact receiving-project source snapshot before coverage guard 0e75ad08; Vello copyright and licenses retained. No claim of complete upstream test assets."
+  "note": "Exact receiving-project source snapshot before coverage guard 0e75ad08; Vello copyright and licenses retained. No claim of complete upstream test assets.",
+  "carried_patches": [
+    {
+      "commit": "0e75ad08c8e00fbf7fa89f0e5d78cd88aded3373",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T22:03:27+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/0e75ad08c8e00fbf7fa89f0e5d78cd88aded3373",
+      "scope": "coverage limit and visible truncation; Vello affected files match the original postimage exactly; shared buffer bounds and plate paths retained"
+    }
+  ]
 }

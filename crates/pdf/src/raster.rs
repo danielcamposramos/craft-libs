@@ -142,6 +142,7 @@ pub fn render_into<'a>(
     };
     let rs = hayro::RenderSettings {
         color_replacement: options.color_replacement,
+        max_coverage: None,
         x_scale: options.scale[0],
         y_scale: options.scale[1],
         width: Some(width as u16),

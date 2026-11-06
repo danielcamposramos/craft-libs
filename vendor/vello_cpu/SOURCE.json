@@ -82,7 +82,7 @@
       "path": "src/dispatch/mod.rs",
       "source_sha256": "2048932fd67cdc7e36f2cd8c3c67dff426c91189da72090d61520df9480880cf",
       "source_git_blob": "f9830f36218300994ea421c62e2ca9d4147164d0",
-      "sha256": "2048932fd67cdc7e36f2cd8c3c67dff426c91189da72090d61520df9480880cf"
+      "sha256": "bffb72f8f7236e629814dca5eeeddad783c058bb2cdfd73f3f2d1d2c4ca7d975"
     },
     {
       "path": "src/dispatch/multi_threaded.rs",
@@ -106,7 +106,7 @@
       "path": "src/dispatch/single_threaded.rs",
       "source_sha256": "13c2c691371bcdf5721973020d9171889eda3a6beff7f8572d245ba52ce7ce65",
       "source_git_blob": "2a08d4b1b20c76b65e5f8fd2515a9b2efa86723e",
-      "sha256": "13c2c691371bcdf5721973020d9171889eda3a6beff7f8572d245ba52ce7ce65"
+      "sha256": "929e002ec21ce17088eaab854000ece3470d9b5eb469c57d0c0932336a2548f5"
     },
     {
       "path": "src/filter/drop_shadow.rs",
@@ -256,7 +256,7 @@
       "path": "src/render.rs",
       "source_sha256": "0928abbca204ee977c120f038467100a16f4406f8d5cc7b0361bf2ac133c7730",
       "source_git_blob": "fe4d80310813d143c9bc5b6436c3d597fb029618",
-      "sha256": "0928abbca204ee977c120f038467100a16f4406f8d5cc7b0361bf2ac133c7730"
+      "sha256": "523eb3e3120042d6c19c1c10a17e3f46c77188c26d030a5f1d205106d4ccc762"
     },
     {
       "path": "src/text.rs",
@@ -278,5 +278,14 @@
     }
   ],
   "local_additions": [],
-  "note": "Exact receiving-project source snapshot before coverage guard 0e75ad08; Vello copyright and licenses retained. No claim of complete upstream test assets."
+  "note": "Exact receiving-project source snapshot before coverage guard 0e75ad08; Vello copyright and licenses retained. No claim of complete upstream test assets.",
+  "carried_patches": [
+    {
+      "commit": "0e75ad08c8e00fbf7fa89f0e5d78cd88aded3373",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T22:03:27+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/0e75ad08c8e00fbf7fa89f0e5d78cd88aded3373",
+      "scope": "coverage limit and visible truncation; Vello affected files match the original postimage exactly; shared buffer bounds and plate paths retained"
+    }
+  ]
 }
