@@ -188,7 +188,7 @@
       "path": "src/context.rs",
       "source_sha256": "dc2be553958ee3f5e5e644a77a0301723bae9ca027a352c13b9caaf549cc0e56",
       "source_git_blob": "d6772baa15ebb95d3ba2d1f54ce5c250ad1e8137",
-      "sha256": "e5f6de39387f337a9f5e73482212308b64d12bd97a3bc8aa7bc93173785525fa"
+      "sha256": "bc9defb6377243ed0cc0df0881284bdaf67b31e1edaa0754050e284a88a5e305"
     },
     {
       "path": "src/convert.rs",
@@ -320,7 +320,7 @@
       "path": "src/font/type3.rs",
       "source_sha256": "bc33784f0dd3e599028b28b3696b9e4380cbff08f4c4e6299dee51f8df5eb08f",
       "source_git_blob": "c0e0d0b2df8f38183b8e23e9e8f644c0b81d0529",
-      "sha256": "c9216fe96150350cfcec979d7ff419bfe1f3371f199f70eb8590bf0c54666dde"
+      "sha256": "1873201b010bc7bf54d8c26f90ef0482dcc6b7ae013dae84a1424a99d1edc24e"
     },
     {
       "path": "src/function/mod.rs",
@@ -595,6 +595,13 @@
       "authored": "2026-11-02T07:32:46+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/c709dd99eca0f4e3ce49bf6c7c3f74233c2eb808",
       "scope": "Retain present Indexed entries and make missing entries black after conversion; omit tableless images with a diagnostic. Preserve the common 32-level nesting and decode limits. The small CMYK missing-entry runtime control fails white before and passes black after, alongside cache/plate/scope controls and strict Clippy. Catalog wording is qualified separately."
+    },
+    {
+      "commit": "05dca28601214de3baec27461d3df1157ed5c4a7",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T17:32:29+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/05dca28601214de3baec27461d3df1157ed5c4a7",
+      "scope": "Carry the original shared Type3 procedure cache and diagnostic counter while retaining the existing OnceCell procedure-width handling and controlled decoder. Its original 200-glyph/two-render control and receiver API tests plus strict Clippy pass. The following original review fix supplies held-content accounting."
     }
   ]
 }
