@@ -218,7 +218,7 @@
       "path": "src/font/cid.rs",
       "source_sha256": "c1dbe7fe5b7f7092d97b84063008df54aebf87db4ba1fdb3a179fab9fe6674b8",
       "source_git_blob": "b99dcbc116ca1169df3a229eafd05ee5b9204626",
-      "sha256": "515999e02548567645c7a6ab290bd3859fc1faecfbee8ed9f6dfe13974a8edeb"
+      "sha256": "cc3ad3a639beba46b6191bc207ca68fa4dcf561adb105aee6eb9f3dbe675e6df"
     },
     {
       "path": "src/font/generated/glyph_names.rs",
@@ -784,6 +784,13 @@
       "authored": "2026-11-05T02:44:46+01:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/aeb7ff8391f6ebd5de8997ccb3e46afc46ce855e",
       "scope": "Original case-insensitive MT review; bounded checked UTF-8 slices"
+    },
+    {
+      "commit": "49f200f99dad3d0e6344b1d7014f31b8551caa77",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T07:09:33+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/49f200f99dad3d0e6344b1d7014f31b8551caa77",
+      "scope": "Original Times New Roman extension of bounded Macintosh glyph-order substitute mapping"
     }
   ]
 }
