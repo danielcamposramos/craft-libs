@@ -188,7 +188,7 @@
       "path": "src/context.rs",
       "source_sha256": "dc2be553958ee3f5e5e644a77a0301723bae9ca027a352c13b9caaf549cc0e56",
       "source_git_blob": "d6772baa15ebb95d3ba2d1f54ce5c250ad1e8137",
-      "sha256": "bc9defb6377243ed0cc0df0881284bdaf67b31e1edaa0754050e284a88a5e305"
+      "sha256": "944ab280973be368158eadd27a90e7995a1ebb73711e7d8222bb95785a2b5bbb"
     },
     {
       "path": "src/convert.rs",
@@ -320,7 +320,7 @@
       "path": "src/font/type3.rs",
       "source_sha256": "bc33784f0dd3e599028b28b3696b9e4380cbff08f4c4e6299dee51f8df5eb08f",
       "source_git_blob": "c0e0d0b2df8f38183b8e23e9e8f644c0b81d0529",
-      "sha256": "1873201b010bc7bf54d8c26f90ef0482dcc6b7ae013dae84a1424a99d1edc24e"
+      "sha256": "341866118fb1299abd27d5935855a9f1410e3162b22fa04b46f5e24d1e9fbd45"
     },
     {
       "path": "src/function/mod.rs",
@@ -602,6 +602,13 @@
       "authored": "2026-11-06T17:32:29+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/05dca28601214de3baec27461d3df1157ed5c4a7",
       "scope": "Carry the original shared Type3 procedure cache and diagnostic counter while retaining the existing OnceCell procedure-width handling and controlled decoder. Its original 200-glyph/two-render control and receiver API tests plus strict Clippy pass. The following original review fix supplies held-content accounting."
+    },
+    {
+      "commit": "427c942aad3656dd3e01988f88d88a1c3bed4044",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T17:54:56+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/427c942aad3656dd3e01988f88d88a1c3bed4044",
+      "scope": "Carry the original held-content review fix and its 64KiB/32MiB/font-identity controls. Keep the common document-local stream bound as part of cache qualification: a real two-render,64-byte-limit regression failed when the cached prefix hid render2 truncation; both renders now decode and warn. Five cache controls, budgets/cancellation/API controls and strict Clippy pass."
     }
   ]
 }
