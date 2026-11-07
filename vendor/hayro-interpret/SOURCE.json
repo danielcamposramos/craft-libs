@@ -218,7 +218,7 @@
       "path": "src/font/cid.rs",
       "source_sha256": "c1dbe7fe5b7f7092d97b84063008df54aebf87db4ba1fdb3a179fab9fe6674b8",
       "source_git_blob": "b99dcbc116ca1169df3a229eafd05ee5b9204626",
-      "sha256": "cc3ad3a639beba46b6191bc207ca68fa4dcf561adb105aee6eb9f3dbe675e6df"
+      "sha256": "f68a44a1c1df19fe5b245084dd3597d3f086bd9149ffc1663ad1f2594e1987b8"
     },
     {
       "path": "src/font/generated/glyph_names.rs",
@@ -875,6 +875,48 @@
       "authored": "2026-11-09T05:27:38+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/8c892e65299473ce854d253d47ecf7d58c098dd2",
       "scope": "Numbered-name counters below code 32 are not character encodings; original review prerequisite of the numbered Type1/Type3 text family."
+    },
+    {
+      "commit": "fc28e85fb88c92c9ae1f5f7f0d08b7236e2d65eb",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T06:40:33+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/fc28e85fb88c92c9ae1f5f7f0d08b7236e2d65eb",
+      "scope": "Read embedded Adobe collection text through its UCS2 CMap when ToUnicode has no mapping."
+    },
+    {
+      "commit": "a00ff8fa6a7d7e092c52138b4d06b2802013ded8",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T07:04:15+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/a00ff8fa6a7d7e092c52138b4d06b2802013ded8",
+      "scope": "Parse the trusted collection UCS2 CMap on first use; preserve source decoder limits."
+    },
+    {
+      "commit": "e420bc5118b8db01cb1687575e9ab2369d926f1a",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T07:13:17+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/e420bc5118b8db01cb1687575e9ab2369d926f1a",
+      "scope": "ToUnicode bf mapping first, then CID mapping, then collection UCS2; merge original text families without replacing unrelated limits."
+    },
+    {
+      "commit": "519a9b719c3e249823a13f6e0d9cf05b2b2a4450",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T07:32:12+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/519a9b719c3e249823a13f6e0d9cf05b2b2a4450",
+      "scope": "Original review includes all character-code byte widths 1 through 4 in CID ToUnicode lookups."
+    },
+    {
+      "commit": "7b924e726fe5d8763c194aaf74378c4a3eca45b7",
+      "author": "mtlcl410",
+      "authored": "2026-11-08T00:31:25+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/7b924e726fe5d8763c194aaf74378c4a3eca45b7",
+      "scope": "Original rustfmt form of the merged CID-range text rule."
+    },
+    {
+      "commit": "ec9736001b1a8fbd11b700a2abfe8a6539f06402",
+      "author": "mtlcl410",
+      "authored": "2026-11-08T00:25:38+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/ec9736001b1a8fbd11b700a2abfe8a6539f06402",
+      "scope": "Original rustfmt form of the lazy UCS2 map and fallback."
     }
   ]
 }
