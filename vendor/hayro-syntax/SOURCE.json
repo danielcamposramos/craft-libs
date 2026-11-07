@@ -296,7 +296,7 @@
       "path": "src/page.rs",
       "source_sha256": "17be32b2eaa03a3367f1f20040556f7ee5b207588cf44a1af3e5253386fb46f9",
       "source_git_blob": "d7f0ec953722a938508f1f31f0adaecc0a181d20",
-      "sha256": "216a6df645d8cbe6e3bf022c5b846426367d822e977db31b8d8de81c6b3f2658"
+      "sha256": "4aa3fd63c6aa6a4b0c5370fcb939907ffa66a07337527da2fd42c66ce4322170"
     },
     {
       "path": "src/pdf.rs",
@@ -495,6 +495,13 @@
       "authored": "2026-11-10T04:43:13+01:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/e2464e14402f7a443de80e88975e428cc1dd45d7",
       "scope": "Port per-stream JBIG2 refusal metadata; retain shared image/stream/dimension/cancellation bounds and mark their refusals. Reuse a single refusal watcher in RGB, plates and raw inks so a refused opacity mask never uncovers its image. The ordinary-stream cap remains separate from known-image bounds; five synthetic controls and strict Clippy plus standalone backends pass."
+    },
+    {
+      "commit": "cdb94e66117fc1d49a16c3ed729f652816504723",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T17:17:26+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/cdb94e66117fc1d49a16c3ed729f652816504723",
+      "scope": "Keep the current receiving application default for missing and degenerate MediaBox; original Letter control through shared render, page budget and strict Clippy green. A zero-area declared clip stays empty; the original blue-pixel check applies only to a missing box."
     }
   ]
 }
