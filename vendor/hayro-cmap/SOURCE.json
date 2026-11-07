@@ -86,7 +86,7 @@
       "path": "src/lib.rs",
       "source_sha256": "d666b3d8e4d37fc06c299a60ab9748ae17badcea271ff2cf864dcee76e27648c",
       "source_git_blob": "fb42ff37ec9ccece66d33d1888bd25963cbf1171",
-      "sha256": "d6b9c6fa8de00942dd4cdfbd43578d3e53f8a3a6cf1e3563b345a9f6f35bc5e8"
+      "sha256": "0aed94b7b0265279b4b75f8dbfb04c23343ae18760b359165e5a05303316d8c6"
     },
     {
       "path": "src/parse.rs",
@@ -102,6 +102,13 @@
       "authored": "2026-11-06T06:04:54+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/c282f6ba332adc25562b244743fc3498a9d4f6ec",
       "scope": "The original malformed-token regression fails before and passes after. Both source patches merge unchanged in implementation; preserve the common decoder bounds. Expanded standalone backend gate green."
+    },
+    {
+      "commit": "37e5708ed23c9ce849dbd72fc700da0be116efe9",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T17:03:56+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/37e5708ed23c9ce849dbd72fc700da0be116efe9",
+      "scope": "Read bfchar source codes at their declared codespace width, retaining the shared parser and mapping bounds."
     }
   ]
 }
