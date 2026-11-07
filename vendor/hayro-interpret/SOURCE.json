@@ -218,7 +218,7 @@
       "path": "src/font/cid.rs",
       "source_sha256": "c1dbe7fe5b7f7092d97b84063008df54aebf87db4ba1fdb3a179fab9fe6674b8",
       "source_git_blob": "b99dcbc116ca1169df3a229eafd05ee5b9204626",
-      "sha256": "6c9927c47893edacab4a3258d4ec72b4d3cc2dd25c518e308884321110847ab6"
+      "sha256": "45d54436b5b9d44f3b79ba824f2461e368a8b3c3a65b95d26e6aefcc2cf953ef"
     },
     {
       "path": "src/font/generated/glyph_names.rs",
@@ -290,7 +290,7 @@
       "path": "src/font/mod.rs",
       "source_sha256": "7e6411927d91205ca76c6b59f9d737cd1104d066f8cfcc0a87f481016ef30313",
       "source_git_blob": "7c8c8d086d59139df791cdb6952506473ec4b5a7",
-      "sha256": "c0c903cb8a33ab863412c407ad10181adec0d22b81c899fc5225de14d8878091"
+      "sha256": "96d20303257197fea784cd50db3ba45e141b9fb4d72dd717bf6d819b1c70df60"
     },
     {
       "path": "src/font/outline.rs",

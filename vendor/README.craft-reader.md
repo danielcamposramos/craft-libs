@@ -444,3 +444,12 @@ a decoder's limit from damage). Not ported from those commits: the page-wide all
 refused-mask handling in `hayro-syntax` and `hayro-interpret` (0ed33990, 4aa732ea, e2464e14), which rest on
 the decoded-image cache of 558ffd7f (a performance change). Tests: those that came with the patches in
 `hayro-jbig2`, and PdfCraft's raster tests adapted in `hayro-jbig2/src/pdfcraft_tests.rs`.
+
+## Receiver API ports
+
+The common owner retains its stream expansion limits, opening cancellation, plate rendering and bounded decoder paths.
+The following ports add the APIs newer receivers use without replacing those shared policies.
+
+| PdfCraft source commit | Author | Shared scope |
+|---|---|---|
+| [d0da7938f](https://github.com/storytold/pdfcraft/commit/d0da7938f236bb4d19c09903e0db493d55d1abd1) | mtlcl410 | `OutlineGlyph::vertical_glyph_width` and its Type0 horizontal-width lookup; app Find logic is not part of this port |
