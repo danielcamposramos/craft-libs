@@ -176,7 +176,7 @@
       "path": "src/cache.rs",
       "source_sha256": "76b5dc066330666a50a32124856306b72c98e646346263bd8a269bc99e5a0d42",
       "source_git_blob": "e253a7b8c7dbfbfa2f7dc1f6c582559962060b94",
-      "sha256": "963dfb55946811af6044ebbe48273a7e959ae40f4fb6aedb2fb4e2a3a244c09a"
+      "sha256": "1e0f947db220365302a219cf307cc2873ac7348f90069b9b5c227818e416a90b"
     },
     {
       "path": "src/color.rs",
@@ -188,7 +188,7 @@
       "path": "src/context.rs",
       "source_sha256": "dc2be553958ee3f5e5e644a77a0301723bae9ca027a352c13b9caaf549cc0e56",
       "source_git_blob": "d6772baa15ebb95d3ba2d1f54ce5c250ad1e8137",
-      "sha256": "944ab280973be368158eadd27a90e7995a1ebb73711e7d8222bb95785a2b5bbb"
+      "sha256": "6e4d5d7b4091dfe444cc95a16e943d3043a0a3506c8ca56fa8b72e16e6c3538a"
     },
     {
       "path": "src/convert.rs",
@@ -609,6 +609,13 @@
       "authored": "2026-11-06T17:54:56+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/427c942aad3656dd3e01988f88d88a1c3bed4044",
       "scope": "Carry the original held-content review fix and its 64KiB/32MiB/font-identity controls. Keep the common document-local stream bound as part of cache qualification: a real two-render,64-byte-limit regression failed when the cached prefix hid render2 truncation; both renders now decode and warn. Five cache controls, budgets/cancellation/API controls and strict Clippy pass."
+    },
+    {
+      "commit": "30164b697338589e9d6f8482618c8f8a7b373b9d",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T14:45:30+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/30164b697338589e9d6f8482618c8f8a7b373b9d",
+      "scope": "Carry the original image/mask diagnostic split required by the receiver tests. Preserve Indexed and Type3 cache fields. API/budget/cancellation/cache controls and strict Clippy pass; the receiver whole gate still must qualify its exact per-mask counts."
     }
   ]
 }
