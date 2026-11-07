@@ -296,7 +296,7 @@
       "path": "src/page.rs",
       "source_sha256": "17be32b2eaa03a3367f1f20040556f7ee5b207588cf44a1af3e5253386fb46f9",
       "source_git_blob": "d7f0ec953722a938508f1f31f0adaecc0a181d20",
-      "sha256": "811dec14ca0a3250f6561a6ecd3db0c7e710133e4e97fb56fd5d07deea1e92a3"
+      "sha256": "039285d89d7c6e2b873a9f5e296829c1588fb54c93547f81d642d74afb9d0073"
     },
     {
       "path": "src/pdf.rs",
@@ -544,6 +544,34 @@
       "authored": "2026-10-28T19:32:00+05:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/30ed249a280686903a0c7b541578de1f228cba5d",
       "scope": "Original malformed content-token recovery and strict EI judging pass, existing shared bounds retained"
+    },
+    {
+      "commit": "142283f4f83a2209668603e7fc9c819a00a34464",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T06:53:35+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/142283f4f83a2209668603e7fc9c819a00a34464",
+      "scope": "Original zero-area MediaBox/CropBox repair, retaining shared Letter default and bounded iterative walker"
+    },
+    {
+      "commit": "7ece22b57e6fc7db31efd60b88db807deb1bf1a6",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T07:26:59+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/7ece22b57e6fc7db31efd60b88db807deb1bf1a6",
+      "scope": "Original page-box review: own unusable box yields to nearest inherited usable box; common Letter retained"
+    },
+    {
+      "commit": "7edbe0cd6369479a7a57a8bbf05f8a09abd040f5",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T07:29:11+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/7edbe0cd6369479a7a57a8bbf05f8a09abd040f5",
+      "scope": "Original page-box review, retaining shared Letter default"
+    },
+    {
+      "commit": "1bb42aaacf9970a15da3a4f19ccd3fbb51c3475c",
+      "author": "mtlcl410",
+      "authored": "2026-11-08T00:28:45+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/1bb42aaacf9970a15da3a4f19ccd3fbb51c3475c",
+      "scope": "Original page-box review, retaining shared Letter default"
     }
   ]
 }
