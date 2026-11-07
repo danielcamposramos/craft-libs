@@ -290,7 +290,7 @@
       "path": "src/font/mod.rs",
       "source_sha256": "7e6411927d91205ca76c6b59f9d737cd1104d066f8cfcc0a87f481016ef30313",
       "source_git_blob": "7c8c8d086d59139df791cdb6952506473ec4b5a7",
-      "sha256": "4d936cbd78b3610a9bd081bf50cf2ecb39d72fca8098987d591aa73276f99443"
+      "sha256": "7c5adc087cc1ddb1b8f5f1f2c94aad041b6f34a9a1825a312e903455976f3751"
     },
     {
       "path": "src/font/outline.rs",
@@ -735,6 +735,13 @@
       "authored": "2026-10-26T11:34:17-04:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/bac061e4731f6541a96f505e5d814664c9f066a2",
       "scope": "Keep each nested content stream above its own saved-state floor. Preserve skipped-save and byte bounds, current CMYK/plate state and outer stream restoration; do not restore the obsolete luminosity flag."
+    },
+    {
+      "commit": "8da439e3203a8a510bb6d9b24ff32b4ecd4a4e16",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T17:09:18+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/8da439e3203a8a510bb6d9b24ff32b4ecd4a4e16",
+      "scope": "Preserve the receiving renderer fallback from a missing font Subtype to its declared BaseFont. Keep descriptor, decoding, font-resource and work bounds."
     }
   ]
 }
