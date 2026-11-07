@@ -100,6 +100,7 @@ impl Filter {
         params: &Dict<'_>,
         #[cfg_attr(not(feature = "images"), allow(unused))] image_params: &ImageDecodeParams,
         limit: usize,
+        rows: Option<usize>,
         control: Option<&crate::cancel::Control>,
     ) -> Result<FilterResult<'static>, DecodeFailure> {
         crate::cancel::check(control).ok_or(DecodeFailure::StreamDecode)?;
@@ -116,7 +117,7 @@ impl Filter {
             Self::LzwDecode => (if control.is_some() { lzw_flate::lzw::decode_controlled(data, params, limit, control) } else { lzw_flate::lzw::decode(data, params, limit) })
                 .map(FilterResult::from_data)
                 .ok_or(DecodeFailure::StreamDecode),
-            Self::FlateDecode => (if control.is_some() { lzw_flate::flate::decode_controlled(data, params, limit, control) } else { lzw_flate::flate::decode(data, params, limit) })
+            Self::FlateDecode => (if control.is_some() { lzw_flate::flate::decode_controlled(data, params, limit, rows, control) } else { lzw_flate::flate::decode(data, params, limit, rows) })
                 .map(FilterResult::from_data)
                 .ok_or(DecodeFailure::StreamDecode),
             #[cfg(feature = "images")]

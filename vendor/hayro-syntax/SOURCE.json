@@ -170,13 +170,13 @@
       "path": "src/filter/lzw_flate.rs",
       "source_sha256": "db51a57effe90ad9db2d314e16081ce90e3ef99e5a5f46fcc4bdbdacfd13a528",
       "source_git_blob": "f1ab1aae73e4c84ec0993a6eb96594018ca7cc91",
-      "sha256": "f4abc50c98351641f31f44bc4db7be6b6de19df8e304d61a7f00520ba7823395"
+      "sha256": "cb7a45802bb31ce3a11289024c6500c2b6422b002b64c5db6ca3b0e16e5aa26a"
     },
     {
       "path": "src/filter/mod.rs",
       "source_sha256": "0af7145ab16b15b7a60c4b57efecb9bd5fd0cfdc9bb5f9388abb695386e63e49",
       "source_git_blob": "06bda29487d62c25dc39c1ee109091cb17e3867f",
-      "sha256": "4e470f870ae3be9c6cb1aba217b4dcf4585111cb7f6d284a20418b2adecfc4af"
+      "sha256": "b8c4772c485997343c2a5ed6a539ec46b19952dd1c5a69c207fce148e764b212"
     },
     {
       "path": "src/filter/run_length.rs",
@@ -278,7 +278,7 @@
       "path": "src/object/stream.rs",
       "source_sha256": "f5229eb2f52c9918830027c93112e042a9e97d34b5fec72f97dcc7de8c5410ac",
       "source_git_blob": "a80f0730cba317ed3771cee61d6a7ab18de296d7",
-      "sha256": "6b44de24f37ce20e4e4e7f90c58d9351c0176dca594cf6cdc22b86418125eac1"
+      "sha256": "5b8be5aa50e9b0a67b352dcfd86e3e1d85f505f7f0a2ae47600f933ba786c185"
     },
     {
       "path": "src/object/string.rs",
@@ -356,7 +356,7 @@
       "path": "src/filter/cancellation_tests.rs",
       "source_sha256": null,
       "source_git_blob": null,
-      "sha256": "d0d4054aa80ed9a732778f6a391ef12d327a3ce34de859704940445b8e10906e"
+      "sha256": "393b2a305a9515abd233c3f2a83c74a625fa5d057d6ea4a0bac43eb1c41e43ca"
     }
   ],
   "compatibility_reference": {
@@ -579,6 +579,13 @@
       "authored": "2026-10-30T08:23:56-04:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/f84290b294a6f40b11b90c683c4226f3d73aa346",
       "scope": "PNG byte-row reconstruction preserves partial final pixels; adapt new loops to existing per-open cancellation checks without relaxing predictor/decode bounds."
+    },
+    {
+      "commit": "e6c399811d7f913280eb5211863d1574a456f7ef",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T11:05:20+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/e6c399811d7f913280eb5211863d1574a456f7ef",
+      "scope": "Final-filter image-height knowledge detects exact untagged rows, logs recovery, and preserves controlled decoding, output bounds and cancellation checks."
     }
   ]
 }
