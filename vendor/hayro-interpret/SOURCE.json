@@ -302,7 +302,7 @@
       "path": "src/font/standard_font.rs",
       "source_sha256": "af3c51592c086671cb127745d4351d1380ef1212aee325099f1e933607995d7d",
       "source_git_blob": "139454a0b21eb992e9e52bf73c85e965c0f86cda",
-      "sha256": "3e6cb0030fe8af37943ba236506963e53e8a3edbee93cedace2b27785bfa4bad"
+      "sha256": "79aa58afe4378f73e6e7793348e20e2602cc2adf7fe3b5ef53d6d90821ff1a1d"
     },
     {
       "path": "src/font/true_type.rs",
@@ -1036,6 +1036,13 @@
       "authored": "2026-11-07T17:11:10+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/c420a0edf862cc8b79b5ba3186620ecc005276ff",
       "scope": "Recognize non-embedded SymbolMT names; five positive, embedded-program and Differences controls pass; restrictive style-name review follows separately."
+    },
+    {
+      "commit": "cd9b6b8a0f1a66fd87ea686574b320c58f6353c7",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T19:01:05+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/cd9b6b8a0f1a66fd87ea686574b320c58f6353c7",
+      "scope": "Restrict SymbolMT matching to actual style suffixes and preserve explicit Differences and embedded font programs; all six selected receiving controls pass."
     }
   ]
 }
