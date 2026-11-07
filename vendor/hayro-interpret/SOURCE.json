@@ -212,7 +212,7 @@
       "path": "src/font/blob.rs",
       "source_sha256": "30a9dadf498829ee03eb1ddc6deaeb09a06ee42415f288d46f4a67640582c575",
       "source_git_blob": "6eabc26b9bc30bdc51f0b5fdd5e4b556d7583ec5",
-      "sha256": "35d474bfb19a2a30afd3fdeb49401c58bbe7a6f70e015c2c4d3536d137cc14c6"
+      "sha256": "808eb6da90ca9a92d4b6712c499f1865d225daa97c3b0d97ff7413a99391398e"
     },
     {
       "path": "src/font/cid.rs",
@@ -994,6 +994,13 @@
       "authored": "2026-11-07T17:05:57+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/ef37d634b2d66e1563ca4a0c4505435ee970cd21",
       "scope": "Keep glyphs from usable CID CFF font dictionaries when another dictionary is absent; retain the common font, parser, paint and decode limits. The original receiving controls both pass."
+    },
+    {
+      "commit": "22d211fa4af60ac4998765f4cf6eb9bdd34d1555",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T18:55:11+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/22d211fa4af60ac4998765f4cf6eb9bdd34d1555",
+      "scope": "Retain the original CFF review: move the already validated owned subfonts into the yoke instead of parsing them twice; both original CID CFF receiving controls pass."
     }
   ]
 }
