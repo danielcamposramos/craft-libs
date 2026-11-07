@@ -302,7 +302,7 @@
       "path": "src/font/standard_font.rs",
       "source_sha256": "af3c51592c086671cb127745d4351d1380ef1212aee325099f1e933607995d7d",
       "source_git_blob": "139454a0b21eb992e9e52bf73c85e965c0f86cda",
-      "sha256": "6d641dbf8f20291a1e3f0c22d7d0d83c0faa054477787420b7d2b19f45c37487"
+      "sha256": "3e6cb0030fe8af37943ba236506963e53e8a3edbee93cedace2b27785bfa4bad"
     },
     {
       "path": "src/font/true_type.rs",
@@ -1029,6 +1029,13 @@
       "authored": "2026-10-28T11:37:10-04:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/aad8a3841cba715c0cbc258010a2de4faf3c8c90",
       "scope": "Read embedded OpenType CFF simple fonts, retaining missing-table fallback and shared decoded-stream limits; receiving controls pass."
+    },
+    {
+      "commit": "c420a0edf862cc8b79b5ba3186620ecc005276ff",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T17:11:10+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/c420a0edf862cc8b79b5ba3186620ecc005276ff",
+      "scope": "Recognize non-embedded SymbolMT names; five positive, embedded-program and Differences controls pass; restrictive style-name review follows separately."
     }
   ]
 }
