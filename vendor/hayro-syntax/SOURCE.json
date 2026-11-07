@@ -146,7 +146,7 @@
       "path": "src/filter/ccitt.rs",
       "source_sha256": "45d7eb89934d28cff97a00c7b264010bccfd14f3d511e1307ad50a9fef3b53c8",
       "source_git_blob": "685d680d2fbadce608a9bd3ca925c2ccc6c5d641",
-      "sha256": "67d17a339639eb0fef4cc6c745b579c6ba9ae3f2f67fd3bacb1bf1389aa5ffab"
+      "sha256": "0b0127c43f84d154341a33ec385c4885f75900eaee97d7eb24d108fa6ccf0db8"
     },
     {
       "path": "src/filter/dct.rs",
@@ -586,6 +586,13 @@
       "authored": "2026-11-07T11:05:20+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/e6c399811d7f913280eb5211863d1574a456f7ef",
       "scope": "Final-filter image-height knowledge detects exact untagged rows, logs recovery, and preserves controlled decoding, output bounds and cancellation checks."
+    },
+    {
+      "commit": "d4b4218cf131e2d62cf94d8348eced55feb3b29a",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T11:55:32+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/d4b4218cf131e2d62cf94d8348eced55feb3b29a",
+      "scope": "Decode CCITT image rows to the actual Height, preserving byte, pixel, integer-size and cancellation bounds; stream-only Rows still applies without an image height."
     }
   ]
 }
