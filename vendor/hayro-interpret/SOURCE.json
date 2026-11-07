@@ -206,7 +206,7 @@
       "path": "src/encode.rs",
       "source_sha256": "674a97c48cc62e9a218f843246776528173c36c00aa96a1e4c291c1d912c29c6",
       "source_git_blob": "b3f830ba2dcdb7069ea73706be43c55be398f670",
-      "sha256": "46c9773f05c329cad20f3126394f89a551ee393569c58911b0a921be8c020376"
+      "sha256": "5c55119baa8243f78dfe1fa74a583ff8cf919cf2b1b26357e72a60d12e2a7458"
     },
     {
       "path": "src/font/blob.rs",
@@ -973,6 +973,13 @@
       "authored": "2026-10-24T22:34:36+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/6718f1f34ed1308d3c7e9fc79bc2c23f08b3ba39",
       "scope": "ISO 32000-2 9.3.6: Type3 modes3/7 render nothing and add no clip; retain shared text-pass splitting and independent limits."
+    },
+    {
+      "commit": "6ef85c7536cf38592276d55aeabdc1074934b180",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T18:40:06+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/6ef85c7536cf38592276d55aeabdc1074934b180",
+      "scope": "Traverse only each triangle row span while retaining the existing mesh visit budget and tolerance; no bound raised."
     }
   ]
 }
