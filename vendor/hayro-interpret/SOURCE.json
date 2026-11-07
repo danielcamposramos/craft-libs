@@ -176,7 +176,7 @@
       "path": "src/cache.rs",
       "source_sha256": "76b5dc066330666a50a32124856306b72c98e646346263bd8a269bc99e5a0d42",
       "source_git_blob": "e253a7b8c7dbfbfa2f7dc1f6c582559962060b94",
-      "sha256": "1e0f947db220365302a219cf307cc2873ac7348f90069b9b5c227818e416a90b"
+      "sha256": "db49d5a70e55df0c48082201cb146b2a22a3685335f38378ed4ca87ca144b58e"
     },
     {
       "path": "src/color.rs",
@@ -434,7 +434,7 @@
       "path": "src/x_object.rs",
       "source_sha256": "e1c51e96a335c32c122011b2d05c5020c36a33c2c73342ba173c28a3e2fe0219",
       "source_git_blob": "21b134ce8cd9604399cd0776febf923d69c02673",
-      "sha256": "bee7d428d686115686cf8cea79b2052112e25bd7e7ea234762b37f7e7c010464"
+      "sha256": "08e18fd6b03e3e76657717c812257cd3a0fd6580b38a7c102656aa15c5395bd1"
     },
     {
       "path": "src/cmyk_group.rs",
@@ -616,6 +616,13 @@
       "authored": "2026-11-07T14:45:30+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/30164b697338589e9d6f8482618c8f8a7b373b9d",
       "scope": "Carry the original image/mask diagnostic split required by the receiver tests. Preserve Indexed and Type3 cache fields. API/budget/cancellation/cache controls and strict Clippy pass; the receiver whole gate still must qualify its exact per-mask counts."
+    },
+    {
+      "commit": "558ffd7f8a65708e292a558625a907cce8dd3e30",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T15:22:28+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/558ffd7f8a65708e292a558625a907cce8dd3e30",
+      "scope": "Carry failure-cache entries with replayed warnings and bounded128-byte failure accounting; retain all six shared warning variants with their original receiver bits. JPX and JBIG2 controls decoded six times before instead of twice; after, three actual controls, budgets/cancellation/API controls and strict Clippy pass. Mask shrink prerequisites and per-page JBIG2 diagnostics follow separately."
     }
   ]
 }
