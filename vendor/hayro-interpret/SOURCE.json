@@ -308,7 +308,7 @@
       "path": "src/font/true_type.rs",
       "source_sha256": "278fed0cddcc43cc7d616200dcefb45720db9d560f54e41a82c281c3163b411d",
       "source_git_blob": "b36266985942b4d7e2970f9edf7329c4edbcfa11",
-      "sha256": "a1262fd7efcf358b85b7863c97733a40e5df4295a9d1b54f66b1bada5898f600"
+      "sha256": "3827f30886a5b6c2c678c0ed3b59d6041ae8d40c34d560d05fa7d2022dc914af"
     },
     {
       "path": "src/font/type1.rs",
@@ -791,6 +791,55 @@
       "authored": "2026-11-07T07:09:33+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/49f200f99dad3d0e6344b1d7014f31b8551caa77",
       "scope": "Original Times New Roman extension of bounded Macintosh glyph-order substitute mapping"
+    },
+    {
+      "commit": "4118f479911f096cbf584d52d046196220e96579",
+      "author": "mtlcl410",
+      "authored": "2026-10-23T07:17:12+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/4118f479911f096cbf584d52d046196220e96579",
+      "scope": "Original reviewed symbolic TrueType text/glyph mapping, keeping independent common font bounds"
+    },
+    {
+      "commit": "3271fabc5cc262a11e878b758ad584ef2788271e",
+      "author": "mtlcl410",
+      "authored": "2026-10-22T09:57:29+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/3271fabc5cc262a11e878b758ad584ef2788271e",
+      "scope": "Original reviewed symbolic TrueType text/glyph mapping, keeping independent common font bounds"
+    },
+    {
+      "commit": "210c2a65a4b0293d178bbda33a470ebde79953b7",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T23:40:16+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/210c2a65a4b0293d178bbda33a470ebde79953b7",
+      "scope": "Original Macintosh text reading; symbolic glyph names retain priority before name-less Mac Roman detection"
+    },
+    {
+      "commit": "04f87b5b823a2d9015ef8e2519449e69f848a326",
+      "author": "mtlcl410",
+      "authored": "2026-11-08T13:59:43+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/04f87b5b823a2d9015ef8e2519449e69f848a326",
+      "scope": "Original Symbol/Zapf exclusion review for name-less Macintosh text mapping"
+    },
+    {
+      "commit": "93a8233b227b653d7651d4ef878b91af364d1982",
+      "author": "mtlcl410",
+      "authored": "2026-11-08T14:24:52+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/93a8233b227b653d7651d4ef878b91af364d1982",
+      "scope": "Original review: explicit unknown BaseEncoding blocks Mac Roman inference, precomputed per font"
+    },
+    {
+      "commit": "197b15d8b777f8a786c9097c7eae733c489a596b",
+      "author": "mtlcl410",
+      "authored": "2026-10-22T10:20:23+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/197b15d8b777f8a786c9097c7eae733c489a596b",
+      "scope": "Original glyph-name text review: suffixes, multi-character names, explicit Differences; retain independent Mac Roman mapping"
+    },
+    {
+      "commit": "63a6f8ace6825de5ff71b088743e3cc13720c43f",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T18:11:55+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/63a6f8ace6825de5ff71b088743e3cc13720c43f",
+      "scope": "Original strict numeric glyph-name review, keeping checked string/scalar bounds"
     }
   ]
 }
