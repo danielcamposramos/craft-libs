@@ -290,7 +290,7 @@
       "path": "src/font/mod.rs",
       "source_sha256": "7e6411927d91205ca76c6b59f9d737cd1104d066f8cfcc0a87f481016ef30313",
       "source_git_blob": "7c8c8d086d59139df791cdb6952506473ec4b5a7",
-      "sha256": "7c5adc087cc1ddb1b8f5f1f2c94aad041b6f34a9a1825a312e903455976f3751"
+      "sha256": "e09045272b556fdb7981de010f6bdc6563fb14fb253ad751af633c8cb3983e42"
     },
     {
       "path": "src/font/outline.rs",
@@ -302,7 +302,7 @@
       "path": "src/font/standard_font.rs",
       "source_sha256": "af3c51592c086671cb127745d4351d1380ef1212aee325099f1e933607995d7d",
       "source_git_blob": "139454a0b21eb992e9e52bf73c85e965c0f86cda",
-      "sha256": "01241c51fe85d94fa1bc3963e16a45be7c292104b204c37704e636ba2c0b0c5d"
+      "sha256": "c6965275bff3642602e9124c364a4a8cb5bf43c75ea1904632eae3114d057d22"
     },
     {
       "path": "src/font/true_type.rs",
@@ -314,13 +314,13 @@
       "path": "src/font/type1.rs",
       "source_sha256": "431b1fe86ca51bd993e81084a64c3e8ed8b90a67385a30eb4ffedfdd98c6f96b",
       "source_git_blob": "02f76bfb8095041e3d54df014190047de46be4c5",
-      "sha256": "af73de5038ee590bb062ee1e610a60e5e4f51d109ae765922ce9669b4e36ce95"
+      "sha256": "5a55e467fd47ddac87252c6f87d7fae484a9393fe07586e4c46467d9d0528687"
     },
     {
       "path": "src/font/type3.rs",
       "source_sha256": "bc33784f0dd3e599028b28b3696b9e4380cbff08f4c4e6299dee51f8df5eb08f",
       "source_git_blob": "c0e0d0b2df8f38183b8e23e9e8f644c0b81d0529",
-      "sha256": "341866118fb1299abd27d5935855a9f1410e3162b22fa04b46f5e24d1e9fbd45"
+      "sha256": "0951d1e19945ff5a909f03dcb6f9884336a6bf8175a226bb868e0a1705d8e2cf"
     },
     {
       "path": "src/function/mod.rs",
@@ -840,6 +840,41 @@
       "authored": "2026-11-07T18:11:55+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/63a6f8ace6825de5ff71b088743e3cc13720c43f",
       "scope": "Original strict numeric glyph-name review, keeping checked string/scalar bounds"
+    },
+    {
+      "commit": "4a213e06b327c83ace70041726f871da4994b24b",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T15:39:37+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/4a213e06b327c83ace70041726f871da4994b24b",
+      "scope": "Original strict/numbered glyph text family; shared caches and bounds retained"
+    },
+    {
+      "commit": "1ad2638460218e50120328a2246c9d5b12a31571",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T23:46:36+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/1ad2638460218e50120328a2246c9d5b12a31571",
+      "scope": "Original numbered glyph-code text, retaining strict AGL text and lenient outline-name distinction"
+    },
+    {
+      "commit": "218fbcf1b502597464ac7e924e93ebe04a954b0b",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T17:36:40+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/218fbcf1b502597464ac7e924e93ebe04a954b0b",
+      "scope": "Original review: all numbered names must identify their own codes, cached per font"
+    },
+    {
+      "commit": "f75451380c95599f301ed17cfa5326085f5cfe17",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T17:50:16+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/f75451380c95599f301ed17cfa5326085f5cfe17",
+      "scope": "Original numbered Type3 text and own-code cache, retaining decoded-procedure and advance-width caches"
+    },
+    {
+      "commit": "8c892e65299473ce854d253d47ecf7d58c098dd2",
+      "author": "mtlcl410",
+      "authored": "2026-11-09T05:27:38+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/8c892e65299473ce854d253d47ecf7d58c098dd2",
+      "scope": "Numbered-name counters below code 32 are not character encodings; original review prerequisite of the numbered Type1/Type3 text family."
     }
   ]
 }
