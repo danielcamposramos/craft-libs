@@ -302,7 +302,7 @@
       "path": "src/pdf.rs",
       "source_sha256": "b6938cd27757a20dca83b49db46d73ab32a0ca2a474a0c4517d1d82b71a1be1c",
       "source_git_blob": "c196cb14acc1bfd4dd572d7fedd8345b40e44873",
-      "sha256": "75591bf5130297b5626c36a971cd19af5c4e2a74ddbdcb83ed725ecddcb85f2f"
+      "sha256": "c674179182ea0c1e094f6e0733cc0ddf7e08bda4cc8e538661ac6123b9f2c1f7"
     },
     {
       "path": "src/reader.rs",
@@ -338,7 +338,7 @@
       "path": "src/xref.rs",
       "source_sha256": "51ffeeb7d4ac035bae2cd5ba9288c180088ae06cdcefe2b29dfeda560a793aa0",
       "source_git_blob": "20e33a410489d42e438a3f2b87d70c7bb8d66eae",
-      "sha256": "473be5d1a044a221bf828a08e77b9e5f0761423013768cf0c0d7b3e0cc41873a"
+      "sha256": "6e078fb4318c2a0ac461961d19843ef13568b945a42ef1d393071d625dae7950"
     },
     {
       "path": "src/decode_limits_tests.rs",
@@ -593,6 +593,41 @@
       "authored": "2026-11-07T11:55:32+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/d4b4218cf131e2d62cf94d8348eced55feb3b29a",
       "scope": "Decode CCITT image rows to the actual Height, preserving byte, pixel, integer-size and cancellation bounds; stream-only Rows still applies without an image height."
+    },
+    {
+      "commit": "78d90416e65287ac887c4d15a7561b84108df641",
+      "author": "mtlcl410",
+      "authored": "2026-11-07T12:38:45+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/78d90416e65287ac887c4d15a7561b84108df641",
+      "scope": "Recover final cut-off updates from object headers with existing controlled fallback, retaining decoder limits and newest-xref repair identity."
+    },
+    {
+      "commit": "4a2507c08639477ff50a112394a05393949792ae",
+      "author": "mtlcl410",
+      "authored": "2026-11-08T12:47:14+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/4a2507c08639477ff50a112394a05393949792ae",
+      "scope": "Original security review authenticates the named root before rebuild, requires matching encryption identity and at least one usable recovered page."
+    },
+    {
+      "commit": "0b0219d9666a0c506f986ae23f4a5450c022701c",
+      "author": "mtlcl410",
+      "authored": "2026-11-08T14:33:28+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/0b0219d9666a0c506f986ae23f4a5450c022701c",
+      "scope": "Original object-header review requires a token boundary after obj."
+    },
+    {
+      "commit": "577842d4942838859c253d2988bb3e46bcd62968",
+      "author": "mtlcl410",
+      "authored": "2026-11-08T14:50:25+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/577842d4942838859c253d2988bb3e46bcd62968",
+      "scope": "Original detector review requires a u32 object number; use the common controlled numeric reader and cancellable runs."
+    },
+    {
+      "commit": "9b470180abed4ded09edbbd7750a3b831674edbf",
+      "author": "mtlcl410",
+      "authored": "2026-11-08T16:29:58+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/9b470180abed4ded09edbbd7750a3b831674edbf",
+      "scope": "Original header review admits comments and delimiters after obj; preserves linear scan with common checkpoints and no allocation."
     }
   ]
 }

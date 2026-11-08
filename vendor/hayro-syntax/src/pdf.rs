@@ -127,7 +127,25 @@ impl Pdf {
     fn load(data: PdfData, password: &str, limits: DecodeLimits, control: Option<crate::cancel::Control>) -> Result<Self, LoadPdfError> {
         let password = password.as_bytes();
         let version = find_version(data.as_ref()).unwrap_or(PdfVersion::Pdf10);
-        let (xref, rebuilt_unlinked_update) = match crate::xref::root_xref_controlled(data.clone(), password, limits, control.clone()) {
+        let root = crate::xref::root_xref_controlled(data.clone(), password, limits, control.clone());
+        // Authenticate the named root first; a speculative rebuild cannot bypass it.
+        if let Err(XRefError::Encryption(error)) = root {
+            return Err(LoadPdfError::Decryption(error));
+        }
+        let root_encrypted = root.as_ref().ok().map(|(xref, _)| xref.is_encrypted());
+        let rebuilt_unlinked_update = root.as_ref().is_ok_and(|(_, rebuilt)| *rebuilt);
+        if crate::xref::cut_off_update_follows_controlled(data.as_ref(), control.as_ref()).ok_or(LoadPdfError::Invalid)?
+            && let Some(rebuilt) = crate::xref::fallback_controlled(data.clone(), password, limits, control.clone())
+                .filter(|xref| root_encrypted.is_none_or(|encrypted| encrypted == xref.is_encrypted()))
+        {
+            let xref = Arc::new(rebuilt);
+            if let Some(pages) = CachedPages::new(xref.clone())
+                && !pages.get().is_empty()
+            {
+                return Ok(Self { xref, header_version: version, pages, data, rebuilt_unlinked_update });
+            }
+        }
+        let (xref, _) = match root {
             Ok(x) => x,
             Err(e) => match e {
                 XRefError::Unknown => {

@@ -670,6 +670,14 @@ impl XRef {
         locked.xref_map = xref_map;
     }
 
+    /// Whether the objects read through this table are decrypted (original review 4a2507c0).
+    pub(crate) fn is_encrypted(&self) -> bool {
+        match &self.0 {
+            Inner::Dummy => false,
+            Inner::Some(repr) => !matches!(repr.decryptor.as_ref(), Decryptor::None),
+        }
+    }
+
     #[inline]
     pub(crate) fn needs_decryption(&self, ctx: &ReaderContext<'_>) -> bool {
         match &self.0 {
@@ -895,9 +903,9 @@ pub(crate) fn find_last_xref_pos(data: &[u8]) -> Option<usize> {
     find_last_xref_pos_controlled(data, None)
 }
 
-fn find_last_xref_pos_controlled(data: &[u8], control: Option<&crate::cancel::Control>) -> Option<usize> {
+fn find_last_xref_marker_controlled(data: &[u8], control: Option<&crate::cancel::Control>) -> Option<usize> {
     let needle = b"startxref";
-    let pos = if control.is_some() {
+    if control.is_some() {
         let mut found = None;
         for i in (0..data.len().div_ceil(64 * 1024)).rev() {
             crate::cancel::check(control)?;
@@ -908,16 +916,97 @@ fn find_last_xref_pos_controlled(data: &[u8], control: Option<&crate::cancel::Co
                 break;
             }
         }
-        found?
+        found
     } else {
-        findr_needle(data, needle)?
-    };
+        findr_needle(data, needle)
+    }
+}
+
+fn find_last_xref_pos_controlled(data: &[u8], control: Option<&crate::cancel::Control>) -> Option<usize> {
+    let needle = b"startxref";
+    let pos = find_last_xref_marker_controlled(data, control)?;
     let mut finder = Reader::new(data);
     finder.set_control(control.cloned());
     finder.jump(pos);
     finder.forward_tag(needle)?;
     finder.skip_white_spaces_and_comments();
     finder.read_without_context::<i32>()?.try_into().ok()
+}
+
+// The same footer distance used by the receiving document model.
+const STARTXREF_TAIL: usize = 4096;
+
+pub(crate) fn cut_off_update_follows_controlled(data: &[u8], control: Option<&crate::cancel::Control>) -> Option<bool> {
+    let needle = b"startxref";
+    let Some(pos) = find_last_xref_marker_controlled(data, control) else {
+        crate::cancel::check(control)?;
+        return Some(false);
+    };
+    if pos >= data.len().saturating_sub(STARTXREF_TAIL) {
+        return Some(false);
+    }
+    has_object_header_controlled(data.get(pos.saturating_add(needle.len())..)?, control)
+}
+
+// Reviewed object-header semantics: token boundaries and delimiters, and an object number
+// fitting u32. Both the candidate walk and long digit/whitespace runs remain cancellable.
+fn has_object_header_controlled(data: &[u8], control: Option<&crate::cancel::Control>) -> Option<bool> {
+    let run = |from: usize, predicate: fn(u8) -> bool| -> Option<usize> {
+        let rest = data.get(from..)?;
+        let mut count = 0;
+        let mut checks = crate::cancel::Checkpoints::new(control);
+        while let Some(&byte) = rest.get(count) {
+            checks.at(count)?;
+            if !predicate(byte) {
+                break;
+            }
+            count += 1;
+        }
+        Some(count)
+    };
+    let digits = |from| run(from, |byte| byte.is_ascii_digit());
+    let spaces = |from| run(from, is_white_space_character);
+    let mut i = 0;
+    let mut checks = crate::cancel::Checkpoints::new(control);
+    while i < data.len() {
+        checks.at(i)?;
+        let at_start = i
+            .checked_sub(1)
+            .and_then(|prev| data.get(prev))
+            .is_none_or(|&b| is_white_space_character(b) || b == b'>');
+        let n = if at_start { digits(i)? } else { 0 };
+        if n == 0 {
+            i += 1;
+            continue;
+        }
+        let mut at = i + n;
+        let s1 = spaces(at)?;
+        at += s1;
+        let g = digits(at)?;
+        at += g;
+        let s2 = spaces(at)?;
+        at += s2;
+        // The object number as the model reads it, a 32-bit unsigned integer.
+        let mut number = Reader::new(data.get(i..i + n)?);
+        number.set_control(control.cloned());
+        let number_fits = number.read_without_context::<u32>().is_some();
+        crate::cancel::check(control)?;
+        if number_fits
+            && s1 > 0
+            && g > 0
+            && s2 > 0
+            && data.get(at..).is_some_and(|rest| rest.starts_with(b"obj"))
+            && data.get(at + 3).is_none_or(|&b| {
+                is_white_space_character(b)
+                    || matches!(b, b'(' | b')' | b'<' | b'>' | b'[' | b']' | b'{' | b'}' | b'/' | b'%')
+            })
+        {
+            return Some(true);
+        }
+        // Past the digits read: none of them starts a header.
+        i += n;
+    }
+    Some(false)
 }
 
 /// A type of xref entry.
