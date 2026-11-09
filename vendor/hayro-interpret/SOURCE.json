@@ -368,7 +368,7 @@
       "path": "src/interpret/path.rs",
       "source_sha256": "a5defbc4b883b262662f7e7474a00ec1f97dbef8c03b8669859f624f5d02344b",
       "source_git_blob": "838ea099f11d918d6e333e32503368be864689f8",
-      "sha256": "c442f6ffe9d0bceaf5cff6e76a500a336def8568ef49e8b55aa4006cef2fc11c"
+      "sha256": "dfd83acf53a27e3ff73bfecc8aa515983e27d0865194fd2e3ae098b6ae59d203"
     },
     {
       "path": "src/interpret/state.rs",
@@ -380,7 +380,7 @@
       "path": "src/interpret/text.rs",
       "source_sha256": "35eafa80147aea635bdef127c33ace20e1695e11e87c7bfe1e035c886806ff30",
       "source_git_blob": "ddec0400ea7a639c14769ac9ee7e137d000b3efd",
-      "sha256": "72215f14147bb1e6e9f55d9e694f273cc3497c8de5d5bec280bc0de1632a854b"
+      "sha256": "a1fa778f8e667b079cf2a1f86a4d18f2d6ca986372df914674e27c4493131065"
     },
     {
       "path": "src/lib.rs",
@@ -1071,6 +1071,13 @@
       "authored": "2026-10-26T20:09:27-04:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/ad33ab626e7381792e1040a6df920c9b29ae1e5d",
       "scope": "Composite non-isolated knockout elements with the page backdrop; six original receiving controls pass. Preserve bounded nested renderer construction, CMYK groups, plate/ink behavior and active-form guards. Later masked-image and mesh reviews follow separately."
+    },
+    {
+      "commit": "5e671ec301e2fcb1eee8accb0c5794d81a0ed72e",
+      "author": "jonathanwxh-cell",
+      "authored": "2026-11-09T10:09:06+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/5e671ec301e2fcb1eee8accb0c5794d81a0ed72e",
+      "scope": "Group combined fill/stroke paths and per-glyph operations under transparency; both path receiving controls pass. The common whole-text-run replay bypasses the per-glyph group and still fails its text control, so its integration is a separate pending step."
     }
   ]
 }
