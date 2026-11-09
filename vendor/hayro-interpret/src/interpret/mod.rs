@@ -18,7 +18,7 @@ use crate::x_object::{
 use hayro_syntax::content::TypedIter;
 use hayro_syntax::content::ops::TypedInstruction;
 use hayro_syntax::object::dict::keys::{
-    ACTUAL_TEXT, ANNOTS, AP, AS, C, CA, F, MCID, N, OC, QUADPOINTS, RECT, SUBTYPE,
+    ACTUAL_TEXT, ANNOTS, AP, AS, C, CA, F, IRT, MCID, N, OC, QUADPOINTS, RECT, RT, SUBTYPE,
 };
 use hayro_syntax::object::{Array, Dict, Object, Rect, Stream, dict_or_stream};
 use hayro_syntax::page::{ContentReader, Page, Resources, Rotation};
@@ -235,12 +235,18 @@ pub fn interpret_page<'a>(
         // the document's own (the reading-colours setting recolours the document, not comments).
         device.begin_annotations();
         let xref = context.xref;
+        // PdfCraft patch (86): widgets are drawn after other annotations, in two passes
+        // over the array so no allocation grows with its length.
+        for widgets in [false, true] {
         let annots = annot_arr.raw_iter().filter_map(|item| match item {
             hayro_syntax::object::MaybeRef::Ref(r) => xref.get::<Dict<'_>>(r.into()).map(|d| (d, Some(r))),
             hayro_syntax::object::MaybeRef::NotRef(Object::Dict(d)) => Some((d, None)),
             hayro_syntax::object::MaybeRef::NotRef(_) => None,
         });
         for (annot, obj) in annots {
+            if (annot.get::<hayro_syntax::object::Name<'_>>(SUBTYPE).as_deref() == Some(b"Widget")) != widgets {
+                continue;
+            }
             let flags = annot.get::<u32>(F).unwrap_or(0);
 
             // Annotation should be hidden (Hidden = bit 2, NoView = bit 6).
@@ -254,6 +260,28 @@ pub fn interpret_page<'a>(
                     .map(|(_, _, shown)| !*shown)
             });
             if overridden.unwrap_or(flags & (2 | 32) != 0) {
+                continue;
+            }
+            // PdfCraft patch (56): Invisible (bit 1) hides an annotation of a type that isn't one
+            // of the standard ones (ISO 32000-2 Table 167), and a popup has no appearance of its
+            // own (§12.5.6.14): the viewer shows it as a window for its parent, not on the page.
+            let subtype = annot.get::<hayro_syntax::object::Name<'_>>(SUBTYPE);
+            if subtype.as_deref() == Some(b"Popup")
+                || (flags & 1 != 0 && !subtype.as_deref().is_some_and(is_standard_annotation_type))
+            {
+                continue;
+            }
+            // PdfCraft patch (81): a reply of type R (a markup annotation with an `/IRT` to the
+            // annotation it answers and an `/RT` other than `/Group`; R is the default, so a
+            // missing, unknown or malformed `/RT` reads as R) is not drawn, whatever its
+            // appearance or flags: "Interactive PDF processors shall not display replies to an
+            // annotation individually but together in the form of threaded comments" (ISO 32000-2
+            // Table 172). A `/RT /Group` member is part of its group's look and still draws.
+            // `/IRT` is a markup annotation's entry: a widget, link or pop-up with one still draws.
+            if !matches!(annot.get::<hayro_syntax::object::Name<'_>>(SUBTYPE).as_deref(), Some(b"Widget" | b"Link" | b"Popup"))
+                && annot.get::<Dict<'_>>(IRT).is_some()
+                && annot.get::<hayro_syntax::object::Name<'_>>(RT).as_deref() != Some(b"Group")
+            {
                 continue;
             }
             // PdfCraft patch: "Hide all comments" keeps widgets and links.
@@ -366,6 +394,7 @@ pub fn interpret_page<'a>(
                 draw_highlight_without_appearance(&annot, context, device);
             }
         }
+        }
         device.end_annotations();
     }
 }
@@ -393,6 +422,42 @@ fn no_rotate_turn(rotation: Rotation, rect: &kurbo::Rect) -> Affine {
     };
     let (x, y) = (rect.x0.min(rect.x1), rect.y0.max(rect.y1));
     Affine::new([cos, sin, -sin, cos, x - (cos * x - sin * y), y - (sin * x + cos * y)])
+}
+
+/// PdfCraft patch (56): whether `subtype` is one of the standard annotation types of
+/// ISO 32000-2 Table 171.
+fn is_standard_annotation_type(subtype: &[u8]) -> bool {
+    matches!(
+        subtype,
+        b"Text"
+            | b"Link"
+            | b"FreeText"
+            | b"Line"
+            | b"Square"
+            | b"Circle"
+            | b"Polygon"
+            | b"PolyLine"
+            | b"Highlight"
+            | b"Underline"
+            | b"Squiggly"
+            | b"StrikeOut"
+            | b"Caret"
+            | b"Stamp"
+            | b"Ink"
+            | b"Popup"
+            | b"FileAttachment"
+            | b"Sound"
+            | b"Movie"
+            | b"Screen"
+            | b"Widget"
+            | b"PrinterMark"
+            | b"TrapNet"
+            | b"Watermark"
+            | b"3D"
+            | b"Redact"
+            | b"Projection"
+            | b"RichMedia"
+    )
 }
 
 /// PdfCraft patch: the normal appearance of a Highlight annotation that has none (ISO 32000-2

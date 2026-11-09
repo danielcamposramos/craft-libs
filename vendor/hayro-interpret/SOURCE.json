@@ -362,7 +362,7 @@
       "path": "src/interpret/mod.rs",
       "source_sha256": "2b002323055bc19aa497e92c81ad8e06dc60ee03686cad89366df4ac7c7a06b2",
       "source_git_blob": "fe08fc284ba7c914d1414b68a5a346674a6f910f",
-      "sha256": "a924c2a203486c88fac19e6508b6f6dee390c4bb9f72bfcac0270a8cee8fceef"
+      "sha256": "4e06bd663130a7b90f49ffd49bb21ccb561fb6ed8c42a6eac3c1c20954dd8b8f"
     },
     {
       "path": "src/interpret/path.rs",
@@ -931,6 +931,34 @@
       "authored": "2026-11-05T23:25:23+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/abc348894c5ea114b920e31eb2f3d6bd6b5f8ddb",
       "scope": "Original loca review preserves short tables with padding; accept long only when its last offset matches glyf length."
+    },
+    {
+      "commit": "a6df1d3ca5f4025f41a2285a918364df4936ca36",
+      "author": "mtlcl410",
+      "authored": "2026-10-24T12:06:48+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/a6df1d3ca5f4025f41a2285a918364df4936ca36",
+      "scope": "Honour Invisible for nonstandard annotation types and suppress popup page appearances; preserve earlier NoRotate helpers."
+    },
+    {
+      "commit": "2bace2144f1ce24d51216f7e6d3fbe01c10d8684",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T09:03:01+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/2bace2144f1ce24d51216f7e6d3fbe01c10d8684",
+      "scope": "Draw widgets above other annotations in Annots order, retaining the receiving raw-iterator/identity API."
+    },
+    {
+      "commit": "3dca7f3b01d53ea2e495d0f2d651d9ebb97f95ef",
+      "author": "mtlcl410",
+      "authored": "2026-11-06T09:22:11+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/3dca7f3b01d53ea2e495d0f2d651d9ebb97f95ef",
+      "scope": "Original review replaces per-entry collection/sort with two passes and no growing annotation allocation."
+    },
+    {
+      "commit": "8d9f8d5f3025aba62fb266ff5604e8f7c5030100",
+      "author": "mtlcl410",
+      "authored": "2026-11-09T18:15:44+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/8d9f8d5f3025aba62fb266ff5604e8f7c5030100",
+      "scope": "Reply annotations are threaded rather than separately painted; Group, Widget, Link and Popup semantics preserved."
     }
   ]
 }
