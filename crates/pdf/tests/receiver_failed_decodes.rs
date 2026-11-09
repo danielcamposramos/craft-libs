@@ -165,3 +165,12 @@ fn a_picture_that_decodes_is_still_decoded_once_and_drawn_every_time() {
     assert_eq!(out.decodes, 1);
     assert_eq!(out.failures, 0);
 }
+/// A picture whose soft mask doesn't decode draws without it at every draw, decoded once, and
+/// the mask's failure is reported once, as it was (the picture decodes; only its mask fails).
+#[test]
+fn a_picture_whose_soft_mask_does_not_decode_draws_unmasked_decoded_once() {
+    let out = draw_five_times("S");
+    assert_eq!((out.draws.rasters, out.draws.masked), (6, 0), "drawn five times without its mask, and the picture after it");
+    assert_eq!(out.decodes, 2);
+    assert_eq!(out.failures, 1);
+}

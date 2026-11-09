@@ -434,7 +434,7 @@
       "path": "src/x_object.rs",
       "source_sha256": "e1c51e96a335c32c122011b2d05c5020c36a33c2c73342ba173c28a3e2fe0219",
       "source_git_blob": "21b134ce8cd9604399cd0776febf923d69c02673",
-      "sha256": "d819953b263d5f9cc31f371fd199ab01c156db05f5467cd2d6a1d95b79e08a85"
+      "sha256": "cdf122a043901738b51337337c9cccc17afe4f005ee8940f4913665ef1a26ded"
     },
     {
       "path": "src/cmyk_group.rs",
@@ -658,6 +658,13 @@
       "authored": "2026-11-05T21:41:22+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/f387c036d60ea670c91e92d9d7b13b53d1a962ca",
       "scope": "Keep short /W and /H dimension keys in size-dependent mask cache identity. The same image drawn20 then200 pixels wrongly reused32-square alpha for both before; after it receives32 then100 samples. Also retain the exact32x10 all-opaque truncated-mask assertion from the later diagnostic review. Two mask controls plus failure/budget/API controls and strict Clippy pass."
+    },
+    {
+      "commit": "b21ee3a7109118e873f259fed498ea50d7272d25",
+      "author": "bflatastic",
+      "authored": "2026-11-09T09:05:11+07:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/b21ee3a7109118e873f259fed498ea50d7272d25",
+      "scope": "Keep an unshrunk mask inside its parent image cache entry. Preserve mask averaging for oversized inputs. The original failed-soft-mask control counted3 computations before instead of2; after, the four failure-cache controls, two mask controls, budgets/API controls and strict Clippy pass. Original author and date retained."
     }
   ]
 }
