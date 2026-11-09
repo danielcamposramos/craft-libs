@@ -130,7 +130,7 @@
       "path": "src/flatten.rs",
       "source_sha256": "6d7ba4a5aa8d2deb229969ea874c56bed36ed4c28cb82fe1e0c8f6cf111f73ab",
       "source_git_blob": "afacf7ecbca0403d19ff70833071cbaffc2bf39d",
-      "sha256": "6d7ba4a5aa8d2deb229969ea874c56bed36ed4c28cb82fe1e0c8f6cf111f73ab"
+      "sha256": "eda6344db35eb980034de45cc11ed54f8b9c6fdd7e1a79c750b78466555c5dde"
     },
     {
       "path": "src/flatten_simd.rs",
@@ -265,6 +265,13 @@
       "authored": "2026-11-06T22:03:27+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/0e75ad08c8e00fbf7fa89f0e5d78cd88aded3373",
       "scope": "coverage limit and visible truncation; Vello affected files match the original postimage exactly; shared buffer bounds and plate paths retained"
+    },
+    {
+      "commit": "c02341f6c0e0afe5b9c458794fcf236e16c34f90",
+      "author": "mtlcl410",
+      "authored": "2026-11-09T08:31:00+08:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/c02341f6c0e0afe5b9c458794fcf236e16c34f90",
+      "scope": "zero-end-tangent wide stroke repair and original tests; exact upstream flatten.rs postimage"
     }
   ]
 }
