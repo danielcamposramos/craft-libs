@@ -35,14 +35,14 @@ use crate::{Change, Command, Declaration, Error, Picture, Shared, convert_row, f
 #[allow(clippy::all, unused_imports, dead_code, missing_docs)]
 mod stereo_protocol {
     use wayland_client;
-    use wayland_client::protocol::*;
+    use wayland_client::protocol::wl_surface;
 
     pub mod __interfaces {
         use wayland_client::backend as wayland_backend;
-        use wayland_client::protocol::__interfaces::*;
+        use wayland_client::protocol::__interfaces::{WL_SURFACE_INTERFACE, wl_surface_interface};
         wayland_scanner::generate_interfaces!("protocols/kde-stereo-content-v1.xml");
     }
-    use self::__interfaces::*;
+    use self::__interfaces::{KDE_STEREO_CONTENT_MANAGER_V1_INTERFACE, KDE_STEREO_CONTENT_V1_INTERFACE};
 
     wayland_scanner::generate_client_code!("protocols/kde-stereo-content-v1.xml");
 }
