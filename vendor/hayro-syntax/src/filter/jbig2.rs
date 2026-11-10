@@ -18,12 +18,88 @@ pub const MAX_PAGE_JBIG2_WORK: u64 = 1 << 30;
 std::thread_local! {
     // Unbounded until a page says otherwise: what isn't drawing a page has no page to run out on.
     static PAGE_WORK_LEFT: core::cell::Cell<u64> = const { core::cell::Cell::new(u64::MAX) };
+    // PdfCraft patch (31): what refused the image decoded last on this thread, if one of the
+    // decoder's limits did: `STREAM_LIMIT` or `WORK_LIMIT`, 0 otherwise.
+    static LIMITED: core::cell::Cell<u8> = const { core::cell::Cell::new(0) };
 }
+
+/// PdfCraft patch (31): a limit the stream reaches by itself, whatever ran before it (a bitmap's
+/// size, a dictionary's symbols, the bitmaps retained and the like), so decoding it again is
+/// refused again.
+#[cfg(feature = "std")]
+const STREAM_LIMIT: u8 = 1;
+/// PdfCraft patch (31): the decoding work, which may be what the page or run had left.
+#[cfg(feature = "std")]
+const WORK_LIMIT: u8 = 2;
+
+/// PdfCraft patch (31): whether the JBIG2 image decoded last on this thread was refused by one of
+/// the decoder's limits rather than failing on its data. A soft mask a limit refused hides what
+/// its image would show without it: hayro-interpret leaves such an image out, where a mask the
+/// file damaged leaves its image whole (#6722). A size or count the file damaged can read as past
+/// a limit, and is taken for one: it can't be told from a hostile one, and leaving the image out
+/// is the safe side.
+#[cfg(feature = "std")]
+pub fn jbig2_limited() -> bool {
+    LIMITED.with(core::cell::Cell::get) != 0
+}
+
+#[cfg(not(feature = "std"))]
+pub fn jbig2_limited() -> bool {
+    false
+}
+
+/// PdfCraft patch (31): whether the refusal [`jbig2_limited`] reports came from a limit the stream
+/// reaches by itself, not from the decoding work, so the same stream is refused again whenever it
+/// is decoded.
+#[cfg(feature = "std")]
+pub fn jbig2_limited_by_stream() -> bool {
+    LIMITED.with(core::cell::Cell::get) == STREAM_LIMIT
+}
+
+#[cfg(not(feature = "std"))]
+pub fn jbig2_limited_by_stream() -> bool {
+    false
+}
+
+/// PdfCraft patch (31): forget what refused the image decoded last, before decoding another
+/// through filters that may fail before JBIG2 is reached.
+#[cfg(feature = "std")]
+pub fn clear_jbig2_limited() {
+    LIMITED.with(|limited| limited.set(0));
+}
+
+#[cfg(not(feature = "std"))]
+pub fn clear_jbig2_limited() {}
+
+#[cfg(feature = "std")]
+fn note_limited(error: Option<&hayro_jbig2::DecodeError>) {
+    let refused = match error {
+        Some(hayro_jbig2::DecodeError::Overflow(hayro_jbig2::OverflowError::DecodingWork)) => {
+            WORK_LIMIT
+        }
+        Some(e) if e.is_limit() => STREAM_LIMIT,
+        _ => 0,
+    };
+    LIMITED.with(|limited| limited.set(refused));
+}
+
+#[cfg(not(feature = "std"))]
+fn note_limited(_: Option<&hayro_jbig2::DecodeError>) {}
+
+// Independent shared-parser limits are deterministic stream refusals too.
+#[cfg(feature = "std")]
+fn note_stream_limit() {
+    LIMITED.with(|limited| limited.set(STREAM_LIMIT));
+}
+
+#[cfg(not(feature = "std"))]
+fn note_stream_limit() {}
 
 /// PdfCraft patch (31): what the JBIG2 images decoded next on this thread may take, for a new page.
 #[cfg(feature = "std")]
 pub fn set_page_jbig2_work(work: u64) {
     PAGE_WORK_LEFT.with(|left| left.set(work));
+    clear_jbig2_limited();
 }
 
 /// Pays for reading `bytes` of a stream and its globals out of what the page has left, or `None`.
@@ -49,6 +125,7 @@ fn decode_for_page<D: hayro_jbig2::Decoder>(image: &hayro_jbig2::Image<'_>, deco
     let mut left = PAGE_WORK_LEFT.with(core::cell::Cell::get);
     let decoded = image.decode_within(decoder, &mut left);
     PAGE_WORK_LEFT.with(|cell| cell.set(left));
+    note_limited(decoded.as_ref().err());
     decoded.ok()
 }
 
@@ -104,10 +181,14 @@ pub(crate) fn decode(
         .and_then(|g| g.decoded().ok());
 
     charge_page_reading(data.len().saturating_add(globals.as_deref().map_or(0, <[u8]>::len)))?;
-    let image = hayro_jbig2::Image::new_embedded(data, globals.as_deref()).ok()?;
+
+    let image = hayro_jbig2::Image::new_embedded(data, globals.as_deref())
+        .inspect_err(|e| note_limited(Some(e)))
+        .ok()?;
 
     if u64::from(image.width()) * u64::from(image.height()) > MAX_PIXELS {
         warn!("embedded JBIG2 page is too large");
+        note_stream_limit();
 
         return None;
     }
@@ -126,6 +207,7 @@ pub(crate) fn decode(
     let output_len = if image_params.is_indexed { packed_len } else { luma_len };
     if (if sized_image { packed_len } else { output_len }) > limit {
         warn!("embedded JBIG2 page decodes past the stream's limit");
+        note_stream_limit();
 
         return None;
     }

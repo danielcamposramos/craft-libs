@@ -176,7 +176,7 @@
       "path": "src/cache.rs",
       "source_sha256": "76b5dc066330666a50a32124856306b72c98e646346263bd8a269bc99e5a0d42",
       "source_git_blob": "e253a7b8c7dbfbfa2f7dc1f6c582559962060b94",
-      "sha256": "d89bd723412ef364c72ba0972f04bd97393593bd9a79c9aeb72c7dfdfa9146a4"
+      "sha256": "a09ec14f06879a38ac9c5d95fe4884b331b7ed8eca69bf935870e442208942f4"
     },
     {
       "path": "src/color.rs",
@@ -362,7 +362,7 @@
       "path": "src/interpret/mod.rs",
       "source_sha256": "2b002323055bc19aa497e92c81ad8e06dc60ee03686cad89366df4ac7c7a06b2",
       "source_git_blob": "fe08fc284ba7c914d1414b68a5a346674a6f910f",
-      "sha256": "4cf02a773ad3d2c4caa61a5e8c05ad7b736ef62fa3977f6e1e9840cb74e65f5d"
+      "sha256": "ecea0b427e490b97ea844f82fd45fc689fa7043244176fac600c972ea7e078d7"
     },
     {
       "path": "src/interpret/path.rs",
@@ -434,7 +434,7 @@
       "path": "src/x_object.rs",
       "source_sha256": "e1c51e96a335c32c122011b2d05c5020c36a33c2c73342ba173c28a3e2fe0219",
       "source_git_blob": "21b134ce8cd9604399cd0776febf923d69c02673",
-      "sha256": "9437204b4100cc3da926811ad79bc49772eb11b615d81efb3b630ea56e8d4b1d"
+      "sha256": "aeb7ea18a5262c1db5a5dfaf442846474b586ed9e7c71f983a43c69fa4533a3b"
     },
     {
       "path": "src/cmyk_group.rs",
@@ -672,6 +672,13 @@
       "authored": "2026-11-06T03:33:08+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/9f786e785",
       "scope": "Original comment-number correction only: identify the soft-mask feature as patch82. Runtime implementation is unchanged from the preceding qualified owner; final whole gate follows."
+    },
+    {
+      "commit": "e2464e14402f7a443de80e88975e428cc1dd45d7",
+      "author": "Piohrun",
+      "authored": "2026-11-10T04:43:13+01:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/e2464e14402f7a443de80e88975e428cc1dd45d7",
+      "scope": "Port per-stream JBIG2 refusal metadata; retain shared image/stream/dimension/cancellation bounds and mark their refusals. Reuse a single refusal watcher in RGB, plates and raw inks so a refused opacity mask never uncovers its image. The ordinary-stream cap remains separate from known-image bounds; five synthetic controls and strict Clippy plus standalone backends pass."
     }
   ]
 }

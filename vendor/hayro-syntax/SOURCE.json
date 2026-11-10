@@ -158,7 +158,7 @@
       "path": "src/filter/jbig2.rs",
       "source_sha256": "0ac3c16e02cb13f2d5fe401edd35949320662906c3906cb39fe743acd5e32b09",
       "source_git_blob": "d87253f536e6b8ac18323f1f06164b516ad775df",
-      "sha256": "b83b8331b1f03b45d6585a2bf0f8a04d7747a4a39911c3e855fff17d2ccfc7a8"
+      "sha256": "8444ef44d1c4ee1ac631ac849f3b0fdbf41a1f44edd59c85a6ed70964398656d"
     },
     {
       "path": "src/filter/jpx.rs",
@@ -176,7 +176,7 @@
       "path": "src/filter/mod.rs",
       "source_sha256": "0af7145ab16b15b7a60c4b57efecb9bd5fd0cfdc9bb5f9388abb695386e63e49",
       "source_git_blob": "06bda29487d62c25dc39c1ee109091cb17e3867f",
-      "sha256": "710312efe2cf89cc461beabf8319f6bf1bf3b72e550dad90321028a74e2e2e6c"
+      "sha256": "ceaabc890647efcc751416b8af012c04daa096916f4db2772a7617a47449cdde"
     },
     {
       "path": "src/filter/run_length.rs",
@@ -488,6 +488,13 @@
       "authored": "2026-11-07T15:22:28+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/558ffd7f8a65708e292a558625a907cce8dd3e30",
       "scope": "Carry failure-cache entries with replayed warnings and bounded128-byte failure accounting; retain all six shared warning variants with their original receiver bits. JPX and JBIG2 controls decoded six times before instead of twice; after, three actual controls, budgets/cancellation/API controls and strict Clippy pass. Mask shrink prerequisites and per-page JBIG2 diagnostics follow separately."
+    },
+    {
+      "commit": "e2464e14402f7a443de80e88975e428cc1dd45d7",
+      "author": "Piohrun",
+      "authored": "2026-11-10T04:43:13+01:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/e2464e14402f7a443de80e88975e428cc1dd45d7",
+      "scope": "Port per-stream JBIG2 refusal metadata; retain shared image/stream/dimension/cancellation bounds and mark their refusals. Reuse a single refusal watcher in RGB, plates and raw inks so a refused opacity mask never uncovers its image. The ordinary-stream cap remains separate from known-image bounds; five synthetic controls and strict Clippy plus standalone backends pass."
     }
   ]
 }
