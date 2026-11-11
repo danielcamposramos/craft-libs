@@ -457,3 +457,6 @@ The following ports add the APIs newer receivers use without replacing those sha
 View auto-state is ported from [mtlcl410’s e5ce0afd](https://github.com/storytold/pdfcraft/commit/e5ce0afd022494d783f8370a4b4e38bf309e8526), authored 2026-10-24.
 The bounded usage walk runs before viewer overrides; printing can retain configured visibility.
 The shared plate settings and visibility-expression limits remain.
+
+Viewer annotation and appearance overrides are ported from [FredApps’s 85020ab0](https://github.com/storytold/pdfcraft/commit/85020ab05f812e8da791fcb9f24e0343f71adee5), authored 2026-11-11, with Peter Yatsyshin credited in the original.
+The shared finite appearance bounds and plate settings remain.

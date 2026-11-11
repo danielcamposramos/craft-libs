@@ -116,6 +116,15 @@ pub struct InterpreterSettings {
     /// `ocg_overrides`. On by default: that is the state for viewing. Off for output made for
     /// printing, which the View event is not.
     pub view_auto_state: bool,
+    /// PdfCraft patch (104): viewer overrides for annotations (object number, generation, shown),
+    /// applied in place of their Hidden and NoView flags: what a document's scripts show and
+    /// hide while it is read (frames of an animation), without changing the document.
+    pub annotation_overrides: Arc<Vec<(i32, i32, bool)>>,
+    /// PdfCraft patch (105): annotations the viewer draws with a form XObject as their normal
+    /// appearance (object number and generation of the annotation, then of the form), in their
+    /// own `/Rect`: a push button a document's script gave another icon (`buttonSetIcon`) while
+    /// it is read, without changing the document.
+    pub appearance_overrides: Arc<Vec<(i32, i32, i32, i32)>>,
     /// PdfCraft patch: once this is `true`, interpretation stops before the next content
     /// operator. What was drawn is then incomplete, so only set it when the output will be
     /// thrown away (a viewer's render whose result nobody can receive any more).
@@ -155,6 +164,8 @@ impl Default for InterpreterSettings {
             hide_comments: false,
             ocg_overrides: Arc::new(Vec::new()),
             view_auto_state: true,
+            annotation_overrides: Arc::new(Vec::new()),
+            appearance_overrides: Arc::new(Vec::new()),
             cancelled: None,
             preview: false,
             plate: None,
@@ -195,12 +206,26 @@ pub fn interpret_page<'a>(
         // PdfCraft patch (29): bracket the annotations so devices can tell their paints from
         // the document's own (the reading-colours setting recolours the document, not comments).
         device.begin_annotations();
-        for annot in annot_arr.iter::<Dict<'_>>() {
+        let xref = context.xref;
+        let annots = annot_arr.raw_iter().filter_map(|item| match item {
+            hayro_syntax::object::MaybeRef::Ref(r) => xref.get::<Dict<'_>>(r.into()).map(|d| (d, Some(r))),
+            hayro_syntax::object::MaybeRef::NotRef(Object::Dict(d)) => Some((d, None)),
+            hayro_syntax::object::MaybeRef::NotRef(_) => None,
+        });
+        for (annot, obj) in annots {
             let flags = annot.get::<u32>(F).unwrap_or(0);
 
             // Annotation should be hidden (Hidden = bit 2, NoView = bit 6).
             // PdfCraft patch: NoView was not honoured upstream.
-            if flags & (2 | 32) != 0 {
+            let overridden = obj.and_then(|r| {
+                context
+                    .settings
+                    .annotation_overrides
+                    .iter()
+                    .find(|(num, generation, _)| *num == r.obj_number && *generation == r.gen_number)
+                    .map(|(_, _, shown)| !*shown)
+            });
+            if overridden.unwrap_or(flags & (2 | 32) != 0) {
                 continue;
             }
             // PdfCraft patch: "Hide all comments" keeps widgets and links.
@@ -212,11 +237,22 @@ pub fn interpret_page<'a>(
 
             // PdfCraft patch: `/N` may be a stream or a dictionary of appearance states selected
             // by `/AS` (checkboxes, radio buttons, …). Upstream only handled the stream form.
-            let normal = annot.get::<Dict<'_>>(AP).and_then(|ap| {
-                ap.get::<Stream<'_>>(N).or_else(|| {
-                    let states = ap.get::<Dict<'_>>(N)?;
-                    let state = annot.get::<hayro_syntax::object::Name<'_>>(AS)?;
-                    states.get::<Stream<'_>>(state.as_ref())
+            let face = obj
+                .and_then(|r| {
+                    context
+                        .settings
+                        .appearance_overrides
+                        .iter()
+                        .find(|(num, generation, _, _)| *num == r.obj_number && *generation == r.gen_number)
+                })
+                .and_then(|&(_, _, num, generation)| xref.get::<Stream<'_>>(hayro_syntax::object::ObjectIdentifier::new(num, generation)));
+            let normal = face.or_else(|| {
+                annot.get::<Dict<'_>>(AP).and_then(|ap| {
+                    ap.get::<Stream<'_>>(N).or_else(|| {
+                        let states = ap.get::<Dict<'_>>(N)?;
+                        let state = annot.get::<hayro_syntax::object::Name<'_>>(AS)?;
+                        states.get::<Stream<'_>>(state.as_ref())
+                    })
                 })
             });
             if let Some(apx) = normal.and_then(|o| FormXObject::new(&o)) {
