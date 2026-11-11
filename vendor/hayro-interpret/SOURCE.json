@@ -362,7 +362,7 @@
       "path": "src/interpret/mod.rs",
       "source_sha256": "2b002323055bc19aa497e92c81ad8e06dc60ee03686cad89366df4ac7c7a06b2",
       "source_git_blob": "fe08fc284ba7c914d1414b68a5a346674a6f910f",
-      "sha256": "4e06bd663130a7b90f49ffd49bb21ccb561fb6ed8c42a6eac3c1c20954dd8b8f"
+      "sha256": "0eb782312ae0bd2072a896659bc0b99c98dd021f218c6856d6c2fe8c24295efd"
     },
     {
       "path": "src/interpret/path.rs",
@@ -959,6 +959,13 @@
       "authored": "2026-11-09T18:15:44+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/8d9f8d5f3025aba62fb266ff5604e8f7c5030100",
       "scope": "Reply annotations are threaded rather than separately painted; Group, Widget, Link and Popup semantics preserved."
+    },
+    {
+      "commit": "223c1f02d48a342b72c50df5688e11782fe2a286",
+      "author": "FredApps",
+      "authored": "2026-11-11T15:53:02+01:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/223c1f02d48a342b72c50df5688e11782fe2a286",
+      "scope": "Original viewer review: a cleared icon override draws nothing rather than restoring the original face. Carry only the shared engine source hunk."
     }
   ]
 }
