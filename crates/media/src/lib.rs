@@ -34,6 +34,7 @@ pub mod mxf;
 #[cfg(feature = "ogg")]
 pub mod ogg;
 pub mod source;
+pub mod stereo;
 
 pub use id::{CodecId, CodecParams, Container, PcmFormat, xiph_lace};
 pub use source::{ByteSource, ReadSeekSource};
