@@ -68,7 +68,7 @@
       "path": "src/renderer.rs",
       "source_sha256": "f7ff7bd088ceb43823ede33151138384af331cf71403f7d23f7b2937212efc3b",
       "source_git_blob": "6aa53716ad2d0203a8058b2f7271515b4fc1db22",
-      "sha256": "22f7df999a8527546967c9ee63138179b4ae6e8fe0203a375c444141e189cd10"
+      "sha256": "270c3bf52d1abf8b2d9ada1fdd9618a9899b76bccd0cf031ca098e7ff7936138"
     }
   ],
   "carried_patches": [
@@ -133,6 +133,13 @@
       "authored": "2026-10-28T17:46:00-04:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/6fcfb3f98d9fbcf18e39b524407024b238d5749a",
       "scope": "Keep the existing knockout erase pass for nested CMYK groups; original white-background pixel red240/63/168 versus245/127/197 now passes, alongside shared plate and knockout controls and strict Clippy."
+    },
+    {
+      "commit": "72c607fc47a60fb44828be5db0f931a9800a1549",
+      "author": "Ken Mantle",
+      "authored": "2026-11-12T11:57:26-05:00",
+      "origin": "https://github.com/storytold/pdfcraft/commit/72c607fc47a60fb44828be5db0f931a9800a1549",
+      "scope": "Carry the receiving renderer profile inverse and finite RGB checks. Match the original no-tint control to RGB images; ICCBased CMYK keeps its own profile. Shared plate controls remain green. The distinct earlier paint-transform prerequisite follows separately."
     }
   ]
 }
