@@ -276,6 +276,22 @@ pub fn decode(bytes: &[u8], options: &Options) -> Result<Decoded, Error> {
     guarded(|| decode_unguarded(bytes, options))
 }
 
+/// Decodes image item `id`, for example an eye named by a stereo entity group, with that item's
+/// transforms and alpha. EXIF and XMP belong to the primary image; its ICC profile is used when
+/// the selected item has none. The primary image's orientation is not applied to another item.
+pub fn decode_image(bytes: &[u8], id: u32, options: &Options) -> Result<Decoded, Error> {
+    guarded(|| {
+        probe_unguarded(bytes)?;
+        let ctx = Context::open(bytes).map_err(err)?;
+        let mut decoded = decode_item(&ctx, id, options, true)?;
+        if decoded.icc.is_none() {
+            decoded.icc = item_icc(&ctx, ctx.meta.primary);
+        }
+        (decoded.exif, decoded.xmp) = metadata(&ctx);
+        Ok(decoded)
+    })
+}
+
 /// Decodes the smallest thumbnail image the file carries whose long edge is at least
 /// `min_edge`, if any (iPhones store one of about 320 × 240). Transforms are applied as for the
 /// primary image; the metadata (and, when the thumbnail has no profile of its own, the ICC
