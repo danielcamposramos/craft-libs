@@ -1663,6 +1663,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "craft-stereo-window"
+version = "0.1.0"
+dependencies = [
+ "bitflags 2.13.2",
+ "log",
+ "smithay-client-toolkit",
+ "thiserror 2.0.21",
+ "wayland-client",
+ "wayland-protocols",
+ "wayland-scanner",
+ "x11rb",
+]
+
+[[package]]
 name = "craft-stream-codecs"
 version = "0.1.0"
 dependencies = [
@@ -1692,19 +1706,6 @@ version = "0.1.0"
 dependencies = [
  "craft-svg",
  "kurbo 0.13.1",
-]
-
-[[package]]
-name = "craft-stereo-window"
-version = "0.1.0"
-dependencies = [
- "log",
- "smithay-client-toolkit",
- "thiserror 2.0.21",
- "wayland-client",
- "wayland-protocols",
- "wayland-scanner",
- "x11rb",
 ]
 
 [[package]]

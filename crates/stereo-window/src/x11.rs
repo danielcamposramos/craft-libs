@@ -22,7 +22,7 @@ use x11rb::protocol::xproto::{
 use x11rb::rust_connection::RustConnection;
 use x11rb::wrapper::ConnectionExt as _;
 
-use crate::{Change, Command, Declaration, Error, Picture, SIDE_BY_SIDE_FULL, Shared, convert_row, fit_picture, plan};
+use crate::{Change, Command, Declaration, DepthLimits, Error, Picture, SIDE_BY_SIDE_FULL, Shared, convert_row, fit_picture, plan};
 
 /// Connects, creates the window and starts its thread.
 pub(crate) fn open(title: &str, app_id: &str, shared: Arc<Shared>) -> Result<(mpsc::Sender<Command>, JoinHandle<()>), Error> {
@@ -82,6 +82,7 @@ struct Atoms {
     one_view_size: u32,
     configure: u32,
     commit: u32,
+    depth_limits: u32,
 }
 
 fn atoms(conn: &RustConnection) -> Result<Atoms, Error> {
@@ -97,6 +98,7 @@ fn atoms(conn: &RustConnection) -> Result<Atoms, Error> {
         one_view_size: intern(b"_KDE_NET_WM_STEREO_CONTENT_ONE_VIEW_SIZE")?,
         configure: intern(b"_KDE_NET_WM_STEREO_CONTENT_ONE_VIEW_CONFIGURE")?,
         commit: intern(b"_KDE_NET_WM_STEREO_CONTENT_ONE_VIEW_COMMIT")?,
+        depth_limits: intern(b"_KDE_NET_WM_STEREO_DEPTH_LIMITS")?,
     })
 }
 
@@ -140,6 +142,7 @@ fn run(title: &str, app_id: &str, shared: &Arc<Shared>, commands: &mpsc::Receive
     'outer: loop {
         // events first, then a wait on the commands (also the pace of the loop)
         let mut redraw = false;
+        let mut depth_dirty = false;
         loop {
             match display.conn.poll_for_event() {
                 Ok(Some(Event::ConfigureNotify(e))) => {
@@ -148,6 +151,9 @@ fn run(title: &str, app_id: &str, shared: &Arc<Shared>, commands: &mpsc::Receive
                         size = (u32::from(e.width), u32::from(e.height));
                         redraw = true;
                     }
+                }
+                Ok(Some(Event::PropertyNotify(e))) if e.atom == display.atoms.depth_limits => {
+                    depth_dirty = true;
                 }
                 Ok(Some(Event::PropertyNotify(e)))
                     if e.atom == display.atoms.configure && display.support >= 7 && picture.as_ref().is_some_and(Picture::is_pair) =>
@@ -232,6 +238,9 @@ fn run(title: &str, app_id: &str, shared: &Arc<Shared>, commands: &mpsc::Receive
                 break;
             }
         }
+        if depth_dirty || redraw {
+            display.publish_depth_limits(shared);
+        }
     }
     display.declare(false);
     if let Some((pixmap, _, _)) = display.pixmap {
@@ -282,6 +291,56 @@ fn setup(title: &str, app_id: &str) -> Result<Display, Error> {
 }
 
 impl Display {
+    fn publish_depth_limits(&self, shared: &Shared) {
+        let limits = match self.read_depth_limits() {
+            Ok(value) => value,
+            Err(error) => {
+                log::warn!("stereo window: {error}");
+                None
+            }
+        };
+        if let Ok(mut value) = shared.depth_limits.lock() {
+            *value = limits;
+        }
+    }
+
+    fn read_depth_limits(&self) -> Result<Option<DepthLimits>, Error> {
+        if self.support < 10 {
+            return Ok(None);
+        }
+        let Some((view_width, view_height)) = self.placement.destination else { return Ok(None) };
+        let r = self
+            .conn
+            .get_property(false, self.window, self.atoms.depth_limits, AtomEnum::CARDINAL, 0, 3)
+            .map_err(x11("depth limits"))?
+            .reply()
+            .map_err(x11("depth limits"))?;
+        if r.type_ == u32::from(AtomEnum::NONE) {
+            return Ok(None);
+        }
+        if r.type_ != u32::from(AtomEnum::CARDINAL) || r.format != 32 || r.bytes_after != 0 {
+            return Err(Error::X11("malformed compositor depth limits".into()));
+        }
+        let words: Vec<_> = r.value32().into_iter().flatten().collect();
+        let position =
+            self.conn.translate_coordinates(self.window, self.root, 0, 0).map_err(x11("depth geometry"))?.reply().map_err(x11("depth geometry"))?;
+        let x = i64::from(position.dst_x);
+        let y = i64::from(position.dst_y);
+        let monitors = x11rb::protocol::randr::ConnectionExt::randr_get_monitors(&self.conn, self.root, true)
+            .map_err(x11("depth output"))?
+            .reply()
+            .map_err(x11("depth output"))?;
+        let overlap = |m: &x11rb::protocol::randr::MonitorInfo| {
+            let w = (x + i64::from(view_width)).min(i64::from(m.x) + i64::from(m.width)) - x.max(i64::from(m.x));
+            let h = (y + i64::from(view_height)).min(i64::from(m.y) + i64::from(m.height)) - y.max(i64::from(m.y));
+            w.max(0) * h.max(0)
+        };
+        let Some(monitor) = monitors.monitors.iter().filter(|m| overlap(m) > 0).max_by_key(|m| overlap(m)) else { return Ok(None) };
+        DepthLimits::from_fixed(&words, u32::from(monitor.width), view_width)
+            .map(Some)
+            .ok_or_else(|| Error::X11("malformed compositor depth limits".into()))
+    }
+
     /// Sizes the window for the first picture and shows it.
     fn map(&mut self, p: &Picture) -> Result<(), Error> {
         let (w, h) = window_size(p, self.support);

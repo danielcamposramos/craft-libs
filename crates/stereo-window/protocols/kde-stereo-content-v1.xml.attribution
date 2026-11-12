@@ -1,8 +1,8 @@
 asset: kde-stereo-content-v1.xml
 title: KDE stereo content declaration protocol
 author: Daniel Campos Ramos
-source: https://github.com/Sparky-OS/plasma-wayland-protocols
+source: https://github.com/Sparky-OS/libstereo-declare/blob/675798f627e9010626acc9a32ed88d2f7e0349ba/protocol/kde-stereo-content-v1.xml
 license: MIT-CMU
 license-file: ../LICENSES/MIT-CMU.txt
 added: 2026-10-24 by Daniel Campos Ramos
-notes: Unchanged protocol from the PhotoCraft Stereo View implementation.
+notes: Version 5 protocol, including compositor depth-limit feedback; original MIT-CMU notice retained.

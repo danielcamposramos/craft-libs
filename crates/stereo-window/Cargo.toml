@@ -21,4 +21,5 @@ smithay-client-toolkit = { version = "0.20", default-features = false, features 
 wayland-client = "0.31"
 wayland-protocols = { version = "0.32", default-features = false, features = ["client"] }
 wayland-scanner = "0.31"
-x11rb = { version = "=0.13.2", default-features = false }
+bitflags = "2"
+x11rb = { version = "=0.13.2", default-features = false, features = ["randr"] }

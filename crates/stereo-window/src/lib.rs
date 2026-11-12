@@ -20,8 +20,8 @@
 
 #![deny(clippy::unwrap_used, clippy::expect_used, clippy::panic, clippy::unimplemented, clippy::todo, clippy::unreachable)]
 
-use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, Mutex};
 use std::thread::JoinHandle;
 
 #[cfg(all(unix, not(target_os = "macos")))]
@@ -51,6 +51,40 @@ pub enum Error {
     /// The buffer length or dimensions are invalid, or a pair cannot hold equal-width eyes.
     #[error("the picture is malformed")]
     BadPicture,
+}
+
+/// The compositor's per-output depth budget and this surface's logical placement.
+/// Limits are pixels at a 1920-wide output, as declared by kde_stereo_depth_v1.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct DepthLimits {
+    sunk: f64,
+    popped: f64,
+    output_width: u32,
+    view_width: u32,
+}
+
+impl DepthLimits {
+    pub fn new(sunk: f64, popped: f64, output_width: u32, view_width: u32) -> Option<Self> {
+        if !sunk.is_finite() || !popped.is_finite() || sunk < 0.0 || popped < 0.0 || output_width == 0 || view_width == 0 {
+            return None;
+        }
+        Some(Self { sunk, popped, output_width, view_width })
+    }
+
+    /// X11 CARDINAL/32 depth limits are exactly two nonnegative wl_fixed_t words.
+    pub fn from_fixed(words: &[u32], output_width: u32, view_width: u32) -> Option<Self> {
+        let [sunk, popped] = words else { return None };
+        if *sunk > i32::MAX as u32 || *popped > i32::MAX as u32 {
+            return None;
+        }
+        Self::new(f64::from(*sunk) / 256.0, f64::from(*popped) / 256.0, output_width, view_width)
+    }
+
+    /// Convert output pixels to native samples; the application does not resize an eye.
+    pub fn native_pixels(&self, native_width: u32) -> (f64, f64) {
+        let scale = f64::from(self.output_width) * f64::from(native_width) / (1920.0 * f64::from(self.view_width));
+        (self.sunk * scale, self.popped * scale)
+    }
 }
 
 /// One picture for the window: RGBA8 (straight alpha, composited over black when shown). A stereo
@@ -220,6 +254,7 @@ pub(crate) struct Shared {
     pub desktop_declares: AtomicBool,
     /// The window is declared right now.
     pub declared: AtomicBool,
+    pub depth_limits: Mutex<Option<DepthLimits>>,
 }
 
 /// The Stereo View window. Closed when dropped.
@@ -254,6 +289,15 @@ impl StereoWindow {
             let _ = (title, app_id);
             Err(Error::Unsupported)
         }
+    }
+
+    /// Current compositor limits, or None until both limits and placement are known.
+    /// A missing budget never authorizes an application-defined separation.
+    pub fn depth_limits(&self) -> Option<DepthLimits> {
+        if !self.is_open() {
+            return None;
+        }
+        self.shared.depth_limits.lock().ok().and_then(|value| *value)
     }
 
     /// Which windowing system the window is on.

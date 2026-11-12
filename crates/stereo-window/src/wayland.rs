@@ -26,11 +26,11 @@ use smithay_client_toolkit::{
 };
 use wayland_client::globals::{GlobalList, registry_queue_init};
 use wayland_client::protocol::{wl_output, wl_shm, wl_surface};
-use wayland_client::{Connection, Dispatch, QueueHandle};
+use wayland_client::{Connection, Dispatch, Proxy, QueueHandle};
 use wayland_protocols::wp::viewporter::client::wp_viewport::{self, WpViewport};
 use wayland_protocols::wp::viewporter::client::wp_viewporter::WpViewporter;
 
-use crate::{Change, Command, Declaration, Error, Picture, Shared, convert_row, fit_picture, plan};
+use crate::{Change, Command, Declaration, DepthLimits, Error, Picture, Shared, convert_row, fit_picture, plan};
 
 #[allow(clippy::all, unused_imports, dead_code, missing_docs)]
 mod stereo_protocol {
@@ -42,12 +42,13 @@ mod stereo_protocol {
         use wayland_client::protocol::__interfaces::{WL_SURFACE_INTERFACE, wl_surface_interface};
         wayland_scanner::generate_interfaces!("protocols/kde-stereo-content-v1.xml");
     }
-    use self::__interfaces::{KDE_STEREO_CONTENT_MANAGER_V1_INTERFACE, KDE_STEREO_CONTENT_V1_INTERFACE};
+    use self::__interfaces::{KDE_STEREO_CONTENT_MANAGER_V1_INTERFACE, KDE_STEREO_CONTENT_V1_INTERFACE, KDE_STEREO_DEPTH_V1_INTERFACE};
 
     wayland_scanner::generate_client_code!("protocols/kde-stereo-content-v1.xml");
 }
 use stereo_protocol::kde_stereo_content_manager_v1::KdeStereoContentManagerV1;
 use stereo_protocol::kde_stereo_content_v1::{self, KdeStereoContentV1};
+use stereo_protocol::kde_stereo_depth_v1::{self, KdeStereoDepthV1};
 
 /// Sends commands to the window thread.
 pub(crate) struct CommandSender(channel::Sender<Command>);
@@ -98,6 +99,10 @@ struct State {
     viewport: WpViewport,
     manager: Option<KdeStereoContentManagerV1>,
     content: Option<KdeStereoContentV1>,
+    _depth: Option<KdeStereoDepthV1>,
+    raw_limits: Option<(f64, f64)>,
+    outputs: Vec<wl_output::WlOutput>,
+    view_width: Option<u32>,
     declaration: Declaration,
     picture: Option<Picture>,
     configured: bool,
@@ -149,7 +154,7 @@ fn setup(title: &str, app_id: &str, shared: &Arc<Shared>) -> Result<(EventLoop<'
     let shm = Shm::bind(&globals, &qh).map_err(|e| wl("wl_shm", &e))?;
     let viewporter = SimpleGlobal::<WpViewporter, 1>::bind(&globals, &qh).map_err(|e| wl("wp_viewporter", &e))?;
     // present when the desktop announces the stereo declaration
-    let manager = globals.bind::<KdeStereoContentManagerV1, _, _>(&qh, 1..=1, ()).ok();
+    let manager = globals.bind::<KdeStereoContentManagerV1, _, _>(&qh, 1..=5, ()).ok();
 
     let surface = compositor.create_surface(&qh);
     let window = xdg_shell.create_window(surface, WindowDecorations::RequestServer, &qh);
@@ -157,6 +162,7 @@ fn setup(title: &str, app_id: &str, shared: &Arc<Shared>) -> Result<(EventLoop<'
     window.set_app_id(app_id);
     window.set_min_size(Some((160, 90)));
     let viewport = viewporter.get().map_err(|e| wl("wp_viewporter", &e))?.get_viewport(window.wl_surface(), &qh, ());
+    let depth = manager.as_ref().filter(|m| m.version() >= 5).map(|m| m.get_depth(window.wl_surface(), &qh, ()));
     // The window is mapped by its first commit; the first picture is drawn at the configure.
     window.commit();
     let pool = SlotPool::new(4096, &shm).map_err(|e| wl("shm pool", &e))?;
@@ -170,6 +176,10 @@ fn setup(title: &str, app_id: &str, shared: &Arc<Shared>) -> Result<(EventLoop<'
         viewport,
         manager,
         content: None,
+        _depth: depth,
+        raw_limits: None,
+        outputs: Vec::new(),
+        view_width: None,
         declaration: Declaration::default(),
         picture: None,
         configured: false,
@@ -182,6 +192,31 @@ fn setup(title: &str, app_id: &str, shared: &Arc<Shared>) -> Result<(EventLoop<'
 }
 
 impl State {
+    fn publish_limits(&self) {
+        // The event refers to the surface's main output. Do not guess that output
+        // while it straddles several outputs or its geometry is not known yet.
+        let value = (|| {
+            let [output] = self.outputs.as_slice() else { return None };
+            let info = self.output_state.info(output)?;
+            let width = if let Some((width, _)) = info.logical_size {
+                width
+            } else {
+                let mode = info.modes.iter().find(|m| m.current)?;
+                let rotated = matches!(
+                    info.transform,
+                    wl_output::Transform::_90 | wl_output::Transform::_270 | wl_output::Transform::Flipped90 | wl_output::Transform::Flipped270
+                );
+                let pixels = if rotated { mode.dimensions.1 } else { mode.dimensions.0 };
+                pixels / info.scale_factor.max(1)
+            };
+            let (sunk, popped) = self.raw_limits?;
+            DepthLimits::new(sunk, popped, u32::try_from(width).ok()?, self.view_width?)
+        })();
+        if let Ok(mut limits) = self.shared.depth_limits.lock() {
+            *limits = value;
+        }
+    }
+
     fn show(&mut self, picture: Picture) {
         self.picture = Some(picture);
         self.draw();
@@ -236,6 +271,8 @@ impl State {
         let eye_w = pic.eye_width();
         let source_w = if decided.left_eye_only { eye_w } else { pic.width };
         let (dw, dh) = fit_picture(&pic, self.size);
+        self.view_width = Some(dw);
+        self.publish_limits();
         self.viewport.set_source(0.0, 0.0, source_w as f64, pic.height as f64);
         self.viewport.set_destination(i32::try_from(dw).unwrap_or(i32::MAX), i32::try_from(dh).unwrap_or(i32::MAX));
         let surface = self.window.wl_surface();
@@ -251,8 +288,16 @@ impl CompositorHandler for State {
     fn scale_factor_changed(&mut self, _: &Connection, _: &QueueHandle<Self>, _: &wl_surface::WlSurface, _: i32) {}
     fn transform_changed(&mut self, _: &Connection, _: &QueueHandle<Self>, _: &wl_surface::WlSurface, _: wl_output::Transform) {}
     fn frame(&mut self, _: &Connection, _: &QueueHandle<Self>, _: &wl_surface::WlSurface, _: u32) {}
-    fn surface_enter(&mut self, _: &Connection, _: &QueueHandle<Self>, _: &wl_surface::WlSurface, _: &wl_output::WlOutput) {}
-    fn surface_leave(&mut self, _: &Connection, _: &QueueHandle<Self>, _: &wl_surface::WlSurface, _: &wl_output::WlOutput) {}
+    fn surface_enter(&mut self, _: &Connection, _: &QueueHandle<Self>, _: &wl_surface::WlSurface, output: &wl_output::WlOutput) {
+        if !self.outputs.contains(output) {
+            self.outputs.push(output.clone());
+        }
+        self.publish_limits();
+    }
+    fn surface_leave(&mut self, _: &Connection, _: &QueueHandle<Self>, _: &wl_surface::WlSurface, output: &wl_output::WlOutput) {
+        self.outputs.retain(|o| o != output);
+        self.publish_limits();
+    }
 }
 
 impl OutputHandler for State {
@@ -260,8 +305,13 @@ impl OutputHandler for State {
         &mut self.output_state
     }
     fn new_output(&mut self, _: &Connection, _: &QueueHandle<Self>, _: wl_output::WlOutput) {}
-    fn update_output(&mut self, _: &Connection, _: &QueueHandle<Self>, _: wl_output::WlOutput) {}
-    fn output_destroyed(&mut self, _: &Connection, _: &QueueHandle<Self>, _: wl_output::WlOutput) {}
+    fn update_output(&mut self, _: &Connection, _: &QueueHandle<Self>, _: wl_output::WlOutput) {
+        self.publish_limits();
+    }
+    fn output_destroyed(&mut self, _: &Connection, _: &QueueHandle<Self>, output: wl_output::WlOutput) {
+        self.outputs.retain(|o| o != &output);
+        self.publish_limits();
+    }
 }
 
 impl WindowHandler for State {
@@ -317,6 +367,20 @@ impl Dispatch<KdeStereoContentManagerV1, ()> for State {
 
 impl Dispatch<KdeStereoContentV1, ()> for State {
     fn event(_: &mut State, _: &KdeStereoContentV1, _: kde_stereo_content_v1::Event, _: &(), _: &Connection, _: &QueueHandle<State>) {}
+}
+
+impl Dispatch<KdeStereoDepthV1, ()> for State {
+    fn event(state: &mut State, _: &KdeStereoDepthV1, event: kde_stereo_depth_v1::Event, _: &(), _: &Connection, _: &QueueHandle<State>) {
+        if let kde_stereo_depth_v1::Event::DepthLimits { sunk, popped } = event {
+            state.raw_limits = if sunk.is_finite() && popped.is_finite() && sunk >= 0.0 && popped >= 0.0 {
+                Some((sunk, popped))
+            } else {
+                log::warn!("stereo window: malformed compositor depth limits");
+                None
+            };
+            state.publish_limits();
+        }
+    }
 }
 
 delegate_compositor!(State);

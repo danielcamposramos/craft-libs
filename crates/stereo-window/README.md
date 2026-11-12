@@ -24,7 +24,7 @@ squeezed pictures never appear. A picture that is not a pair is shown as it is a
 declared; the declaration is removed when a pair gives way to one.
 
 `protocols/kde-stereo-content-v1.xml` is the protocol description of Sparky Stereo OS's
-`plasma-wayland-protocols` fork, vendored byte for byte (SPDX MIT-CMU, Daniel Campos Ramos; a
+`libstereo-declare` order495 protocol at675798f6, vendored byte for byte (SPDX MIT-CMU, Daniel Campos Ramos; a
 permissive licence, kept as it is). It has one packing, `side_by_side_full` (3), and no class
 request. The crate's own code is MIT OR Apache-2.0.
 
@@ -37,3 +37,13 @@ It changes the Wayland viewport destination and X11 one-view place, never the up
 For example, two 960×1080 half-width views remain a 1920×1080 pair with 2:1 samples.
 On X11, non-square samples require support version 6's independent ONE_VIEW_SIZE; older servers show the ordinary left-eye preview instead.
 Square-sample pairs retain the existing version 2/3 compatibility path.
+
+
+## Scene depth limits
+
+`StereoWindow::depth_limits` returns the compositor's current limits together with the logical output/view geometry, without changing media-pair delivery.
+Wayland consumes version5 `kde_stereo_depth_v1.depth_limits`; X11 support10 consumes `_KDE_NET_WM_STEREO_DEPTH_LIMITS`, exactly two nonnegative24.8fixed-point CARDINALs.
+`DepthLimits::native_pixels` converts the1920-wide-output convention into the source raster's samples, accounting for the output/view width ratio once.
+It never resizes a picture and exposes no app-specific strength, device, separation or output option.
+An older desktop, missing/malformed limits, unknown geometry or an ambiguous Wayland surface spanning several outputs returns `None`.
+Callers must say why depth is unavailable instead of inventing a budget; media whose two eyes already exist does not need this API.
