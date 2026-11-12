@@ -184,3 +184,12 @@ opt-level = 3
 # 2 MiB stack of a test thread. The apps this reader came from build their crates at this level.
 [profile.dev.package.craft-affinity]
 opt-level = 1
+
+# Like its PhotoCraft donor, build the bounded KRA node walk with optimisation: without it,
+# the 250-group case exhausts the regression's unchanged 512 KiB stack before returning.
+[profile.dev.package.craft-kra]
+opt-level = 1
+
+# The OpenRaster node walk has the same donor profile and small-stack regression as KRA.
+[profile.dev.package.craft-ora]
+opt-level = 1
