@@ -11,6 +11,7 @@ rust-version = "1.95"
 repository = "https://github.com/storytold/craft-libs"
 
 [workspace.dependencies]
+craft-stereo-camera = { path = "crates/stereo-camera" }
 # internal: add each crate here as `craft-<name> = { path = "crates/<name>" }`
 craft-platform = { path = "crates/platform" }
 craft-aep = { path = "crates/aep" }

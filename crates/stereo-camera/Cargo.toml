@@ -1,0 +1,14 @@
+[package]
+name = "craft-stereo-camera"
+description = "Coherent parallel stereo camera projections within a native-pixel depth budget"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+glam = "0.30"
