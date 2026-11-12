@@ -1079,6 +1079,13 @@
       "authored": "2026-11-09T10:09:06+08:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/5e671ec301e2fcb1eee8accb0c5794d81a0ed72e",
       "scope": "Group combined fill/stroke paths and per-glyph operations under transparency; both path receiving controls pass. The common whole-text-run replay bypasses the per-glyph group and still fails its text control, so its integration is a separate pending step."
+    },
+    {
+      "commit": "037e202ce620133da3544f1a1c5ba94a4701a52e",
+      "author": "KenM76",
+      "authored": "2026-11-12T14:26:33-05:00",
+      "origin": "https://github.com/storytold/craft-libs/pull/1137",
+      "scope": "Carry the original ten common raster controls and plate-mode backdrop control; production family is already carried from its three original PdfCraft subjects. All ten raster and all29plate controls pass."
     }
   ]
 }

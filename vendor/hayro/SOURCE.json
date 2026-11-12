@@ -196,6 +196,13 @@
       "authored": "2026-10-27T13:22:02-04:00",
       "origin": "https://github.com/storytold/pdfcraft/commit/6a76d280168ebad42198de184d03ac11bf31f647",
       "scope": "Knockout shadings replace only their actual coverage at full shape opacity; all ten receiving knockout backdrop controls pass."
+    },
+    {
+      "commit": "037e202ce620133da3544f1a1c5ba94a4701a52e",
+      "author": "KenM76",
+      "authored": "2026-11-12T14:26:33-05:00",
+      "origin": "https://github.com/storytold/craft-libs/pull/1137",
+      "scope": "Carry the original ten common raster controls and plate-mode backdrop control; production family is already carried from its three original PdfCraft subjects. All ten raster and all29plate controls pass."
     }
   ]
 }
