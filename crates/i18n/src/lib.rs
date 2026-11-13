@@ -10,6 +10,7 @@
 //! writes `0`–`9` without grouping.
 #![deny(clippy::unwrap_used, clippy::expect_used, clippy::panic, clippy::unimplemented, clippy::todo, clippy::unreachable)]
 
+pub mod build_catalog;
 mod catalog;
 #[cfg(feature = "collate")]
 mod collate;
