@@ -1,0 +1,4 @@
+SPDX-FileCopyrightText: 2021-2024 alampy.com and winprint contributors
+SPDX-License-Identifier: BSD-3-Clause
+Source: https://github.com/storytold/winprint.rs/blob/e90c444476609485ea3f5ff67ab12f65d75b11df/test_data/print_capabilities.xml
+Unchanged upstream Print Schema test data; see LICENSE.md and SOURCE.json.

@@ -77,5 +77,13 @@
     ".vscode",
     "crates/gdi",
     "utils"
-  ]
+  ],
+  "applied_fix_revision": "72951d7455ebcab569fbd9386c513d3d9f53fb02",
+  "applied_fix_author": "dotCooCoo",
+  "applied_fix_author_date": "2026-11-11T17:40:15-08:00",
+  "applied_fix_original_file_sha256": "a9cf145861c528031063e2d932f7b1a283ef53227a6adea1275e4487cd90991d",
+  "local_format_only_files": {
+    "src/printer/dxgi.rs": "e264715ce03c6ae4f3c0adec29a4b22180dc4897abeb3916c593317854f44faf",
+    "src/ticket/document/writer.rs": "bdf57577e400d4644d2a07762203ac2be214c48a5be28bf753a39483c1a34771"
+  }
 }

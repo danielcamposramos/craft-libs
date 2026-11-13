@@ -13,7 +13,9 @@ The six upstream binary test fixtures are replaced with original font-free A4 pa
 Generate them with `python3 make_fixtures.py`.
 The original PDF fixtures embedded fonts whose redistribution terms were not established for this import.
 No font, third-party document or image is imported from those fixtures.
-The original Rust test sources and the two XML fixtures are unchanged.
+The Rust test sources and the two XML fixtures are unchanged, apart from default-rustfmt layout in `src/ticket/document/writer.rs`.
+`src/printer/dxgi.rs` also has only a default-rustfmt layout adjustment; both exceptions are hashed separately in `SOURCE.json`.
+The carried `PrintTicket::from_dev_mode` file remains byte-identical to its upstream fix.
 The PDF and TIFF representations are independently compared after PDF rasterization; Windows printing and XPS rendering still require Windows.
 Upstream's separate GDI crate, workflows, editor configuration and fixture-generation utility are omitted because they are not part of this Cargo package's source dependency.
 

@@ -362,7 +362,10 @@ mod tests {
         let xml = String::from_utf8(document.to_xml()).unwrap();
         assert!(xml.contains(">psk:LongEdgeFirst<"), "{xml}");
         assert!(xml.contains(">ns0004:Letter<"), "{xml}");
-        assert!(xml.contains(r#"xmlns:ns0004="urn:only-used-in-a-value""#), "{xml}");
+        assert!(
+            xml.contains(r#"xmlns:ns0004="urn:only-used-in-a-value""#),
+            "{xml}"
+        );
         assert!(!xml.contains('{'), "{xml}");
     }
 }

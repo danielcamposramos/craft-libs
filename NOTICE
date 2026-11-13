@@ -276,3 +276,8 @@ implementation, https://github.com/macosforge/alac at c38887c5c5e64a4b31108733bd
 (LICENSE-APACHE). The files are modified: translated to Rust, with bounds checks on hostile input,
 wrapping integer arithmetic, the unrolled predictor and per-width matrix routines folded into one,
 and the average bit rate filled in. Those files are Apache-2.0 only.
+
+Windows print wrapper: vendor/winprint retains the BSD-3-Clause notice in
+vendor/winprint/LICENSE.md, copyright 2021-2024 alampy.com and contributors.
+Its pending PrintTicket::from_dev_mode patch is by dotCooCoo (winprint.rs#24).
+Original font-free replacement test fixtures: Daniel Campos Ramos, CC0-1.0.
