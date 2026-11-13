@@ -1,0 +1,32 @@
+[
+  {
+    "path": "test_data/test_document.pdf",
+    "sha256": "998edb06cded8db8c02977f7d9bf3209bbeb58b8c257464d7ed1157f0a572a45",
+    "license": "CC0-1.0"
+  },
+  {
+    "path": "test_data/test_document.tiff",
+    "sha256": "a830abcd4b95fb7f6c3086e5eeb64e83a1698d45f49bdb54a189a157542d51a0",
+    "license": "CC0-1.0"
+  },
+  {
+    "path": "test_data/test_document.xps",
+    "sha256": "c4849a187f44625ea390dc3c317ddd7da495e119a39d2ca9b93079c3bcc52f9e",
+    "license": "CC0-1.0"
+  },
+  {
+    "path": "test_data/visual_regression/data.pdf",
+    "sha256": "998edb06cded8db8c02977f7d9bf3209bbeb58b8c257464d7ed1157f0a572a45",
+    "license": "CC0-1.0"
+  },
+  {
+    "path": "test_data/visual_regression/data.tiff",
+    "sha256": "a830abcd4b95fb7f6c3086e5eeb64e83a1698d45f49bdb54a189a157542d51a0",
+    "license": "CC0-1.0"
+  },
+  {
+    "path": "test_data/visual_regression/data.xps",
+    "sha256": "c4849a187f44625ea390dc3c317ddd7da495e119a39d2ca9b93079c3bcc52f9e",
+    "license": "CC0-1.0"
+  }
+]
