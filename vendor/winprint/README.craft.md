@@ -20,4 +20,4 @@ The PDF and TIFF representations are independently compared after PDF rasterizat
 Upstream's separate GDI crate, workflows, editor configuration and fixture-generation utility are omitted because they are not part of this Cargo package's source dependency.
 
 Keep `default-features = false` in the consumer: the optional `pdfium` feature retains upstream's download behavior and is not enabled by this import.
-The source and fixture migration used AI assistance; Daniel Campos Ramos reviewed the import and recorded the checks.
+The source and fixture migration used AI assistance; the import audit and automated checks are recorded with this change.

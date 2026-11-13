@@ -98,7 +98,7 @@ and the exact transfer revision are recorded in each vendored crate's SOURCE.jso
 
 `vendor/winprint` retains the BSD-3-Clause licence and original source notices from [Storytold winprint.rs e90c444](https://github.com/storytold/winprint.rs/tree/e90c444476609485ea3f5ff67ab12f65d75b11df), plus dotCooCoo’s unchanged pending [#24](https://github.com/storytold/winprint.rs/pull/24) patch.
 The six original test assets below replace upstream binary fixtures; they contain only font-free geometric patterns, with no location or personal metadata.
-The source migration and fixture generator used AI assistance, reviewed by Daniel Campos Ramos.
+The source migration and fixture generator used AI assistance; the import records retain the source hashes and automated checks.
 
 | File | Author | Source | Licence | SHA-256 | Use |
 | --- | --- | --- | --- | --- | --- |
