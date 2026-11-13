@@ -59,6 +59,7 @@ pub struct Camera {
     pub projection: Mat4,
     pub kind: ProjectionKind,
     /// Horizontal focal coefficient of the actual perspective environment projection.
+    /// Zero when no perspective environment is drawn (for example, a solid background).
     pub infinity_projection_x: f32,
     /// Positive view depth of the existing camera's point of interest.
     pub zero_depth: f32,
@@ -165,7 +166,7 @@ impl Camera {
     pub fn pair(self) -> Result<CameraPair, Error> {
         let Self { eye, view, projection, kind, infinity_projection_x, zero_depth: d, depths, width, budget } = self;
         if !infinity_projection_x.is_finite()
-            || infinity_projection_x <= 0.0
+            || infinity_projection_x < 0.0
             || width == 0
             || !eye.is_finite()
             || !view.is_finite()
@@ -228,9 +229,12 @@ impl Camera {
         let positive = profile(depths.near).max(0.0);
         let negative = (-profile(depths.far)).max(infinity);
         let f = f64::from(projection.x_axis.x) * f64::from(width) / 2.0;
-        let mut e = f64::from(budget.sunk) / (f * negative);
+        let mut e = if negative > 0.0 { f64::from(budget.sunk) / (f * negative) } else { f64::INFINITY };
         if positive > 0.0 {
             e = e.min(f64::from(budget.popped) / (f * positive));
+        }
+        if positive == 0.0 && negative == 0.0 {
+            e = 0.0;
         }
         let e = e as f32;
         if !e.is_finite() || e < 0.0 {

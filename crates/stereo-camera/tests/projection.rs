@@ -167,8 +167,26 @@ fn a_narrower_environment_uses_its_actual_intrinsics_in_the_budget() {
         let disparity = (a.x / a.w - b.x / b.w) * 320.0;
         assert!((disparity + 24.0).abs() < 0.0001, "{kind:?}: {disparity}");
         assert_eq!(a.y / a.w, b.y / b.w);
-        for invalid in [0.0, -1.0, f32::INFINITY, f32::NAN] {
+        for invalid in [-1.0, f32::INFINITY, f32::NAN] {
             assert!(Camera { infinity_projection_x: invalid, ..c }.pair().is_err());
         }
     }
+}
+
+#[test]
+fn a_solid_background_does_not_introduce_an_infinity_plane() {
+    let mut c = camera(640, 360, ProjectionKind::Perspective);
+    c.infinity_projection_x = 0.0;
+    let pair = c.pair().unwrap();
+    let f = c.projection.x_axis.x * 320.0;
+    assert!((pair.baseline * f * (1.0 / 4.0 - 1.0 / 5.0) - 12.0).abs() < 0.0001);
+    assert!((pair.baseline * f * (1.0 / 6.0 - 1.0 / 5.0) + 8.0).abs() < 0.0001);
+    c.depths = DepthRange { near: 5.0, far: 5.0 };
+    let flat = c.pair().unwrap();
+    assert_eq!(flat.baseline, 0.0);
+    for eye in flat.eyes {
+        assert_eq!(eye.view, c.view);
+        assert_eq!(eye.projection, c.projection);
+    }
+    assert!(Camera { infinity_projection_x: -1.0, ..c }.pair().is_err());
 }
