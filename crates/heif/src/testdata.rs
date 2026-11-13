@@ -50,6 +50,9 @@ pub struct Spec<'a> {
     /// A stereo pair (a spatial photo): a second image of the same size and samples (the
     /// right eye) and a `grpl` box with a `ster` entity group naming the primary image (left) and it.
     pub stereo: bool,
+    /// Two eye images distinct from the primary image, with their own dimensions and samples.
+    /// A `ster` entity group names them left first; the primary remains the monoscopic fallback.
+    pub eyes: Option<(u32, u32, Sampler<'a>, Sampler<'a>)>,
     /// When nonzero, the alpha image is instead a grid of `n` × `n` references to one alpha tile
     /// (a hostile file: the same stored picture rebuilt for every reference).
     pub alpha_tile_repeats: u8,
@@ -71,6 +74,7 @@ impl<'a> Spec<'a> {
             thumbnail: None,
             ignored_aux: Vec::new(),
             stereo: false,
+            eyes: None,
             alpha_tile_repeats: 0,
             thumbnail_tile_repeats: 0,
         }
@@ -603,6 +607,10 @@ pub fn build(spec: &Spec<'_>) -> Vec<u8> {
         let id = f.add(b"grid", g, Vec::new());
         f.refs.push((b"dimg", id, vec![tile; usize::from(n) * usize::from(n)]));
         f.refs.push((b"thmb", id, vec![primary]));
+    }
+    if let Some((w, h, left, right)) = spec.eyes {
+        let (l, r) = (f.image(w, h, spec.bit_depth, false, left), f.image(w, h, spec.bit_depth, false, right));
+        f.groups.push((b"ster", 1001, vec![u32::from(l), u32::from(r)]));
     }
     f.write(primary)
 }

@@ -9,12 +9,12 @@ use crate::matroska::error::{Error, Result};
 use crate::matroska::ids::{
     AUDIO, BIT_DEPTH, BITS_PER_CHANNEL, BLOCK, BLOCK_DURATION, BLOCK_GROUP, CB_SUBSAMPLING_HORZ, CB_SUBSAMPLING_VERT, CHANNELS, CHROMA_SITING_HORZ,
     CHROMA_SITING_VERT, CHROMA_SUBSAMPLING_HORZ, CHROMA_SUBSAMPLING_VERT, CLUSTER, CODEC_DELAY, CODEC_ID, CODEC_PRIVATE, COLOUR,
-    CUE_CLUSTER_POSITION, CUE_POINT, CUE_TIME, CUE_TRACK, CUE_TRACK_POSITIONS, CUES, DEFAULT_DURATION, DOC_TYPE, DOC_TYPE_READ_VERSION,
-    DOC_TYPE_VERSION, DURATION, EBML, EBML_MAX_ID_LENGTH, EBML_MAX_SIZE_LENGTH, EBML_READ_VERSION, EBML_VERSION, FLAG_LACING, INFO, LANGUAGE,
-    LUMINANCE_MAX, LUMINANCE_MIN, MASTERING_METADATA, MATRIX_COEFFICIENTS, MAX_CLL, MAX_FALL, MUXING_APP, NAME, PIXEL_HEIGHT, PIXEL_WIDTH, PRIMARIES,
-    PRIMARY_B_X, PRIMARY_B_Y, PRIMARY_G_X, PRIMARY_G_Y, PRIMARY_R_X, PRIMARY_R_Y, RANGE, REFERENCE_BLOCK, SAMPLING_FREQUENCY, SEEK, SEEK_HEAD,
-    SEEK_ID, SEEK_POSITION, SEEK_PRE_ROLL, SEGMENT, SIMPLE_BLOCK, TIMESTAMP, TIMESTAMP_SCALE, TITLE, TRACK_ENTRY, TRACK_NUMBER, TRACK_TYPE,
-    TRACK_UID, TRACKS, TRANSFER_CHARACTERISTICS, VIDEO, VOID, WHITE_POINT_X, WHITE_POINT_Y, WRITING_APP,
+    CUE_CLUSTER_POSITION, CUE_POINT, CUE_TIME, CUE_TRACK, CUE_TRACK_POSITIONS, CUES, DEFAULT_DURATION, DISPLAY_HEIGHT, DISPLAY_WIDTH, DOC_TYPE,
+    DOC_TYPE_READ_VERSION, DOC_TYPE_VERSION, DURATION, EBML, EBML_MAX_ID_LENGTH, EBML_MAX_SIZE_LENGTH, EBML_READ_VERSION, EBML_VERSION, FLAG_LACING,
+    INFO, LANGUAGE, LUMINANCE_MAX, LUMINANCE_MIN, MASTERING_METADATA, MATRIX_COEFFICIENTS, MAX_CLL, MAX_FALL, MUXING_APP, NAME, PIXEL_HEIGHT,
+    PIXEL_WIDTH, PRIMARIES, PRIMARY_B_X, PRIMARY_B_Y, PRIMARY_G_X, PRIMARY_G_Y, PRIMARY_R_X, PRIMARY_R_Y, RANGE, REFERENCE_BLOCK, SAMPLING_FREQUENCY,
+    SEEK, SEEK_HEAD, SEEK_ID, SEEK_POSITION, SEEK_PRE_ROLL, SEGMENT, SIMPLE_BLOCK, STEREO_MODE, TIMESTAMP, TIMESTAMP_SCALE, TITLE, TRACK_ENTRY,
+    TRACK_NUMBER, TRACK_TYPE, TRACK_UID, TRACKS, TRANSFER_CHARACTERISTICS, VIDEO, VOID, WHITE_POINT_X, WHITE_POINT_Y, WRITING_APP,
 };
 use crate::matroska::track::{Color, TrackKind};
 
@@ -44,6 +44,12 @@ pub struct TrackSpec {
     /// own colour syntax carries only the matrix and range, so without it a Rec. 2020, P3, PQ or
     /// HLG stream reads as BT.709. Ignored without a `video_size`.
     pub color: Option<Color>,
+    /// `DisplayWidth`/`DisplayHeight` in pixels (None: the pixel size). For a stereo track it is
+    /// the size of one plane (RFC 9559 §18.10).
+    pub display_size: Option<(u32, u32)>,
+    /// `StereoMode` (RFC 9559 Table 5: 1 side by side with the left eye first, 3 top-bottom with
+    /// the left eye first, …); None writes nothing (mono).
+    pub stereo_mode: Option<u64>,
     /// (sampling frequency, channels, bit depth) for audio tracks.
     pub audio: Option<(f64, u64, Option<u64>)>,
     pub codec_delay_ns: u64,
@@ -61,6 +67,8 @@ impl TrackSpec {
             name: None,
             video_size: None,
             color: None,
+            display_size: None,
+            stereo_mode: None,
             audio: None,
             codec_delay_ns: 0,
             seek_pre_roll_ns: 0,
@@ -283,10 +291,17 @@ impl<W: Write + Seek> MkvWriter<W> {
             }
             if let Some((pw, ph)) = t.video_size {
                 let mut v = Vec::new();
+                if let Some(mode) = t.stereo_mode {
+                    el_uint(&mut v, STEREO_MODE, mode);
+                }
                 el_uint(&mut v, PIXEL_WIDTH, pw as u64);
                 el_uint(&mut v, PIXEL_HEIGHT, ph as u64);
                 if let Some(c) = &t.color {
                     el(&mut v, COLOUR, &colour(c));
+                }
+                if let Some((dw, dh)) = t.display_size {
+                    el_uint(&mut v, DISPLAY_WIDTH, dw as u64);
+                    el_uint(&mut v, DISPLAY_HEIGHT, dh as u64);
                 }
                 el(&mut e, VIDEO, &v);
             }
@@ -722,5 +737,33 @@ mod tests {
         seen.sort_unstable();
         seen.dedup();
         assert_eq!(seen.len(), 12, "{:?}", m.cues);
+    }
+
+    #[test]
+    fn stereo_mode_and_plane_display_size() {
+        // full HD side by side (RFC 9559 §18.10): 3840×1080 pixels, one plane displayed 1920×1080
+        let mut v = TrackSpec::new(TrackKind::Video, "V_MJPEG");
+        v.video_size = Some((3840, 1080));
+        v.display_size = Some((1920, 1080));
+        v.stereo_mode = Some(1);
+        v.default_duration_ns = Some(40_000_000);
+        let mut m = MkvWriter::new(Cursor::new(Vec::new()), vec![v], MuxOptions::default()).unwrap();
+        m.write_frame(0, 0, true, &[1, 2, 3], None).unwrap();
+        let bytes = m.finish().unwrap().into_inner();
+        let f = crate::matroska::open(&bytes[..]).unwrap();
+        let vi = f.tracks[0].video.clone().unwrap();
+        assert_eq!(
+            (vi.pixel_width, vi.pixel_height, vi.display_width, vi.display_height, vi.stereo_mode),
+            (3840, 1080, Some(1920), Some(1080), Some(1))
+        );
+        assert_eq!(vi.pixel_aspect(), (1, 1));
+        // a mono track writes neither element
+        let mut v = TrackSpec::new(TrackKind::Video, "V_MJPEG");
+        v.video_size = Some((16, 16));
+        let mut m = MkvWriter::new(Cursor::new(Vec::new()), vec![v], MuxOptions::default()).unwrap();
+        m.write_frame(0, 0, true, &[1], None).unwrap();
+        let bytes = m.finish().unwrap().into_inner();
+        let vi = crate::matroska::open(&bytes[..]).unwrap().tracks[0].video.clone().unwrap();
+        assert_eq!((vi.stereo_mode, vi.display_width), (None, None));
     }
 }

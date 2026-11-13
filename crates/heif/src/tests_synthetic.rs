@@ -400,3 +400,57 @@ fn a_stereo_pair_decodes_its_primary_image() {
     let (a, b) = (decode(&plain, &Options::default()).unwrap(), decode(&stereo, &Options::default()).unwrap());
     assert_eq!((a.width, a.height, &a.data), (b.width, b.height, &b.data));
 }
+
+#[test]
+fn selected_stereo_item_keeps_its_own_pixels_and_primary_metadata() {
+    let icc = b"primary profile carried verbatim".to_vec();
+    let exif = b"MM\0\x2a\0\0\0\x08\0\0".to_vec();
+    // A single coded primary (item 1), its EXIF (2), then the unturned right image (3).
+    let bytes = build(&Spec {
+        props: vec![Prop::Icc(icc.clone()), Prop::Irot(1), FULL_601],
+        exif: Some(exif.clone()),
+        stereo: true,
+        ..Spec::new(32, 32, &grey)
+    });
+    let options = Options::default();
+    let primary = decode(&bytes, &options).unwrap();
+    let left = crate::decode_image(&bytes, 1, &options).unwrap();
+    assert_eq!(left.data, primary.data);
+    let right = crate::decode_image(&bytes, 3, &options).unwrap();
+    let unturned = decoded(&Spec::new(32, 32, &grey));
+    assert_eq!(right.data, unturned.data);
+    assert_ne!(right.data, primary.data, "selecting another item must not return the primary again");
+    assert_eq!(right.icc, Some(icc));
+    assert_eq!(right.exif, Some(exif));
+    let primary_unturned = decoded(&Spec { props: vec![FULL_601], ..Spec::new(32, 32, &grey) });
+    assert_eq!(crate::decode_image(&bytes, 1, &Options { apply_transforms: false, ..options }).unwrap().data, primary_unturned.data);
+    assert!(crate::decode_image(&bytes, u32::MAX, &options).is_err());
+    assert!(matches!(crate::decode_image(&bytes, 3, &Options { max_pixels: 1023, ..options }), Err(Error::Limit(_))));
+}
+
+#[test]
+fn selected_stereo_item_uses_its_declared_crop() {
+    let mut bytes = build(&Spec { stereo: true, ..Spec::new(32, 32, &grey) });
+    let fields = ispe_fields(&bytes);
+    assert_eq!(fields.len(), 2);
+    set_ispe(&mut bytes, fields[1].0, 24, 16);
+    let eye = crate::decode_image(&bytes, 2, &Options::default()).unwrap();
+    assert_eq!((eye.width, eye.height), (24, 16));
+    assert_eq!(eye.data, decoded(&Spec::new(24, 16, &grey)).data);
+    for cut in (0..bytes.len()).step_by(17) {
+        let _ = crate::decode_image(&bytes[..cut], 2, &Options::default());
+    }
+}
+
+#[test]
+fn selected_stereo_item_can_be_distinct_from_both_primary_and_other_eye() {
+    let left = |_: u32, _: u32| [37, 128, 128];
+    let right = |_: u32, _: u32| [211, 128, 128];
+    let bytes = build(&Spec { eyes: Some((32, 32, &left, &right)), ..Spec::new(32, 32, &grey) });
+    let l = crate::decode_image(&bytes, 2, &Options::default()).unwrap();
+    let r = crate::decode_image(&bytes, 3, &Options::default()).unwrap();
+    assert_eq!(l.data, decoded(&Spec::new(32, 32, &left)).data);
+    assert_eq!(r.data, decoded(&Spec::new(32, 32, &right)).data);
+    assert_ne!(l.data, r.data);
+    assert_ne!(l.data, decode(&bytes, &Options::default()).unwrap().data);
+}
