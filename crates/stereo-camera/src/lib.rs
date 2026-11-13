@@ -5,7 +5,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::unwrap_used, clippy::expect_used, clippy::panic, clippy::unimplemented, clippy::todo, clippy::unreachable)]
 
-use glam::{Mat4, Vec3};
+use glam::{Mat4, Vec3, Vec4};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ProjectionKind {
@@ -85,6 +85,21 @@ pub struct EyeCamera {
 }
 
 impl EyeCamera {
+    /// Prepare one checked inverse per eye, rather than inverting for every sample.
+    pub fn rays(self) -> Result<RayGrid, Error> {
+        let matrix = self.view_projection();
+        let determinant = matrix.determinant();
+        // Consumers may enable glam-assert: reject singular input before inverse().
+        if !matrix.is_finite() || !determinant.is_finite() || determinant == 0.0 {
+            return Err(Error("the eye view projection must be finite and invertible"));
+        }
+        let inverse = matrix.inverse();
+        if !inverse.is_finite() {
+            return Err(Error("the inverse eye view projection is outside the finite world range"));
+        }
+        Ok(RayGrid { inverse })
+    }
+
     pub fn view_projection(self) -> Mat4 {
         self.projection * self.view
     }
@@ -100,6 +115,37 @@ impl EyeCamera {
 
     pub fn background_view_projection(self, central_projection: Mat4) -> Mat4 {
         self.projection_for(central_projection) * self.view
+    }
+}
+
+/// A world-space ray beginning at the camera's near clipping plane.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Ray {
+    pub origin: Vec3,
+    pub direction: Vec3,
+}
+
+/// Prepared unprojection of perspective or orthographic eye samples.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct RayGrid {
+    inverse: Mat4,
+}
+
+impl RayGrid {
+    /// NDC uses +Y up and depth 0..1. Samples outside the image support overscan.
+    /// A homogeneous far point (infinite projection) is a direction, not a divide by zero.
+    pub fn ray(self, ndc: [f32; 2]) -> Option<Ray> {
+        if !ndc.iter().all(|v| v.is_finite()) {
+            return None;
+        }
+        let near = self.inverse * Vec4::new(ndc[0], ndc[1], 0.0, 1.0);
+        let far = self.inverse * Vec4::new(ndc[0], ndc[1], 1.0, 1.0);
+        if !near.is_finite() || !far.is_finite() || near.w == 0.0 {
+            return None;
+        }
+        let origin = near.truncate() / near.w;
+        let direction = (far.truncate() * near.w - near.truncate() * far.w).try_normalize()?;
+        origin.is_finite().then_some(Ray { origin, direction })
     }
 }
 
