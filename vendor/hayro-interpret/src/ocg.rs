@@ -338,3 +338,29 @@ impl OcmdPolicy {
         }
     }
 }
+
+#[cfg(test)]
+mod view_auto_state_tests {
+    use super::*;
+    use std::sync::Arc;
+
+    #[test]
+    fn view_usage_changes_the_configured_state_before_viewer_overrides() {
+        let bytes = br"%PDF-1.7
+1 0 obj << /Type /Catalog /Pages 2 0 R /OCProperties << /OCGs [5 0 R] /D << /AS [<< /Event /View /Category [/View] /OCGs [5 0 R] >>] >> >> >> endobj
+2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj
+3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 20 20] >> endobj
+5 0 obj << /Type /OCG /Name (A) /Usage << /View << /ViewState /OFF >> >> >> endobj
+trailer << /Root 1 0 R >>
+%%EOF";
+        let pdf = hayro_syntax::Pdf::new(Arc::new(bytes.to_vec())).unwrap();
+        let xref = pdf.xref();
+        let catalog = xref.get::<Dict<'_>>(xref.root_id()).unwrap();
+        let mut view = OcgState::from_catalog(&catalog, xref, true);
+        view.begin_single_oc(ObjectIdentifier::new(5, 0));
+        assert!(!view.is_visible());
+        let mut print = OcgState::from_catalog(&catalog, xref, false);
+        print.begin_single_oc(ObjectIdentifier::new(5, 0));
+        assert!(print.is_visible());
+    }
+}
