@@ -182,13 +182,13 @@
       "path": "src/color.rs",
       "source_sha256": "799ce29bb5e59c8fc94db202873e48c2047dd35962e6f26efd215156c47158c1",
       "source_git_blob": "56bb04f24c04ba33ab6bf99c02a24735670959ad",
-      "sha256": "72935834f00f5f04f1baa418e12040b5a413e8620be7356337605a0ab63f5c7a"
+      "sha256": "9ccd1292326e0eb053a05b0760a4b1d4c3dbc73487cd1a21062185ea686f5de1"
     },
     {
       "path": "src/context.rs",
       "source_sha256": "dc2be553958ee3f5e5e644a77a0301723bae9ca027a352c13b9caaf549cc0e56",
       "source_git_blob": "d6772baa15ebb95d3ba2d1f54ce5c250ad1e8137",
-      "sha256": "2f54d81f30b31f3493083d7471d35c9c7fb32fd2ead253441c5ed5f8e60605e3"
+      "sha256": "b6e10fee2424a133e25588a5e47e4896f645037adde61d7a8bbca674a798c3cb"
     },
     {
       "path": "src/convert.rs",
@@ -290,7 +290,7 @@
       "path": "src/font/mod.rs",
       "source_sha256": "7e6411927d91205ca76c6b59f9d737cd1104d066f8cfcc0a87f481016ef30313",
       "source_git_blob": "7c8c8d086d59139df791cdb6952506473ec4b5a7",
-      "sha256": "96d20303257197fea784cd50db3ba45e141b9fb4d72dd717bf6d819b1c70df60"
+      "sha256": "4d936cbd78b3610a9bd081bf50cf2ecb39d72fca8098987d591aa73276f99443"
     },
     {
       "path": "src/font/outline.rs",
@@ -320,7 +320,7 @@
       "path": "src/font/type3.rs",
       "source_sha256": "bc33784f0dd3e599028b28b3696b9e4380cbff08f4c4e6299dee51f8df5eb08f",
       "source_git_blob": "c0e0d0b2df8f38183b8e23e9e8f644c0b81d0529",
-      "sha256": "1778362c6c4a5cb015e756fd3f36afd7482f20a230dde0206f4339da922eaca4"
+      "sha256": "c9216fe96150350cfcec979d7ff419bfe1f3371f199f70eb8590bf0c54666dde"
     },
     {
       "path": "src/function/mod.rs",
@@ -362,7 +362,7 @@
       "path": "src/interpret/mod.rs",
       "source_sha256": "2b002323055bc19aa497e92c81ad8e06dc60ee03686cad89366df4ac7c7a06b2",
       "source_git_blob": "fe08fc284ba7c914d1414b68a5a346674a6f910f",
-      "sha256": "036d91b3e1b5ea00f86ae97a6f2f0113bd9ac7c97813b9ea6d95b511cdf8e82b"
+      "sha256": "7527a300a23faad5572029cfbaafcda5f98606b89d5469c51d6a7a0b4e7a7e9d"
     },
     {
       "path": "src/interpret/path.rs",
@@ -374,13 +374,13 @@
       "path": "src/interpret/state.rs",
       "source_sha256": "dce778291b13f6df83c8c13aee22f60edd033ec9f7d89309ef148d46d3ba9814",
       "source_git_blob": "95b773fb5cc434ab8db362d00e4e5180a8b740c9",
-      "sha256": "bc5e73c3b29cdfe9d5f5036ea82beb2cf5a12ccd8a8c93277c15670b5f81ec08"
+      "sha256": "ccdbc6a6bf5b4799599f8e8e340c50b1c752b22665d4b81557b45676f5940778"
     },
     {
       "path": "src/interpret/text.rs",
       "source_sha256": "35eafa80147aea635bdef127c33ace20e1695e11e87c7bfe1e035c886806ff30",
       "source_git_blob": "ddec0400ea7a639c14769ac9ee7e137d000b3efd",
-      "sha256": "b34117d28ca7987833626f2e938abe4dd5d02ea869db7b0bdc1b8a264d775f9c"
+      "sha256": "ef5c39c97b54d08837763ca597f70d27f2dc2865cec11fb411400509d9fffe8c"
     },
     {
       "path": "src/lib.rs",
@@ -434,7 +434,7 @@
       "path": "src/x_object.rs",
       "source_sha256": "e1c51e96a335c32c122011b2d05c5020c36a33c2c73342ba173c28a3e2fe0219",
       "source_git_blob": "21b134ce8cd9604399cd0776febf923d69c02673",
-      "sha256": "bc13ae42935851fa0f2117ad74a4e6d4cf5a86aae933fb6362f911b0d6a3ce52"
+      "sha256": "e064aea251b2e98902aaaff6883c6f751a8e948223a933a3ba910b119264440f"
     }
   ],
   "compatibility_reference": {
@@ -464,5 +464,93 @@
   },
   "local_test_updates": [
     "Adjust direct stitching-function fixtures to the 32/33-function boundary imposed by the 64-container syntax cap and independently test unchanged 64/65-function construction limits with indirect references."
-  ]
+  ],
+  "receiver_api_reconciliation": {
+    "upstream_repository": "https://github.com/storytold/pdfcraft",
+    "ports": [
+      {
+        "commit": "0142a96ca34b404f4ab345c84ea07283d731afa7",
+        "author": "mtlcl410",
+        "authored": "2026-10-24T07:39:16+08:00",
+        "scope": "Tint fallback warnings and bounded multi-ink operands",
+        "origin": "https://github.com/storytold/pdfcraft/commit/0142a96ca34b404f4ab345c84ea07283d731afa7"
+      },
+      {
+        "commit": "7734556137a23ee6be084e9df7b274db14742188",
+        "author": "mtlcl410",
+        "authored": "2026-10-24T15:25:29+08:00",
+        "scope": "Malformed Indexed image refusal and warning",
+        "origin": "https://github.com/storytold/pdfcraft/commit/7734556137a23ee6be084e9df7b274db14742188"
+      },
+      {
+        "commit": "6d3824d066d22c2cf6cd39a31d05382692f528e9",
+        "author": "mtlcl410",
+        "authored": "2026-11-07T11:57:20+08:00",
+        "scope": "Missing Type 3 widths from glyph procedures",
+        "origin": "https://github.com/storytold/pdfcraft/commit/6d3824d066d22c2cf6cd39a31d05382692f528e9"
+      },
+      {
+        "commit": "9b3991990de044ae74404c7ba6f40a81ddc7d3b1",
+        "author": "mtlcl410",
+        "authored": "2026-11-07T18:10:35+08:00",
+        "scope": "Missing Type 3 widths warning",
+        "origin": "https://github.com/storytold/pdfcraft/commit/9b3991990de044ae74404c7ba6f40a81ddc7d3b1"
+      },
+      {
+        "commit": "0ed339901e6b7f55e2257fe188aef7a63fa06dab",
+        "author": "Grzegorz Martens",
+        "authored": "2026-10-31T13:21:45+01:00",
+        "scope": "Shared page JBIG2 work allowance",
+        "origin": "https://github.com/storytold/pdfcraft/commit/0ed339901e6b7f55e2257fe188aef7a63fa06dab"
+      },
+      {
+        "commit": "4aa732ea91348b351a97a789f02ec2f46b73df81",
+        "author": "Grzegorz Martens",
+        "authored": "2026-10-31T14:13:48+01:00",
+        "scope": "Report images omitted by the page allowance",
+        "origin": "https://github.com/storytold/pdfcraft/commit/4aa732ea91348b351a97a789f02ec2f46b73df81"
+      },
+      {
+        "commit": "0f325d44b697d74567bb609a39e1cf7d232e9253",
+        "author": "Grzegorz Martens",
+        "authored": "2026-10-31T14:24:53+01:00",
+        "scope": "A refused JBIG2 opacity mask hides its picture",
+        "origin": "https://github.com/storytold/pdfcraft/commit/0f325d44b697d74567bb609a39e1cf7d232e9253"
+      },
+      {
+        "commit": "a78356eefc4a9f7ee9f39a901b9ad94494150984",
+        "author": "Grzegorz Martens",
+        "authored": "2026-10-31T15:43:05+01:00",
+        "scope": "Page lifetime and filter-specific allowance handling",
+        "origin": "https://github.com/storytold/pdfcraft/commit/a78356eefc4a9f7ee9f39a901b9ad94494150984"
+      },
+      {
+        "commit": "6847b1ea7e018fcd3e712b87d3ff9d2b490a1b81",
+        "author": "mtlcl410",
+        "authored": "2026-11-07T22:22:47+08:00",
+        "scope": "Unlinked final xref repair metadata",
+        "origin": "https://github.com/storytold/pdfcraft/commit/6847b1ea7e018fcd3e712b87d3ff9d2b490a1b81"
+      },
+      {
+        "commit": "7de85d520cf212f1576cfb32819607bc95868bc2",
+        "author": "mtlcl410",
+        "authored": "2026-11-07T22:29:49+08:00",
+        "scope": "Hybrid xref belongs to the same update",
+        "origin": "https://github.com/storytold/pdfcraft/commit/7de85d520cf212f1576cfb32819607bc95868bc2"
+      }
+    ],
+    "retained": [
+      "document-local decode limits",
+      "open cancellation",
+      "image pixel and output-byte limits",
+      "nested globals filter guard",
+      "shared plate and CMYK paths"
+    ],
+    "adaptations": [
+      "controlled xref tuple and marker scan",
+      "common CMYK tint-transform callers",
+      "shared raster diagnostic flags",
+      "budget refusal in the shared ink image path"
+    ]
+  }
 }

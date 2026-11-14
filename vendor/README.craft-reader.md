@@ -460,3 +460,29 @@ The shared plate settings and visibility-expression limits remain.
 
 Viewer annotation and appearance overrides are ported from [FredApps’s 85020ab0](https://github.com/storytold/pdfcraft/commit/85020ab05f812e8da791fcb9f24e0343f71adee5), authored 2026-11-11, with Peter Yatsyshin credited in the original.
 The shared finite appearance bounds and plate settings remain.
+
+## Remaining receiver APIs
+
+These behaviors are adapted from PdfCraft’s original vendor commits, with the shared owner’s independent limits, cancellation and plate/CMYK paths retained.
+The source manifests retain original source hashes and record local hashes and the author/date of each source subject.
+
+| Source commit | Author and original date | Received behavior |
+|---|---|---|
+| [0142a96ca](https://github.com/storytold/pdfcraft/commit/0142a96ca34b404f4ab345c84ea07283d731afa7) | mtlcl410, 2026-10-24T07:39:16+08:00 | Tint fallback warnings and bounded multi-ink operands |
+| [773455613](https://github.com/storytold/pdfcraft/commit/7734556137a23ee6be084e9df7b274db14742188) | mtlcl410, 2026-10-24T15:25:29+08:00 | Malformed Indexed image refusal and warning |
+| [6d3824d06](https://github.com/storytold/pdfcraft/commit/6d3824d066d22c2cf6cd39a31d05382692f528e9) | mtlcl410, 2026-11-07T11:57:20+08:00 | Missing Type 3 widths from glyph procedures |
+| [9b3991990](https://github.com/storytold/pdfcraft/commit/9b3991990de044ae74404c7ba6f40a81ddc7d3b1) | mtlcl410, 2026-11-07T18:10:35+08:00 | Missing Type 3 widths warning |
+| [0ed339901](https://github.com/storytold/pdfcraft/commit/0ed339901e6b7f55e2257fe188aef7a63fa06dab) | Grzegorz Martens, 2026-10-31T13:21:45+01:00 | Shared page JBIG2 work allowance |
+| [4aa732ea9](https://github.com/storytold/pdfcraft/commit/4aa732ea91348b351a97a789f02ec2f46b73df81) | Grzegorz Martens, 2026-10-31T14:13:48+01:00 | Report images omitted by the page allowance |
+| [0f325d44b](https://github.com/storytold/pdfcraft/commit/0f325d44b697d74567bb609a39e1cf7d232e9253) | Grzegorz Martens, 2026-10-31T14:24:53+01:00 | A refused JBIG2 opacity mask hides its picture |
+| [a78356eef](https://github.com/storytold/pdfcraft/commit/a78356eefc4a9f7ee9f39a901b9ad94494150984) | Grzegorz Martens, 2026-10-31T15:43:05+01:00 | Page lifetime and filter-specific allowance handling |
+| [6847b1ea7](https://github.com/storytold/pdfcraft/commit/6847b1ea7e018fcd3e712b87d3ff9d2b490a1b81) | mtlcl410, 2026-11-07T22:22:47+08:00 | Unlinked final xref repair metadata |
+| [7de85d520](https://github.com/storytold/pdfcraft/commit/7de85d520cf212f1576cfb32819607bc95868bc2) | mtlcl410, 2026-11-07T22:29:49+08:00 | Hybrid xref belongs to the same update |
+
+The controlled root-xref API returns repair metadata while retaining the document’s limits and cancellation control through reconstruction.
+Its marker scan polls cancellation at bounded intervals and counts a marker crossing a scan boundary once.
+Raster diagnostics retain colour fallback, malformed Indexed images and missing Type 3 widths as distinct flags, forwarding the original warning callback too.
+The common CMYK tint-transform callers handle an unreadable function without dropping their existing plate semantics.
+Page-wide JBIG2 work uses the already shared bounded decoder; image pixel/output caps, fallible allocations and rejection of image-filtered globals remain.
+A picture whose JBIG2 opacity was refused by the page budget is omitted in both raster and ink paths, and the allowance ends with the page.
+Synthetic receiver tests cover the changed raster results, diagnostic propagation, the opacity refusal and next-page reset, and unlinked repair with a lower document decode limit.

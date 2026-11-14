@@ -41,15 +41,45 @@ pub(crate) enum XRefError {
 /// Parse the "root" xref from the PDF.
 #[cfg(test)]
 pub(crate) fn root_xref(data: PdfData, password: &[u8], limits: DecodeLimits) -> Result<XRef, XRefError> {
-    root_xref_controlled(data, password, limits, None)
+    root_xref_controlled(data, password, limits, None).map(|(xref, _)| xref)
 }
 
-pub(crate) fn root_xref_controlled(data: PdfData, password: &[u8], limits: DecodeLimits, control: Option<crate::cancel::Control>) -> Result<XRef, XRefError> {
+pub(crate) fn root_xref_controlled(data: PdfData, password: &[u8], limits: DecodeLimits, control: Option<crate::cancel::Control>) -> Result<(XRef, bool), XRefError> {
     let mut xref_map = FxHashMap::default();
     let xref_pos = find_last_xref_pos_controlled(data.as_ref(), control.as_ref()).ok_or(XRefError::Unknown)?;
     let trailer = populate_xref_controlled(data.as_ref(), xref_pos, &mut xref_map, limits, control.clone()).ok_or(XRefError::Unknown)?;
+    // The hybrid XRefStm is part of the same update, not a link to an earlier revision.
+    let linked = Reader::new(trailer)
+        .read_with_context::<Dict<'_>>(&ReaderContext::dummy_with_control(limits, control.clone()))
+        .is_some_and(|newest| prev_offset(data.as_ref(), &newest, &XrefMap::default()).is_some());
+    let xref = XRef::new(data.clone(), xref_map, XRefInput::TrailerDictData(trailer), false, password, limits, control.clone())?;
+    let cut_off = !linked && xref.get::<Dict<'_>>(xref.trailer_data().pages_ref).is_none()
+        && more_than_one_startxref(data.as_ref(), control.as_ref()).ok_or(XRefError::Unknown)?;
+    if cut_off {
+        warn!("the newest xref section has no Prev and the page tree is unreachable; rebuilding the xref table");
+        xref.repair();
+        crate::cancel::check(control.as_ref()).ok_or(XRefError::Unknown)?;
+    }
+    Ok((xref, cut_off))
+}
 
-    XRef::new(data.clone(), xref_map, XRefInput::TrailerDictData(trailer), false, password, limits, control)
+/// An unlinked update needs two startxref markers. Poll during the bounded scan as for the
+/// initial xref lookup, including overlaps so a marker split at a boundary is counted once.
+fn more_than_one_startxref(data: &[u8], control: Option<&crate::cancel::Control>) -> Option<bool> {
+    let needle = b"startxref";
+    let mut count = 0;
+    for start in (0..data.len()).step_by(64 * 1024) {
+        crate::cancel::check(control)?;
+        let end = start.saturating_add(64 * 1024 + needle.len() - 1).min(data.len());
+        let chunk = data.get(start..end)?;
+        for offset in 0..chunk.len().min(64 * 1024) {
+            if chunk.get(offset..offset + needle.len()) == Some(needle) {
+                count += 1;
+                if count == 2 { return Some(true); }
+            }
+        }
+    }
+    Some(false)
 }
 
 /// Try to manually parse the PDF to build an xref table and trailer dictionary.
@@ -1904,3 +1934,21 @@ mod tests {
 #[cfg(test)]
 #[path = "decode_limits_tests.rs"]
 mod decode_limits_tests;
+
+#[cfg(test)]
+mod unlinked_update_controls {
+    use super::*;
+
+    #[test]
+    fn the_marker_scan_counts_boundary_matches_once_and_polls_cancellation() {
+        let mut bytes = alloc::vec![b' '; 64 * 1024 - 4];
+        bytes.extend_from_slice(b"startxref");
+        assert_eq!(more_than_one_startxref(&bytes, None), Some(false));
+        bytes.extend_from_slice(b" startxref");
+        assert_eq!(more_than_one_startxref(&bytes, None), Some(true));
+        let distant = alloc::vec![b' '; 3 * 64 * 1024];
+        let (control, polls) = crate::cancel::stop_at(2);
+        assert_eq!(more_than_one_startxref(&distant, Some(&control)), None);
+        assert_eq!(polls.load(core::sync::atomic::Ordering::Relaxed), 2);
+    }
+}

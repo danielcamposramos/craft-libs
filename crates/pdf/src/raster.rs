@@ -44,11 +44,19 @@ pub struct Diagnostics {
     pub unsupported_font: bool,
     /// The backend reported omitted, failed, or budget-limited content.
     pub content_truncated: bool,
+    pub color_fallback: bool,
+    pub malformed_indexed_image: bool,
+    pub type3_widths_missing: bool,
 }
 
 impl Diagnostics {
     pub fn is_empty(self) -> bool {
-        !self.image_decode_failed && !self.unsupported_font && !self.content_truncated
+        !self.image_decode_failed
+            && !self.unsupported_font
+            && !self.content_truncated
+            && !self.color_fallback
+            && !self.malformed_indexed_image
+            && !self.type3_widths_missing
     }
 }
 
@@ -123,6 +131,9 @@ pub fn render_into<'a>(
                 InterpreterWarning::ImageDecodeFailure => 1,
                 InterpreterWarning::UnsupportedFont => 2,
                 InterpreterWarning::ContentTruncated => 4,
+                InterpreterWarning::ColorFallback => 8,
+                InterpreterWarning::MalformedIndexedImage => 16,
+                InterpreterWarning::Type3WidthsMissing => 32,
             };
             sink.fetch_or(bit, Ordering::Relaxed);
             original(warning);
@@ -149,7 +160,14 @@ pub fn render_into<'a>(
         return Err(Error::Cancelled);
     }
     let bits = warnings.load(Ordering::Relaxed);
-    Ok(Diagnostics { image_decode_failed: bits & 1 != 0, unsupported_font: bits & 2 != 0, content_truncated: bits & 4 != 0 })
+    Ok(Diagnostics {
+        image_decode_failed: bits & 1 != 0,
+        unsupported_font: bits & 2 != 0,
+        content_truncated: bits & 4 != 0,
+        color_fallback: bits & 8 != 0,
+        malformed_indexed_image: bits & 16 != 0,
+        type3_widths_missing: bits & 32 != 0,
+    })
 }
 
 /// Pixel-word aligned premultiplied RGBA8 output; no GUI or image encoding dependency.

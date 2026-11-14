@@ -28,6 +28,22 @@ pub type ColorComponents = SmallVec<[f32; 4]>;
 std::thread_local! {
     // PdfCraft patch (34): see `tint_transform_runs`.
     static TINT_TRANSFORM_RUNS: core::cell::Cell<u64> = const { core::cell::Cell::new(0) };
+    // PdfCraft patch (55): see `note_color_fallback`.
+    static COLOR_FALLBACK: core::cell::Cell<bool> = const { core::cell::Cell::new(false) };
+}
+
+/// PdfCraft patch (55): record that a colour could not be computed and was painted in a
+/// fallback colour, reported as `InterpreterWarning::ColorFallback` when the content stream
+/// being interpreted ends. Per thread, like the page's other budgets: one page is interpreted
+/// on one thread.
+pub(crate) fn note_color_fallback() {
+    COLOR_FALLBACK.with(|fell_back| fell_back.set(true));
+}
+
+/// PdfCraft patch (55): whether a colour fell back since the last call (or since the page
+/// started), clearing it, so each fallback is reported once.
+pub(crate) fn take_color_fallback() -> bool {
+    COLOR_FALLBACK.with(|fell_back| fell_back.replace(false))
 }
 
 /// PdfCraft patch (34): how many colours this thread has run through a Separation or DeviceN
@@ -1072,6 +1088,53 @@ impl Indexed {
     }
 }
 
+/// PdfCraft patch (60): whether `object` is an `/Indexed` colour space that ISO 32000-2
+/// §8.6.6.3 rules out: `hival` is not an integer in 0..=255, or the lookup table is missing or
+/// shorter than m × (hival + 1) bytes for a base space of m components. A longer table is fine
+/// (its first bytes are used). An Indexed space whose base cannot be read is not judged here,
+/// so its existing handling is unchanged.
+///
+/// Upstream treated such a space as unreadable, and an image that named it then fell back to
+/// DeviceGray: its indices were drawn as near-black grey levels, even indices whose entries
+/// were present. The image path uses this to skip the image with a warning instead.
+pub(crate) fn is_malformed_indexed(object: &Object<'_>, cache: &Cache) -> bool {
+    let Object::Array(array) = object else {
+        return false;
+    };
+    let mut iter = array.flex_iter();
+    let Some(family) = iter.next::<Name<'_>>() else {
+        return false;
+    };
+    if !matches!(family.deref(), INDEXED | I) {
+        return false;
+    }
+    let Some(base) = iter
+        .next::<Object<'_>>()
+        .and_then(|o| ColorSpace::new(o, cache))
+    else {
+        return false;
+    };
+    let Some(hival) = iter.next::<object::Number>().and_then(|n| {
+        let value = n.as_f64();
+        // A real with a fraction, a negative number or one past 255 is not a usable `hival`.
+        (value.fract() == 0.0 && (0.0..=255.0).contains(&value)).then(|| n.as_i64())
+    }) else {
+        return true;
+    };
+    let Some(needed) = usize::try_from(hival)
+        .ok()
+        .and_then(|h| h.checked_add(1))
+        .and_then(|entries| entries.checked_mul(usize::from(base.num_components())))
+    else {
+        return true;
+    };
+    let lookup_len = iter
+        .next::<Stream<'_>>()
+        .and_then(|s| s.decoded().ok().map(|d| d.len()))
+        .or_else(|| iter.next::<object::String<'_>>().map(|s| s.as_bytes().len()));
+    lookup_len.is_none_or(|len| len < needed)
+}
+
 impl ToRgb for Indexed {
     fn convert_f32(&self, input: &[f32], output: &mut [u8], _: bool) -> Option<()> {
         let mut indexed = vec![0.0; input.len() * self.base.num_components() as usize];
@@ -1092,10 +1155,28 @@ impl ToRgb for Indexed {
 #[derive(Debug, Clone)]
 pub(crate) struct Separation {
     alternate_space: ColorSpace,
-    tint_transform: Function,
+    tint_transform: Option<Function>,
     is_none_separation: bool,
     /// PdfCraft patch (35): the colorant the space paints, for separations.
     colorant: Colorant,
+}
+
+/// PdfCraft patch (55): `tint_transform` run on the tints of one colour, or, when it cannot be
+/// read or evaluated, the initial colour of `alternate_space` (black in every device space), with
+/// the fallback recorded. hayro already fell back this way when evaluation failed, silently; a
+/// transform it could not read made the whole colour space unreadable, and the space's
+/// paints were drawn in DeviceGray from their first tint instead (white for a full tint).
+fn eval_tint_transform(
+    tint_transform: Option<&Function>,
+    alternate_space: &ColorSpace,
+    tints: &[f32],
+) -> ColorComponents {
+    tint_transform
+        .and_then(|f| f.eval(tints.to_smallvec()))
+        .unwrap_or_else(|| {
+            note_color_fallback();
+            alternate_space.initial_color()
+        })
 }
 
 impl Separation {
@@ -1105,7 +1186,7 @@ impl Separation {
         let _ = iter.next::<Name<'_>>()?;
         let name = iter.next::<Name<'_>>()?;
         let alternate_space = ColorSpace::new_nested(iter.next::<Object<'_>>()?, cache, depth + 1)?;
-        let tint_transform = Function::new(&iter.next::<Object<'_>>()?)?;
+        let tint_transform = iter.next::<Object<'_>>().and_then(|f| Function::new(&f));
         // Either I did something wrong, or no other viewers properly handles
         // `All`, so let's just ignore it as well.
         let is_none_separation = name.as_str() == "None";
@@ -1123,12 +1204,15 @@ impl Separation {
 impl ToRgb for Separation {
     fn convert_f32(&self, input: &[f32], output: &mut [u8], _: bool) -> Option<()> {
         count_tint_transform_runs(input.len());
+        // PdfCraft patch (55): see `eval_tint_transform`.
         let evaluated = input
             .iter()
             .flat_map(|n| {
-                self.tint_transform
-                    .eval(smallvec![*n])
-                    .unwrap_or(self.alternate_space.initial_color())
+                eval_tint_transform(
+                    self.tint_transform.as_ref(),
+                    &self.alternate_space,
+                    &[*n],
+                )
             })
             .collect::<Vec<_>>();
         self.alternate_space.convert_f32(&evaluated, output, false)
@@ -1143,7 +1227,7 @@ impl ToRgb for Separation {
 pub(crate) struct DeviceN {
     alternate_space: ColorSpace,
     num_components: u8,
-    tint_transform: Function,
+    tint_transform: Option<Function>,
     is_none: bool,
     /// PdfCraft patch (35): the colorant of each component, for separations.
     colorants: Vec<Colorant>,
@@ -1162,7 +1246,7 @@ impl DeviceN {
         let num_components = u8::try_from(names.len()).ok()?;
         let all_none = names.iter().all(|n| n.as_str() == "None");
         let alternate_space = ColorSpace::new_nested(iter.next::<Object<'_>>()?, cache, depth + 1)?;
-        let tint_transform = Function::new(&iter.next::<Object<'_>>()?)?;
+        let tint_transform = iter.next::<Object<'_>>().and_then(|f| Function::new(&f));
 
         if num_components == 0 {
             return None;
@@ -1192,12 +1276,11 @@ impl ToRgb for DeviceN {
     fn convert_f32(&self, input: &[f32], output: &mut [u8], _: bool) -> Option<()> {
         let colours = input.len().checked_div(usize::from(self.num_components));
         count_tint_transform_runs(colours.unwrap_or(0));
+        // PdfCraft patch (55): see `eval_tint_transform`.
         let evaluated = input
             .chunks_exact(self.num_components as usize)
             .flat_map(|n| {
-                self.tint_transform
-                    .eval(n.to_smallvec())
-                    .unwrap_or(self.alternate_space.initial_color())
+                eval_tint_transform(self.tint_transform.as_ref(), &self.alternate_space, n)
             })
             .collect::<Vec<_>>();
         self.alternate_space.convert_f32(&evaluated, output, false)
@@ -2127,9 +2210,7 @@ impl ColorSpace {
             _ => return components.iter().copied().collect(),
         };
         count_tint_transform_runs(1);
-        function
-            .eval(components.iter().copied().collect())
-            .unwrap_or(alternate.initial_color())
+        eval_tint_transform(function.as_ref(), alternate, components)
     }
 
     /// PdfCraft patch (35): how the space paints `ink`'s plate. Gray, RGB, CIE-based and ICC
@@ -2676,7 +2757,7 @@ impl ColorSpace {
             _ => return None,
         };
         if alternate.is_device_cmyk()
-            && let Some(cmyk) = transform.eval(components.clone())
+            && let Some(cmyk) = transform.as_ref().and_then(|f| f.eval(components.clone()))
             && let [c, m, y, k] = cmyk[..]
         {
             return Some(SpotAlternate::Cmyk([c, m, y, k].map(unit)));

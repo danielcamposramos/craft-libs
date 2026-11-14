@@ -5,7 +5,7 @@ use crate::font::{Font, StandardFont};
 use crate::interpret::state::{ClipType, State, TextStateFont};
 use crate::ocg::OcgState;
 use crate::util::{BezPathExt, Float64Ext};
-use crate::{ClipPath, Device, FillRule, InterpreterSettings, StrokeProps};
+use crate::{ClipPath, Device, FillRule, InterpreterSettings, InterpreterWarning, StrokeProps};
 use hayro_syntax::content::ops::Transform;
 use hayro_syntax::object::Dict;
 use hayro_syntax::object::Name;
@@ -223,6 +223,9 @@ impl<'a> Context<'a> {
         NESTED_PAINTS.with(|n| n.set(0));
         CONTENT_LEFT.with(|c| c.set(MAX_PAGE_CONTENT));
         CONTENT_TRUNCATED.with(|truncated| truncated.set(false));
+        // PdfCraft patch (73): and fresh JBIG2 decoding, which every image of it shares.
+        // PdfCraft patch (55): a fallback left over from another page is not this page's.
+        crate::color::take_color_fallback();
         crate::encode::reset_mesh_budget();
 
         Self::new_with(initial_transform, bbox, cache, xref, settings, state, 0)
@@ -507,6 +510,12 @@ impl<'a> Context<'a> {
                 })
                 .clone()
         };
+
+        // PdfCraft patch (90): tell the caller a Type 3 font lacks the /Widths it requires,
+        // so the spacing taken from its glyph procedures can be reported.
+        if resolved.as_ref().is_some_and(Font::type3_widths_missing) {
+            (self.settings.warning_sink)(InterpreterWarning::Type3WidthsMissing);
+        }
 
         if let Some(resolved) = resolved {
             Some(TextStateFont::Font(resolved))

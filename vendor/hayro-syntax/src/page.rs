@@ -949,7 +949,7 @@ mod page_tree_tests {
             format!("<< /Type /Pages /Kids [{kids}] /Count 1000 >>"),
         ];
         objects.extend((0..1000).map(|_| String::from("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 10 10] >>")));
-        let xref = crate::xref::root_xref_controlled(pdf_bytes(&objects).into(), b"", DecodeLimits::default(), Some(control)).unwrap();
+        let (xref, _) = crate::xref::root_xref_controlled(pdf_bytes(&objects).into(), b"", DecodeLimits::default(), Some(control)).unwrap();
         armed.store(true, Ordering::Relaxed);
         assert!(cached::CachedPages::new(cached::Arc::new(xref)).is_none());
         assert_eq!(polls.load(Ordering::Relaxed), 100);

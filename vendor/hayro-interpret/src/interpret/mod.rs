@@ -134,6 +134,8 @@ pub struct InterpreterSettings {
     /// costs a decode and a resample each for pixels nobody can see. Never set it for a final
     /// render (tiles, whole pages, print, export).
     pub preview: bool,
+    /// Maximum total JBIG2 decoding work for one page.
+    pub jbig2_work: u64,
     /// PdfCraft patch (35): draw one ink's separation instead of the composite page (see
     /// [`Plate`](crate::color::Plate)). Soft masks still draw in colour: a mask's luminosity
     /// comes from its group's colours, not from the page's plate (a DeviceCMYK luminosity
@@ -168,6 +170,7 @@ impl Default for InterpreterSettings {
             appearance_overrides: Arc::new(Vec::new()),
             cancelled: None,
             preview: false,
+            jbig2_work: hayro_syntax::MAX_PAGE_JBIG2_WORK,
             plate: None,
             ink_sink: None,
         }
@@ -185,6 +188,26 @@ pub enum InterpreterWarning {
     ImageDecodeFailure,
     /// PdfCraft patch (18): a page content stream was skipped after exhausting its safety budget.
     ContentTruncated,
+    /// PdfCraft patch (55): a colour could not be computed (a colour space that cannot be
+    /// read, or a Separation or DeviceN tint transform that cannot be evaluated) and was painted
+    /// in a fallback colour. Reported at most once per content stream.
+    ColorFallback,
+    /// PdfCraft patch (60): an image was not drawn because its `/Indexed` colour space is
+    /// malformed (ISO 32000-2 §8.6.6.3): `hival` not an integer in 0..=255, or a lookup table
+    /// shorter than its entries need.
+    MalformedIndexedImage,
+    /// A Type 3 font lacks the required Widths, FirstChar or LastChar entries.
+    Type3WidthsMissing,
+}
+
+/// PdfCraft patch (73): ends a page's JBIG2 allowance with the page, so that what decodes on its
+/// thread afterwards has no page to run out on.
+struct PageJbig2Work;
+
+impl Drop for PageJbig2Work {
+    fn drop(&mut self) {
+        hayro_syntax::set_page_jbig2_work(u64::MAX);
+    }
 }
 
 /// interpret the contents of the page and render them into the device.
@@ -193,6 +216,8 @@ pub fn interpret_page<'a>(
     context: &mut Context<'a>,
     device: &mut impl Device<'a>,
 ) {
+    hayro_syntax::set_page_jbig2_work(context.settings.jbig2_work);
+    let _allowance = PageJbig2Work;
     let resources = page.resources();
     let mut content = page.content_reader();
     // PdfCraft patch: the page's own contents count against its content budget too, where they
@@ -623,7 +648,10 @@ fn interpret_window<'a>(
             TypedInstruction::ColorSpaceStroke(c) => {
                 // PdfCraft patch (#3018): see `named_color_space`.
                 let cs = named_color_space(c.0, resources, &defaults, context)
-                    .unwrap_or(ColorSpace::device_gray());
+                    .unwrap_or_else(|| {
+                        crate::color::note_color_fallback();
+                        ColorSpace::device_gray()
+                    });
 
                 if !cs.is_pattern() {
                     context.get_mut().graphics_state.stroke_pattern = None;
@@ -634,7 +662,10 @@ fn interpret_window<'a>(
             TypedInstruction::ColorSpaceNonStroke(c) => {
                 // PdfCraft patch (#3018): see `named_color_space`.
                 let cs = named_color_space(c.0, resources, &defaults, context)
-                    .unwrap_or(ColorSpace::device_gray());
+                    .unwrap_or_else(|| {
+                        crate::color::note_color_fallback();
+                        ColorSpace::device_gray()
+                    });
 
                 if !cs.is_pattern() {
                     context.get_mut().graphics_state.non_stroke_pattern = None;
@@ -889,6 +920,19 @@ fn interpret_window<'a>(
                 let warning_sink = context.settings.warning_sink.clone();
                 let transfer_function = context.get().graphics_state.transfer_function.clone();
                 let cache = context.interpreter_cache.object_cache.clone();
+                // PdfCraft patch (60): an inline image naming a resource colour space that is a
+                // malformed Indexed space is skipped with a warning, as `ImageXObject::new` does
+                // for one given in place.
+                let inline_dict = i.0.dict();
+                if inline_dict
+                    .get::<hayro_syntax::object::Name<'_>>(hayro_syntax::object::dict::keys::CS)
+                    .or_else(|| inline_dict.get::<hayro_syntax::object::Name<'_>>(hayro_syntax::object::dict::keys::COLORSPACE))
+                    .and_then(|name| resources.get_color_space(&name))
+                    .is_some_and(|cs| crate::color::is_malformed_indexed(&cs, &cache))
+                {
+                    warning_sink(InterpreterWarning::MalformedIndexedImage);
+                    continue;
+                }
                 // PdfCraft patch: inline images are not cached (see `DecodedImageKey`).
                 // PdfCraft patch (#3018): an inline image in a device space, named directly or by a
                 // resource, draws in its default.
@@ -994,6 +1038,10 @@ pub fn interpret<'a>(
     if crate::context::content_was_truncated() {
         (context.settings.warning_sink)(InterpreterWarning::ContentTruncated);
     }
+    // PdfCraft patch (55): and that a colour was painted in a fallback colour.
+    if crate::color::take_color_fallback() {
+        (context.settings.warning_sink)(InterpreterWarning::ColorFallback);
+    }
 }
 
 /// PdfCraft patch: the bytes of a window of page content. A window grows only while an instruction
@@ -1051,5 +1099,9 @@ fn interpret_content<'a>(
     // PdfCraft patch (18): say that content was skipped, so a truncated page isn't a clean render.
     if cut || content.truncated() || crate::context::content_was_truncated() {
         (context.settings.warning_sink)(InterpreterWarning::ContentTruncated);
+    }
+    // PdfCraft patch (55): and that a colour was painted in a fallback colour.
+    if crate::color::take_color_fallback() {
+        (context.settings.warning_sink)(InterpreterWarning::ColorFallback);
     }
 }

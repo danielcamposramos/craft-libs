@@ -54,6 +54,7 @@ pub struct Pdf {
     header_version: PdfVersion,
     pages: CachedPages,
     data: PdfData,
+    rebuilt_unlinked_update: bool,
 }
 
 /// An error that occurred while loading a PDF file.
@@ -126,12 +127,12 @@ impl Pdf {
     fn load(data: PdfData, password: &str, limits: DecodeLimits, control: Option<crate::cancel::Control>) -> Result<Self, LoadPdfError> {
         let password = password.as_bytes();
         let version = find_version(data.as_ref()).unwrap_or(PdfVersion::Pdf10);
-        let xref = match crate::xref::root_xref_controlled(data.clone(), password, limits, control.clone()) {
+        let (xref, rebuilt_unlinked_update) = match crate::xref::root_xref_controlled(data.clone(), password, limits, control.clone()) {
             Ok(x) => x,
             Err(e) => match e {
                 XRefError::Unknown => {
                     crate::cancel::check(control.as_ref()).ok_or(LoadPdfError::Invalid)?;
-                    crate::xref::fallback_controlled(data.clone(), password, limits, control.clone()).ok_or(LoadPdfError::Invalid)?
+                    (crate::xref::fallback_controlled(data.clone(), password, limits, control.clone()).ok_or(LoadPdfError::Invalid)?, false)
                 }
                 XRefError::Encryption(e) => return Err(LoadPdfError::Decryption(e)),
             },
@@ -141,7 +142,12 @@ impl Pdf {
         crate::cancel::check(control.as_ref()).ok_or(LoadPdfError::Invalid)?;
         let pages = CachedPages::new(xref.clone()).ok_or(LoadPdfError::Invalid)?;
 
-        Ok(Self { xref, header_version: version, pages, data })
+        Ok(Self { xref, header_version: version, pages, data, rebuilt_unlinked_update })
+    }
+
+    /// Whether an unlinked final xref cut off the page tree and required reconstruction.
+    pub fn rebuilt_unlinked_update(&self) -> bool {
+        self.rebuilt_unlinked_update
     }
 
     /// Return this document's immutable stream expansion limits.
