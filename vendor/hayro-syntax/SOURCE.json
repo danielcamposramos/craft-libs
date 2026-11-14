@@ -170,7 +170,7 @@
       "path": "src/filter/lzw_flate.rs",
       "source_sha256": "db51a57effe90ad9db2d314e16081ce90e3ef99e5a5f46fcc4bdbdacfd13a528",
       "source_git_blob": "f1ab1aae73e4c84ec0993a6eb96594018ca7cc91",
-      "sha256": "cb7a45802bb31ce3a11289024c6500c2b6422b002b64c5db6ca3b0e16e5aa26a"
+      "sha256": "f458737a4c825c0836fe54f0a7b71cc8201d21cac0c8192a45de03faea14e2e5"
     },
     {
       "path": "src/filter/mod.rs",
@@ -338,7 +338,7 @@
       "path": "src/xref.rs",
       "source_sha256": "51ffeeb7d4ac035bae2cd5ba9288c180088ae06cdcefe2b29dfeda560a793aa0",
       "source_git_blob": "20e33a410489d42e438a3f2b87d70c7bb8d66eae",
-      "sha256": "6e078fb4318c2a0ac461961d19843ef13568b945a42ef1d393071d625dae7950"
+      "sha256": "f9b60fbe50bb8782bb8989c14386023dd4eb738db73581e9acf430afbb468020"
     },
     {
       "path": "src/decode_limits_tests.rs",

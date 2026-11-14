@@ -1709,6 +1709,20 @@ mod pdfcraft_png_predictor_tests {
         }
     }
 
+    #[test]
+    fn every_png_filter_can_cancel_inside_one_wide_row() {
+        for filter in [0, 1, 2, 3, 4, 255] {
+            let row_len = 2 << 20;
+            let mut data = vec![1; row_len + 1];
+            data[0] = filter;
+            // Entry, row, first byte checkpoint, then a later byte checkpoint.
+            // This reaches inside one row rather than stopping at the row boundary.
+            let (control, polls) = crate::cancel::stop_at(4);
+            assert!(super::unfilter_png(&data, row_len, 3, Some(&control)).is_none(), "filter {filter}");
+            assert_eq!(polls.load(core::sync::atomic::Ordering::Relaxed), 4, "filter {filter}");
+        }
+    }
+
     /// PNG unfiltering written out from the PNG specification (§9.2–9.4), one byte at a time.
     fn reference(data: &[u8], row_len: usize, bpp: usize) -> Vec<u8> {
         let mut out: Vec<u8> = Vec::new();

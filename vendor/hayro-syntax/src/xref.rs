@@ -2330,3 +2330,21 @@ mod unlinked_update_controls {
         assert_eq!(polls.load(core::sync::atomic::Ordering::Relaxed), 2);
     }
 }
+
+#[cfg(test)]
+mod cut_off_header_cancellation_tests {
+    use super::has_object_header_controlled;
+
+    #[test]
+    fn long_object_header_runs_remain_cancellable() {
+        let digits = [vec![b'0'; 1 << 20], b"1 0 obj".to_vec()].concat();
+        let spaces = [b"1".to_vec(), vec![b' '; 1 << 20], b"0 obj".to_vec()].concat();
+        let junk = [vec![b'x'; 1 << 20], b" 1 0 obj".to_vec()].concat();
+        for (label, data, stop) in [("digits", digits, 3), ("spaces", spaces, 4), ("junk", junk, 3)] {
+            assert_eq!(has_object_header_controlled(&data, None), Some(true), "{label}: positive control");
+            let (control, polls) = crate::cancel::stop_at(stop);
+            assert_eq!(has_object_header_controlled(&data, Some(&control)), None, "{label}: stop within the long run");
+            assert_eq!(polls.load(core::sync::atomic::Ordering::Relaxed), stop, "{label}");
+        }
+    }
+}
