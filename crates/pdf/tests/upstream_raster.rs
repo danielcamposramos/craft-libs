@@ -161,7 +161,7 @@ fn shrunk_soft_mask_larger_than_its_image_keeps_thin_strokes() {
 
 #[cfg_attr(not(target_arch = "wasm32"), test)]
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
-fn text_rendering_modes_other_than_invisible_draw_type3_glyphs_as_filled() {
+fn text_rendering_modes_except_3_and_7_draw_type3_glyphs_as_filled() {
     let render = |glyph: &str, mode: u8| {
         let content = format!("BT 1 0 0 RG 6 w 0 g /F1 20 Tf {mode} Tr 10.3 10.3 Td (A) Tj ET");
         let pdf = format!(
@@ -188,10 +188,13 @@ trailer << /Root 1 0 R >>
     for glyph in ["1 0 0 0 1 1 d1 0.12 0.12 0.71 0.71 re f", "1 0 d0 0.12 0.12 0.71 0.71 re f"] {
         let filled = render(glyph, 0);
         assert!(filled.as_chunks::<4>().0.iter().any(|p| p[0] < 128), "{glyph}: the glyph paints");
-        for mode in [1, 2, 4, 5, 6, 7] {
+        for mode in [1, 2, 4, 5, 6] {
             assert!(render(glyph, mode) == filled, "{glyph}: {mode} Tr draws as 0 Tr");
         }
-        assert!(render(glyph, 3).as_chunks::<4>().0.iter().all(|p| p[..3] == [255, 255, 255]), "{glyph}: 3 Tr hides the glyph");
+        // ISO 32000-2 §9.3.6 and the original PdfCraft review: both modes suppress ink.
+        for mode in [3, 7] {
+            assert!(render(glyph, mode).as_chunks::<4>().0.iter().all(|p| p[..3] == [255, 255, 255]), "{glyph}: {mode} Tr hides the glyph");
+        }
     }
 }
 
