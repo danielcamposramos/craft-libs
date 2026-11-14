@@ -296,7 +296,7 @@
       "path": "src/page.rs",
       "source_sha256": "17be32b2eaa03a3367f1f20040556f7ee5b207588cf44a1af3e5253386fb46f9",
       "source_git_blob": "d7f0ec953722a938508f1f31f0adaecc0a181d20",
-      "sha256": "4aa3fd63c6aa6a4b0c5370fcb939907ffa66a07337527da2fd42c66ce4322170"
+      "sha256": "811dec14ca0a3250f6561a6ecd3db0c7e710133e4e97fb56fd5d07deea1e92a3"
     },
     {
       "path": "src/pdf.rs",

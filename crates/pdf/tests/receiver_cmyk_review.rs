@@ -85,4 +85,3 @@ endstream endobj
     let non_isolated_rgb = render(Some("/CS /DeviceRGB /I false /K false"), 1.0);
     assert!(distance(&px(&non_isolated_rgb, 110.0, 110.0, 1.0), &green) <= 3, "a non-isolated nested group inherits CMYK");
 }
-

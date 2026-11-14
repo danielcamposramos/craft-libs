@@ -71,4 +71,3 @@ fn the_color_blend_mode_over_an_empty_cmyk_group_keeps_every_k_level() {
     }
     assert!(wrong.is_empty(), "K levels drawn wrong (level, plain, blended): {wrong:?}");
 }
-
