@@ -1,7 +1,7 @@
 [workspace]
 resolver = "3"
 members = ["crates/*"]
-exclude = ["vendor/krilla", "vendor/hayro", "vendor/hayro-interpret", "vendor/hayro-syntax", "vendor/hayro-jbig2", "vendor/hayro-cmap", "vendor/hayro-postscript", "vendor/linesweeper", "vendor/winprint"]
+exclude = ["vendor/krilla", "vendor/hayro", "vendor/hayro-interpret", "vendor/hayro-syntax", "vendor/hayro-jbig2", "vendor/hayro-cmap", "vendor/hayro-postscript", "vendor/linesweeper", "vendor/winprint", "vendor/vello_cpu", "vendor/vello_common"]
 
 [workspace.package]
 version = "0.1.0"
@@ -173,6 +173,8 @@ dbg_macro = "warn"
 todo = "warn"
 
 [patch.crates-io]
+vello_cpu = { path = "vendor/vello_cpu" }
+vello_common = { path = "vendor/vello_common" }
 krilla = { path = "vendor/krilla" }
 
 hayro = { path = "vendor/hayro" }

@@ -486,3 +486,12 @@ The common CMYK tint-transform callers handle an unreadable function without dro
 Page-wide JBIG2 work uses the already shared bounded decoder; image pixel/output caps, fallible allocations and rejection of image-filtered globals remain.
 A picture whose JBIG2 opacity was refused by the page budget is omitted in both raster and ink paths, and the allowance ends with the page.
 Synthetic receiver tests cover the changed raster results, diagnostic propagation, the opacity refusal and next-page reset, and unlinked repair with a lower document decode limit.
+
+## Shared Vello 0.0.8 source owner
+
+The PDF reader family uses the receiving project’s Vello 0.0.8 source snapshot at dc5cb122db4e79e795e92073340262f5c40d1344.
+The Linebender copyright and Apache-2.0/MIT licences are retained byte for byte.
+SOURCE.json records every original file’s public revision, Git blob and SHA-256.
+The procedural probe PNG and raw RGBA carry their own attribution sidecars; their generating source and README remain present.
+Some upstream Vello CPU test assets are absent from the receiving snapshot; no complete upstream Vello test-suite claim is made.
+The separate registry Vello 0.2 ABI used by other shared crates remains a separate package version.

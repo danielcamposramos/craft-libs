@@ -1,0 +1,24 @@
+{
+  "source_repository": "https://github.com/linebender/vello",
+  "source_revision": "875f324f21da93019cae9e8e61d4abfd69893206",
+  "files": [
+    {
+      "path": "LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/linebender/vello/875f324f21da93019cae9e8e61d4abfd69893206/examples/assets/roboto/LICENSE.txt",
+      "source_git_blob": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "bytes": 11358
+    },
+    {
+      "path": "Roboto-Regular.ttf",
+      "url": "https://raw.githubusercontent.com/linebender/vello/875f324f21da93019cae9e8e61d4abfd69893206/examples/assets/roboto/Roboto-Regular.ttf",
+      "source_git_blob": "3d6861b42396c609e26f38f129383c558e332281",
+      "sha256": "319cff6e7a31f0f2a41c475dca42890aa5d19fe16017e2290f8c1d4e14f76481",
+      "bytes": 168260
+    }
+  ],
+  "copyright": [
+    "Copyright 2011 Google Inc. All Rights Reserved."
+  ],
+  "license": "Apache-2.0"
+}

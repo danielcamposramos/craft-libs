@@ -1,0 +1,6 @@
+SPDX-License-Identifier: Apache-2.0
+Copyright: Copyright 2011 Google Inc. All Rights Reserved.
+Source: https://raw.githubusercontent.com/linebender/vello/875f324f21da93019cae9e8e61d4abfd69893206/examples/assets/roboto/Roboto-Regular.ttf
+SHA256: 319cff6e7a31f0f2a41c475dca42890aa5d19fe16017e2290f8c1d4e14f76481
+License-File: LICENSE.txt
+Usage: original Vello CPU unit-test fixture; upstream include_bytes path retained.
