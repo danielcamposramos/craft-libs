@@ -1025,6 +1025,21 @@ fn interpret_window<'a>(
             }
             TypedInstruction::ShapeGlyph(_) => {}
             TypedInstruction::XObject(x) => {
+                // A raw reference can already identify an active form even when the syntax
+                // reader would reject resolving that ancestor. Report the actual recursive
+                // drawing without weakening the resource scope or parser cycle boundary.
+                let mut scope = Some(resources);
+                let mut recursive = false;
+                while let Some(current) = scope {
+                    if let Some(reference) = current.x_objects.get_ref(x.0.as_ref()) {
+                        recursive = crate::context::skip_active_form_reference(reference.into());
+                        break;
+                    }
+                    scope = current.parent();
+                }
+                if recursive {
+                    continue;
+                }
                 let cache = context.interpreter_cache.object_cache.clone();
                 // PdfCraft patch: decoded images are cached per quality (preview or final).
                 let decoded_cache = context

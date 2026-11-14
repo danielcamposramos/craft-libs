@@ -45,6 +45,22 @@ std::thread_local! {
         const { RefCell::new(Vec::new()) };
 }
 
+fn report_recursive_form() {
+    warn!("form XObject draws itself; the inner drawing is skipped");
+    CONTENT_TRUNCATED.with(|truncated| truncated.set(true));
+}
+
+/// Report a known active form before resolving its resource reference. The shared syntax
+/// reader can refuse that ancestor reference before a second FormXObject can be constructed.
+/// This uses the existing active-form identity and does not bypass its parser or scope guards.
+pub(crate) fn skip_active_form_reference(id: hayro_syntax::object::ObjectIdentifier) -> bool {
+    let active = FORMS_DRAWING.with(|forms| forms.try_borrow().is_ok_and(|forms| forms.contains(&id)));
+    if active {
+        report_recursive_form();
+    }
+    active
+}
+
 /// PdfCraft patch: decoded content-stream bytes one page may hold at once: its contents, and
 /// the forms, tiling patterns and Type 3 glyph procedures being painted. Each stream already
 /// stops at `MAX_DECODED_STREAM`, but forms nest fifty deep and every level keeps its content
@@ -380,8 +396,7 @@ impl<'a> Context<'a> {
             Some(true)
         });
         if entered == Some(false) {
-            warn!("form XObject draws itself; the inner drawing is skipped");
-            CONTENT_TRUNCATED.with(|truncated| truncated.set(true));
+            report_recursive_form();
             return false;
         }
         true
