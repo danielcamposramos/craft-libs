@@ -162,7 +162,7 @@
     },
     {
       "path": "src/filter/jpx.rs",
-      "source_sha256": "c9f068629c9cbe79af6793c3c125df4631ca1455691cb1335b44ff43cb1b4056",
+      "source_sha256": "f0a2b01c692c086d30a26562d7548f9e837af166be737d2c543de7c886a45f82",
       "source_git_blob": "74efd8b31e2b2935ff2bbceda2c1ffd36ea9c20d",
       "sha256": "81213936de6d1c6b63bea041a1f88a71753e3b4238a08d9bbc7dbdfaca0970a0"
     },
