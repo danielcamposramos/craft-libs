@@ -290,7 +290,7 @@
       "path": "src/font/mod.rs",
       "source_sha256": "7e6411927d91205ca76c6b59f9d737cd1104d066f8cfcc0a87f481016ef30313",
       "source_git_blob": "7c8c8d086d59139df791cdb6952506473ec4b5a7",
-      "sha256": "20e1c02adb0e8f873209fd31c9da19fb62fabbcc926e282794c95395231477e1"
+      "sha256": "0d53094f6ed501572a83f23fc2ebbeefac90a707f7b764a2f82c88c97bf468d1"
     },
     {
       "path": "src/font/outline.rs",
@@ -380,7 +380,7 @@
       "path": "src/interpret/text.rs",
       "source_sha256": "35eafa80147aea635bdef127c33ace20e1695e11e87c7bfe1e035c886806ff30",
       "source_git_blob": "ddec0400ea7a639c14769ac9ee7e137d000b3efd",
-      "sha256": "a1fa778f8e667b079cf2a1f86a4d18f2d6ca986372df914674e27c4493131065"
+      "sha256": "3263c0ac4397de3a951d8e021c7fd7ae25e7e42da8ca35f563edf45292f8ec94"
     },
     {
       "path": "src/lib.rs",
@@ -477,7 +477,8 @@
     ]
   },
   "local_test_updates": [
-    "Adjust direct stitching-function fixtures to the 32/33-function boundary imposed by the 64-container syntax cap and independently test unchanged 64/65-function construction limits with indirect references."
+    "Adjust direct stitching-function fixtures to the 32/33-function boundary imposed by the 64-container syntax cap and independently test unchanged 64/65-function construction limits with indirect references.",
+    "Integrate the implicit fill/stroke knockout group at the existing bounded Tj/TJ replay boundary, retaining fill-first event order, advances, clipping and Type3 single-paint behavior. Compare the translucent run against an explicit knockout-group reference (ISO 32000-1/2 11.7.4.4), rather than separate graphics objects."
   ],
   "receiver_api_reconciliation": {
     "upstream_repository": "https://github.com/storytold/pdfcraft",

@@ -441,15 +441,24 @@ mod painting {
     }
 
     fn text_pdf(content: &str) -> Vec<u8> {
-        assemble(&[
+        text_pdf_group(content, false)
+    }
+
+    fn text_pdf_group(content: &str, knockout: bool) -> Vec<u8> {
+        let form = "/Type /XObject /Subtype /Form /BBox [0 0 100 60] /Group << /S /Transparency /K true >> /Resources << /Font << /F1 5 0 R >> /ExtGState << /G << /ca 0.25 /CA 0.75 >> >> >>";
+        let mut objects = vec![
             b"<< /Type /Catalog /Pages 2 0 R >>".to_vec(),
             b"<< /Type /Pages /Count 1 /Kids [3 0 R] >>".to_vec(),
-            b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 100 60] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> /ExtGState << /G << /ca 0.25 /CA 0.75 >> >> >> >>".to_vec(),
-            stream("", content.as_bytes()),
+            b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 100 60] /Contents 4 0 R /Resources << /XObject << /Fm 8 0 R >> /Font << /F1 5 0 R >> /ExtGState << /G << /ca 0.25 /CA 0.75 >> >> >> >>".to_vec(),
+            stream("", if knockout { b"/Fm Do" } else { content.as_bytes() }),
             b"<< /Type /Font /Subtype /TrueType /BaseFont /Inter-Regular /Encoding /WinAnsiEncoding /FirstChar 65 /LastChar 67 /Widths [600 600 600] /FontDescriptor 6 0 R >>".to_vec(),
             b"<< /Type /FontDescriptor /FontName /Inter-Regular /Flags 32 /FontFile2 7 0 R >>".to_vec(),
             stream("", fixture_font()),
-        ])
+        ];
+        if knockout {
+            objects.push(stream(form, content.as_bytes()));
+        }
+        assemble(&objects)
     }
 
     #[cfg_attr(not(craft_pdf_unicode_fixtures), ignore = "requires hash-verified external fonts and craft_pdf_unicode_fixtures cfg")]
@@ -477,13 +486,13 @@ mod painting {
     #[cfg_attr(not(target_arch = "wasm32"), test)]
     #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
     fn overlapping_translucent_glyphs_fill_the_whole_run_before_stroking() {
-        let reference = pixels(&text_pdf(
-            "/G gs 1 0 0 rg 0 0 1 RG 2 w BT /F1 20 Tf 0 Tr 1 0 0 1 10 20 Tm [(A) 400 (B)] TJ 1 Tr 1 0 0 1 10 20 Tm [(A) 400 (B)] TJ ET",
-        ));
+        let content = "/G gs 1 0 0 rg 0 0 1 RG 2 w BT /F1 20 Tf 0 Tr 1 0 0 1 10 20 Tm [(A) 400 (B)] TJ 1 Tr 1 0 0 1 10 20 Tm [(A) 400 (B)] TJ ET";
+        let reference = pixels(&text_pdf_group(content, true));
+        assert!(reference != pixels(&text_pdf(content)), "the implicit knockout group changes translucent overlap");
         assert!(reference.as_chunks::<4>().0.iter().any(|p| p[0] > 0 && p[2] > 0 && p[3] < 255));
         for mode in [2, 6] {
             let actual = pixels(&text_pdf(&format!("/G gs 1 0 0 rg 0 0 1 RG 2 w BT /F1 20 Tf {mode} Tr 1 0 0 1 10 20 Tm [(A) 400 (B)] TJ ET")));
-            assert!(actual == reference, "{mode} Tr must match explicit whole-run fill followed by whole-run stroke");
+            assert!(actual == reference, "{mode} Tr must match whole-run fill and stroke within one knockout group");
         }
     }
 

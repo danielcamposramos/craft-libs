@@ -290,6 +290,10 @@ impl<'a> Font<'a> {
         Some(Self(cache_key, f_type))
     }
 
+    pub(crate) fn is_type3(&self) -> bool {
+        matches!(&self.1, FontType::Type3(_))
+    }
+
     /// PdfCraft patch (90): whether this is a Type 3 font without `/Widths` (or
     /// `/FirstChar`/`/LastChar`), whose glyphs advance by their `d0`/`d1` widths.
     pub(crate) fn type3_widths_missing(&self) -> bool {

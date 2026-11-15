@@ -28,6 +28,8 @@ struct Clips {
     paths: usize,
     clips: usize,
     clipping_glyphs: usize,
+    painted_glyphs: usize,
+    groups: usize,
 }
 
 impl Device<'_> for Clips {
@@ -39,9 +41,12 @@ impl Device<'_> for Clips {
     fn push_clip_path(&mut self, _: &ClipPath) {
         self.clips += 1;
     }
-    fn push_transparency_group(&mut self, _: f32, _: Option<SoftMask<'_>>, _: BlendMode) {}
+    fn push_transparency_group(&mut self, _: f32, _: Option<SoftMask<'_>>, _: BlendMode) {
+        self.groups += 1;
+    }
     fn draw_glyph(&mut self, _: &Glyph<'_>, _: Affine, _: Affine, _: &Paint<'_>, mode: &GlyphDrawMode) {
         self.clipping_glyphs += usize::from(matches!(mode, GlyphDrawMode::Clip));
+        self.painted_glyphs += usize::from(matches!(mode, GlyphDrawMode::Fill | GlyphDrawMode::Stroke(_)));
     }
     fn draw_image(&mut self, _: Image<'_, '_>, _: Affine) {}
     fn pop_clip_path(&mut self) {}
@@ -85,6 +90,30 @@ fn type3_clip_text_leaves_a_following_page_fill_visible() {
                 image.bytes().as_chunks::<4>().0.iter().all(|pixel| *pixel == [255, 0, 0, 255]),
                 "the entire later fill remains red in mode {mode}"
             );
+        }
+    }
+}
+
+#[test]
+fn type3_fill_stroke_modes_paint_once_without_an_outline_knockout_group() {
+    for glyph in GLYPHS {
+        for mode in [0, 2, 6] {
+            let pdf = craft_pdf::open_slice(&page(mode, glyph), None).unwrap();
+            let page = &pdf.pages()[0];
+            let cache = InterpreterCache::new();
+            let mut context = Context::new(
+                page.initial_transform(true).to_kurbo(),
+                Rect::new(0.0, 0.0, 40.0, 20.0),
+                &cache,
+                page.xref(),
+                InterpreterSettings::default(),
+            );
+            let mut device = Clips::default();
+            craft_pdf::interpret_page(page, &mut context, &mut device).unwrap();
+            assert_eq!(device.painted_glyphs, 1, "Type3 mode {mode} paints its procedure only once");
+            assert_eq!(device.groups, 0, "Type3 mode {mode} does not acquire an outline fill/stroke group");
+            assert_eq!(device.clips, 0);
+            assert_eq!(device.paths, 1, "the later page fill remains independent");
         }
     }
 }

@@ -14,7 +14,7 @@ pub(crate) fn show_text_string<'a>(
     resources: &Resources<'a>,
     text: &object::String<'_>,
 ) {
-    show_text_run(ctx, |ctx, pass| show_string_pass(ctx, device, resources, text, pass));
+    show_text_run(ctx, device, |ctx, device, pass| show_string_pass(ctx, device, resources, text, pass));
 }
 
 pub(crate) fn show_text_array<'a>(
@@ -23,7 +23,7 @@ pub(crate) fn show_text_array<'a>(
     resources: &Resources<'a>,
     text: &object::Array<'_>,
 ) {
-    show_text_run(ctx, |ctx, pass| {
+    show_text_run(ctx, device, |ctx, device, pass| {
         for item in text.iter::<object::Object<'_>>() {
             match item {
                 object::Object::Number(number) => ctx.get_mut().text_state.apply_adjustment(number.as_f32()),
@@ -44,19 +44,31 @@ enum TextPass {
 /// Fill the entire text-showing operation before stroking it, including all strings in TJ.
 /// Replaying the source avoids an input-sized vector of positioned glyphs. Only the text
 /// matrix advances while reading these operands; clipping paths from the first pass remain.
-fn show_text_run<'a>(ctx: &mut Context<'a>, mut draw: impl FnMut(&mut Context<'a>, TextPass)) {
+fn show_text_run<'a, D: Device<'a>>(
+    ctx: &mut Context<'a>,
+    device: &mut D,
+    mut draw: impl FnMut(&mut Context<'a>, &mut D, TextPass),
+) {
     if matches!(
         ctx.get().text_state.render_mode,
         TextRenderingMode::FillStroke | TextRenderingMode::FillAndStrokeAndClip
     ) {
-        let start = ctx.get().text_state.text_matrix;
-        draw(ctx, TextPass::Fill);
-        let end = ctx.get().text_state.text_matrix;
-        ctx.get_mut().text_state.text_matrix = start;
-        draw(ctx, TextPass::Stroke);
-        ctx.get_mut().text_state.text_matrix = end;
+        let mut paint = |ctx: &mut Context<'a>, device: &mut D| {
+            let start = ctx.get().text_state.text_matrix;
+            draw(ctx, device, TextPass::Fill);
+            let end = ctx.get().text_state.text_matrix;
+            ctx.get_mut().text_state.text_matrix = start;
+            draw(ctx, device, TextPass::Stroke);
+            ctx.get_mut().text_state.text_matrix = end;
+        };
+        // Type3 procedures ignore these fill/stroke modes and paint only once.
+        if matches!(&ctx.get().text_state.font, Some(TextStateFont::Font(font)) if font.is_type3()) {
+            paint(ctx, device);
+        } else {
+            with_fill_stroke_group(ctx, device, paint);
+        }
     } else {
-        draw(ctx, TextPass::All);
+        draw(ctx, device, TextPass::All);
     }
 }
 
