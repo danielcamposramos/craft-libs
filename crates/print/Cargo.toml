@@ -12,7 +12,7 @@ description = "System PDF print spooler for the Craft apps: CUPS and Windows"
 # Keep the public rgb re-export at main's GDI revision: a different Git rev gives
 # downstream GDI values a different Rust type identity even when the code is unchanged.
 # PDF loader updates below are independent of this public transport API.
-craft-winprint-gdi = { git = "https://github.com/storytold/winprint.rs", rev = "64e7afd4d1483512385012c340ecaaaf0f3beb7f" }
+craft-winprint-gdi = { version = "0.1.0", git = "https://github.com/storytold/winprint.rs", rev = "64e7afd4d1483512385012c340ecaaaf0f3beb7f" }
 
 [lints]
 workspace = true
@@ -39,7 +39,7 @@ log = "0.4"
 # fork commit that adds it on top of storytold/winprint.rs main (e90c444).
 # The transparent BSD source snapshot and its original fixture replacements are documented in
 # vendor/winprint/README.craft.md; no receiving app needs to relax its Git-source guard.
-winprint = { path = "../../vendor/winprint", default-features = false }
+winprint = { version = "0.2.1", path = "../../vendor/winprint", default-features = false }
 # GetDefaultPrinter (MIT).
 winsafe = { version = "0.0.29", default-features = false, features = ["winspool"] }
 # The job file's private folder.

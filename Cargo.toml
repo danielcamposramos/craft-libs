@@ -11,16 +11,16 @@ rust-version = "1.95"
 repository = "https://github.com/storytold/craft-libs"
 
 [workspace.dependencies]
-craft-stereo-window = { path = "crates/stereo-window" }
-craft-stereo-camera = { path = "crates/stereo-camera" }
-# internal: add each crate here as `craft-<name> = { path = "crates/<name>" }`
-craft-platform = { path = "crates/platform" }
-craft-aep = { path = "crates/aep" }
-craft-affinity = { path = "crates/affinity" }
-craft-ai-core = { path = "crates/ai-core" }
+craft-stereo-window = { path = "crates/stereo-window", version = "0.1.0" }
+craft-stereo-camera = { path = "crates/stereo-camera", version = "0.1.0" }
+# internal: add each crate here with its path and the version declared by that crate.
+craft-platform = { path = "crates/platform", version = "0.1.0" }
+craft-aep = { path = "crates/aep", version = "0.1.0" }
+craft-affinity = { path = "crates/affinity", version = "0.1.0" }
+craft-ai-core = { path = "crates/ai-core", version = "0.1.0" }
 craft-pdf = { path = "crates/pdf", version = "=0.1.0" }
-craft-pdn = { path = "crates/pdn" }
-craft-plate-test = { path = "crates/plate-test" }
+craft-pdn = { path = "crates/pdn", version = "0.1.0" }
+craft-plate-test = { path = "crates/plate-test", version = "0.1.0" }
 krilla = { version = "=0.8.2", default-features = false, features = ["raster-images"] }
 hayro = { version = "=0.7.1", default-features = false }
 hayro-interpret = { version = "=0.7.0", default-features = false, features = ["embed-fonts", "embed-cmaps"] }
@@ -28,126 +28,126 @@ hayro-syntax = { version = "=0.7.2", default-features = false, features = ["std"
 bytemuck = "1"
 kurbo = "0.13"
 thiserror = "2"
-craft-aaf = { path = "crates/aaf" }
-craft-atomic = { path = "crates/atomic" }
-craft-captions = { path = "crates/captions" }
-craft-cfb = { path = "crates/cfb" }
-craft-codepage = { path = "crates/codepage" }
-craft-cms = { path = "crates/cms" }
-craft-crs = { path = "crates/crs" }
-craft-crw = { path = "crates/crw" }
-craft-csv = { path = "crates/csv" }
-craft-dav = { path = "crates/dav" }
-craft-dialogs = { path = "crates/dialogs" }
-craft-doc-binary = { path = "crates/doc-binary" }
-craft-docx = { path = "crates/docx" }
-craft-document-bundle = { path = "crates/document-bundle" }
-craft-dxf = { path = "crates/dxf" }
-craft-drawingml = { path = "crates/drawingml" }
-craft-eps = { path = "crates/eps" }
-craft-file-formats = { path = "crates/file-formats" }
-craft-doc = { path = "crates/doc" }
-craft-docpath = { path = "crates/docpath" }
-craft-dpx = { path = "crates/dpx" }
-craft-ecproj-format = { path = "crates/ecproj-format" }
-craft-figma-rest = { path = "crates/figma-rest" }
-craft-exr = { path = "crates/exr" }
-craft-flags = { path = "crates/flags" }
-craft-font-catalog = { path = "crates/font-catalog" }
-craft-font-manager = { path = "crates/font-manager" }
-craft-font-store = { path = "crates/font-store" }
-craft-gainmap = { path = "crates/gainmap" }
-craft-flow = { path = "crates/flow" }
-craft-gcode = { path = "crates/gcode" }
-craft-gif = { path = "crates/gif" }
-craft-hdr = { path = "crates/hdr" }
-craft-mesh = { path = "crates/mesh" }
-craft-html = { path = "crates/html" }
-craft-heif = { path = "crates/heif" }
-craft-fig = { path = "crates/fig" }
-craft-fonts-build = { path = "crates/fonts-build" }
-craft-i18n = { path = "crates/i18n" }
-craft-idml = { path = "crates/idml" }
-craft-indd = { path = "crates/indd" }
-craft-jmap = { path = "crates/jmap" }
-craft-ical = { path = "crates/ical" }
-craft-jpeg = { path = "crates/jpeg" }
-craft-kiwi = { path = "crates/kiwi" }
-craft-keymap = { path = "crates/keymap" }
-craft-assuan = { path = "crates/assuan" }
-craft-kra = { path = "crates/kra" }
-craft-audio = { path = "crates/audio" }
+craft-aaf = { path = "crates/aaf", version = "0.1.0" }
+craft-atomic = { path = "crates/atomic", version = "0.1.0" }
+craft-captions = { path = "crates/captions", version = "0.1.0" }
+craft-cfb = { path = "crates/cfb", version = "0.1.0" }
+craft-codepage = { path = "crates/codepage", version = "0.1.0" }
+craft-cms = { path = "crates/cms", version = "0.1.0" }
+craft-crs = { path = "crates/crs", version = "0.1.0" }
+craft-crw = { path = "crates/crw", version = "0.1.0" }
+craft-csv = { path = "crates/csv", version = "0.1.0" }
+craft-dav = { path = "crates/dav", version = "0.1.0" }
+craft-dialogs = { path = "crates/dialogs", version = "0.1.0" }
+craft-doc-binary = { path = "crates/doc-binary", version = "0.1.0" }
+craft-docx = { path = "crates/docx", version = "0.1.0" }
+craft-document-bundle = { path = "crates/document-bundle", version = "0.1.0" }
+craft-dxf = { path = "crates/dxf", version = "0.1.0" }
+craft-drawingml = { path = "crates/drawingml", version = "0.1.0" }
+craft-eps = { path = "crates/eps", version = "0.1.0" }
+craft-file-formats = { path = "crates/file-formats", version = "0.1.0" }
+craft-doc = { path = "crates/doc", version = "0.1.0" }
+craft-docpath = { path = "crates/docpath", version = "0.1.0" }
+craft-dpx = { path = "crates/dpx", version = "0.1.0" }
+craft-ecproj-format = { path = "crates/ecproj-format", version = "0.1.0" }
+craft-figma-rest = { path = "crates/figma-rest", version = "0.1.0" }
+craft-exr = { path = "crates/exr", version = "0.1.0" }
+craft-flags = { path = "crates/flags", version = "0.1.0" }
+craft-font-catalog = { path = "crates/font-catalog", version = "0.1.0" }
+craft-font-manager = { path = "crates/font-manager", version = "0.1.0" }
+craft-font-store = { path = "crates/font-store", version = "0.1.0" }
+craft-gainmap = { path = "crates/gainmap", version = "0.1.0" }
+craft-flow = { path = "crates/flow", version = "0.1.0" }
+craft-gcode = { path = "crates/gcode", version = "0.1.0" }
+craft-gif = { path = "crates/gif", version = "0.1.0" }
+craft-hdr = { path = "crates/hdr", version = "0.1.0" }
+craft-mesh = { path = "crates/mesh", version = "0.1.0" }
+craft-html = { path = "crates/html", version = "0.1.0" }
+craft-heif = { path = "crates/heif", version = "0.1.0" }
+craft-fig = { path = "crates/fig", version = "0.1.0" }
+craft-fonts-build = { path = "crates/fonts-build", version = "0.1.0" }
+craft-i18n = { path = "crates/i18n", version = "0.1.0" }
+craft-idml = { path = "crates/idml", version = "0.1.0" }
+craft-indd = { path = "crates/indd", version = "0.1.0" }
+craft-jmap = { path = "crates/jmap", version = "0.1.0" }
+craft-ical = { path = "crates/ical", version = "0.1.0" }
+craft-jpeg = { path = "crates/jpeg", version = "0.1.0" }
+craft-kiwi = { path = "crates/kiwi", version = "0.1.0" }
+craft-keymap = { path = "crates/keymap", version = "0.1.0" }
+craft-assuan = { path = "crates/assuan", version = "0.1.0" }
+craft-kra = { path = "crates/kra", version = "0.1.0" }
+craft-audio = { path = "crates/audio", version = "0.1.0" }
 # No default features, so craft-audio's `encode` builds craft-media without `isobmff`.
-craft-latex = { path = "crates/latex" }
-craft-markdown = { path = "crates/markdown" }
-craft-math = { path = "crates/math" }
-craft-media = { path = "crates/media", default-features = false }
-craft-materialx = { path = "crates/materialx" }
-craft-media-testkit = { path = "crates/media-testkit" }
-craft-midi = { path = "crates/midi" }
-craft-sf2 = { path = "crates/sf2" }
-craft-mime = { path = "crates/mime" }
-craft-odf = { path = "crates/odf" }
-craft-ods = { path = "crates/ods" }
-craft-prc = { path = "crates/prc" }
-craft-lottie = { path = "crates/lottie" }
-craft-menu = { path = "crates/menu" }
-craft-metafile = { path = "crates/metafile" }
-craft-offcrypto = { path = "crates/offcrypto" }
-craft-opc = { path = "crates/opc" }
-craft-openpgp = { path = "crates/openpgp" }
-craft-ora = { path = "crates/ora" }
-craft-pptx = { path = "crates/pptx" }
-craft-penpot = { path = "crates/penpot" }
-craft-pcraft-format = { path = "crates/pcraft-format" }
-craft-pcraft-bundle = { path = "crates/pcraft-bundle" }
-craft-pkcs7 = { path = "crates/pkcs7" }
-craft-plotter = { path = "crates/plotter" }
-craft-prepress = { path = "crates/prepress" }
-craft-print = { path = "crates/print" }
-craft-proof = { path = "crates/proof" }
-craft-raster-codecs = { path = "crates/raster-codecs" }
-craft-psd = { path = "crates/psd" }
-craft-pst = { path = "crates/pst" }
-craft-quit = { path = "crates/quit" }
-craft-rtf = { path = "crates/rtf" }
-craft-raw = { path = "crates/raw" }
-craft-sheet = { path = "crates/sheet" }
-craft-sketch = { path = "crates/sketch" }
-craft-settings = { path = "crates/settings" }
-craft-scraft-format = { path = "crates/scraft-format" }
-craft-time = { path = "crates/time" }
-craft-silhouette-studio = { path = "crates/silhouette-studio" }
-craft-svg = { path = "crates/svg" }
-craft-stencilcraft-format = { path = "crates/stencilcraft-format" }
-craft-stencilcraft-document = { path = "crates/stencilcraft-document" }
-craft-svg-paths = { path = "crates/svg-paths" }
-craft-stream-codecs = { path = "crates/stream-codecs" }
-craft-text = { path = "crates/text" }
-craft-tga = { path = "crates/tga" }
-craft-timeline = { path = "crates/timeline" }
-craft-tiff = { path = "crates/tiff" }
-craft-metadata = { path = "crates/metadata" }
-craft-ui = { path = "crates/ui" }
-craft-update = { path = "crates/update" }
-craft-vcard = { path = "crates/vcard" }
-craft-vectorcraft-format = { path = "crates/vectorcraft-format" }
-craft-vectordrawable = { path = "crates/vectordrawable" }
-craft-xls = { path = "crates/xls" }
-craft-wordmodel = { path = "crates/wordmodel" }
-craft-xlsx = { path = "crates/xlsx" }
+craft-latex = { path = "crates/latex", version = "0.1.0" }
+craft-markdown = { path = "crates/markdown", version = "0.1.0" }
+craft-math = { path = "crates/math", version = "0.1.0" }
+craft-media = { path = "crates/media", version = "0.1.0", default-features = false }
+craft-materialx = { path = "crates/materialx", version = "0.1.0" }
+craft-media-testkit = { path = "crates/media-testkit", version = "0.1.0" }
+craft-midi = { path = "crates/midi", version = "0.1.0" }
+craft-sf2 = { path = "crates/sf2", version = "0.1.0" }
+craft-mime = { path = "crates/mime", version = "0.1.0" }
+craft-odf = { path = "crates/odf", version = "0.1.0" }
+craft-ods = { path = "crates/ods", version = "0.1.0" }
+craft-prc = { path = "crates/prc", version = "0.1.0" }
+craft-lottie = { path = "crates/lottie", version = "0.1.0" }
+craft-menu = { path = "crates/menu", version = "0.1.0" }
+craft-metafile = { path = "crates/metafile", version = "0.1.0" }
+craft-offcrypto = { path = "crates/offcrypto", version = "0.1.0" }
+craft-opc = { path = "crates/opc", version = "0.1.0" }
+craft-openpgp = { path = "crates/openpgp", version = "0.1.0" }
+craft-ora = { path = "crates/ora", version = "0.1.0" }
+craft-pptx = { path = "crates/pptx", version = "0.1.0" }
+craft-penpot = { path = "crates/penpot", version = "0.1.0" }
+craft-pcraft-format = { path = "crates/pcraft-format", version = "0.1.0" }
+craft-pcraft-bundle = { path = "crates/pcraft-bundle", version = "0.1.0" }
+craft-pkcs7 = { path = "crates/pkcs7", version = "0.1.0" }
+craft-plotter = { path = "crates/plotter", version = "0.1.0" }
+craft-prepress = { path = "crates/prepress", version = "0.1.0" }
+craft-print = { path = "crates/print", version = "0.1.0" }
+craft-proof = { path = "crates/proof", version = "0.1.0" }
+craft-raster-codecs = { path = "crates/raster-codecs", version = "0.1.0" }
+craft-psd = { path = "crates/psd", version = "0.1.0" }
+craft-pst = { path = "crates/pst", version = "0.1.0" }
+craft-quit = { path = "crates/quit", version = "0.1.0" }
+craft-rtf = { path = "crates/rtf", version = "0.1.0" }
+craft-raw = { path = "crates/raw", version = "0.1.0" }
+craft-sheet = { path = "crates/sheet", version = "0.1.0" }
+craft-sketch = { path = "crates/sketch", version = "0.1.0" }
+craft-settings = { path = "crates/settings", version = "0.1.0" }
+craft-scraft-format = { path = "crates/scraft-format", version = "0.1.0" }
+craft-time = { path = "crates/time", version = "0.1.0" }
+craft-silhouette-studio = { path = "crates/silhouette-studio", version = "0.1.0" }
+craft-svg = { path = "crates/svg", version = "0.1.0" }
+craft-stencilcraft-format = { path = "crates/stencilcraft-format", version = "0.1.0" }
+craft-stencilcraft-document = { path = "crates/stencilcraft-document", version = "0.1.0" }
+craft-svg-paths = { path = "crates/svg-paths", version = "0.1.0" }
+craft-stream-codecs = { path = "crates/stream-codecs", version = "0.1.0" }
+craft-text = { path = "crates/text", version = "0.1.0" }
+craft-tga = { path = "crates/tga", version = "0.1.0" }
+craft-timeline = { path = "crates/timeline", version = "0.1.0" }
+craft-tiff = { path = "crates/tiff", version = "0.1.0" }
+craft-metadata = { path = "crates/metadata", version = "0.1.0" }
+craft-ui = { path = "crates/ui", version = "0.1.0" }
+craft-update = { path = "crates/update", version = "0.1.0" }
+craft-vcard = { path = "crates/vcard", version = "0.1.0" }
+craft-vectorcraft-format = { path = "crates/vectorcraft-format", version = "0.1.0" }
+craft-vectordrawable = { path = "crates/vectordrawable", version = "0.1.0" }
+craft-xls = { path = "crates/xls", version = "0.1.0" }
+craft-wordmodel = { path = "crates/wordmodel", version = "0.1.0" }
+craft-xlsx = { path = "crates/xlsx", version = "0.1.0" }
 indd = { git = "https://github.com/storytold/indd-utils", rev = "7f3060e5bce78d21ea70e0d5eacb96edce15dfbe" }
-craft-xcf = { path = "crates/xcf" }
-craft-xml = { path = "crates/xml" }
-craft-zip = { path = "crates/zip" }
-craft-y4m = { path = "crates/y4m" }
-craft-epub = { path = "crates/epub" }
-craft-ews = { path = "crates/ews" }
-craft-video = { path = "crates/video" }
-craft-web-api = { path = "crates/web-api" }
-craft-window = { path = "crates/window" }
-craft-web-host = { path = "crates/web-host" }
-craft-webp = { path = "crates/webp" }
+craft-xcf = { path = "crates/xcf", version = "0.1.0" }
+craft-xml = { path = "crates/xml", version = "0.1.0" }
+craft-zip = { path = "crates/zip", version = "0.1.0" }
+craft-y4m = { path = "crates/y4m", version = "0.1.0" }
+craft-epub = { path = "crates/epub", version = "0.1.0" }
+craft-ews = { path = "crates/ews", version = "0.1.0" }
+craft-video = { path = "crates/video", version = "0.1.0" }
+craft-web-api = { path = "crates/web-api", version = "0.1.0" }
+craft-window = { path = "crates/window", version = "0.1.0" }
+craft-web-host = { path = "crates/web-host", version = "0.1.0" }
+craft-webp = { path = "crates/webp", version = "0.1.0" }
 egui = { version = "0.37", default-features = false }
 md5 = { package = "md-5", version = "0.10", default-features = false }
 rayon = "1"
