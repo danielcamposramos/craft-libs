@@ -247,11 +247,10 @@ fn show_glyph<'a>(
 }
 
 pub(crate) fn clip_glyph(context: &mut Context<'_>, glyph: &Glyph<'_>, transform: Affine) {
-    // PdfCraft patch: this glyph is shown in a clipping mode, so the text object clips at `ET`
-    // whether or not the glyph has an outline to clip to.
-    context.get_mut().text_state.clip_shown = true;
     match glyph {
         Glyph::Outline(o) => {
+            // An outline glyph clips at `ET` even when its outline is empty.
+            context.get_mut().text_state.clip_shown = true;
             let outline = transform * o.outline();
             let has_outline = outline.segments().next().is_some();
 
